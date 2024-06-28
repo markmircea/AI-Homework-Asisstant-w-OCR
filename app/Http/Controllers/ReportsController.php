@@ -74,7 +74,17 @@ class ReportsController extends Controller
    // Mail::to($contact->email)->send(new ContactEmail($data['subject'], $data['message']));
 
    return Redirect::back()->with('success', "Contact emailed. Subject: $sub");
-}
+    }
+
+    public function hire(Contact $contact)
+    {
+
+
+    // Send email logic
+    // Mail::to($contact->email)->send(new ContactEmail($data['subject'], $data['message']));
+
+    return Redirect::back()->with('success', "$contact->first_name $contact->last_name hired.");
+    }
 
     public function create(): Response
     {
@@ -87,6 +97,8 @@ class ReportsController extends Controller
                 ->only('id', 'name'),
         ]);
     }
+
+
 
     public function store(): RedirectResponse
     {

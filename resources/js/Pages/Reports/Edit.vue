@@ -41,7 +41,9 @@
 
        <!-- Email Contact button outside form -->
        <div class="flex items-center px-8 py-4 bg-gray-50 border-t border-gray-100">
+        <button class="btn-indigo ml-4" @click="hireContact">Hire Contact</button>
         <button class="btn-indigo ml-auto" @click="showEmailForm">Email Contact</button>
+
       </div>
     </div>
       <!-- EmailForm component -->
@@ -144,6 +146,19 @@ export default {
     handleEmailSent(data) {
       if (confirm('Are you sure you want to send an email to this contact?')){
       this.$inertia.post(`/reports/${this.contact.id}/send-email`, data)
+
+
+      // Ensure $refs.flashMessages is defined and accessible
+     // if (this.$refs.FlashMessages) {
+       // this.$refs.FlashMessages.showSuccess(`Email sent successfully: Subject - ${data.subject}`);
+      //} else {
+       // console.error('Cannot find flashMessages component');
+     // }
+      }
+    },
+    hireContact() {
+      if (confirm('Are you sure you want to hire this contact?')){
+      this.$inertia.post(`/reports/${this.contact.id}/hire`)
 
 
       // Ensure $refs.flashMessages is defined and accessible

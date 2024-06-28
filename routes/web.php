@@ -148,6 +148,10 @@ Route::post('/reports/{contact}/send-email', [ReportsController::class, 'sendEma
     ->name('reports.sendEmail')
     ->middleware('auth');
 
+Route::post('/reports/{contact}/hire', [ReportsController::class, 'hire'])
+    ->name('reports.hire')
+    ->middleware('auth');
+
 
 
 
