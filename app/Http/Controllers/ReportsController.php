@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactEmail;
 
 class ReportsController extends Controller
 {
@@ -56,6 +58,20 @@ class ReportsController extends Controller
             'filters' => $filters,
             'contacts' => $contacts,
         ]);
+    }
+
+    public function sendEmail(Contact $contact)
+    {
+    // Validate input (subject and message)
+    $data = request()->validate([
+        'subject' => ['required', 'string', 'max:255'],
+        'message' => ['required', 'string', 'max:2000'],
+    ]);
+
+    // Send email logic
+    Mail::to($contact->email)->send(new ContactEmail($data['subject'], $data['message']));
+
+    return response()->json(['message' => 'Email sent successfully'], 200);
     }
 
     public function create(): Response

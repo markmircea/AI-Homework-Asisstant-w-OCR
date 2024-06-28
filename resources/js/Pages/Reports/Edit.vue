@@ -34,9 +34,18 @@
         <div class="flex items-center px-8 py-4 bg-gray-50 border-t border-gray-100">
           <button v-if="!contact.deleted_at" class="text-red-600 hover:underline" tabindex="-1" type="button" @click="destroy">Delete Contact</button>
           <loading-button :loading="form.processing" class="btn-indigo ml-auto" type="submit">Update Contact</loading-button>
+
+
         </div>
       </form>
+
+       <!-- Email Contact button outside form -->
+       <div class="flex items-center px-8 py-4 bg-gray-50 border-t border-gray-100">
+        <button class="btn-indigo ml-auto" @click="showEmailForm">Email Contact</button>
+      </div>
     </div>
+      <!-- EmailForm component -->
+      <email-form v-if="showEmail" @close="closeEmailForm" />
   </div>
 </template>
 
@@ -47,6 +56,7 @@ import TextInput from '@/Shared/TextInput.vue'
 import SelectInput from '@/Shared/SelectInput.vue'
 import LoadingButton from '@/Shared/LoadingButton.vue'
 import TrashedMessage from '@/Shared/TrashedMessage.vue'
+import EmailForm from '../../Shared/EmailForm.vue'
 
 export default {
   components: {
@@ -56,6 +66,7 @@ export default {
     SelectInput,
     TextInput,
     TrashedMessage,
+    EmailForm,
   },
   layout: Layout,
   props: {
@@ -93,6 +104,8 @@ export default {
         strengthsText: "",
         soft_skillsText: "",
       }),
+      showEmail: false, // State variable to control EmailForm visibility
+
     }
   },
   methods: {
@@ -118,6 +131,14 @@ export default {
       if (confirm('Are you sure you want to restore this contact?')) {
         this.$inertia.put(`/contacts/${this.contact.id}/restore`)
       }
+    },
+      // Method to show EmailForm
+      showEmailForm() {
+      this.showEmail = true;
+    },
+    // Method to close EmailForm
+    closeEmailForm() {
+      this.showEmail = false;
     },
   },
 }

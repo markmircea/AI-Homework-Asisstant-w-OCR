@@ -144,6 +144,11 @@ Route::get('reports/{contact}/edit', [ReportsController::class, 'edit'])
     ->name('reports.edit')
     ->middleware('auth');
 
+Route::post('/reports/{contact}/send-email', [ReportsController::class, 'sendEmail'])
+    ->name('reports.sendEmail')
+    ->middleware('auth');
+
+
 
 
 // Images
