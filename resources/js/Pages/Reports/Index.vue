@@ -31,14 +31,15 @@
 
     <!-- Table for displaying contacts -->
     <div class="bg-white rounded-md shadow overflow-x-auto">
-      <table class="w-full whitespace-nowrap">
+      <table class="min-w-full whitespace-nowrap">
         <thead>
           <tr class="text-left font-bold">
-            <th class="pb-4 pt-6 px-6">Name</th>
-            <th class="pb-4 pt-6 px-6">Organization</th>
-            <th class="pb-4 pt-6 px-6">Description</th>
-            <th class="pb-4 pt-6 px-6">Soft Skills</th>
-            <th class="pb-4 pt-6 px-6" colspan="2">Strengths</th>
+            <th class="pb-4 pt-6 px-6" v-resizable>Name</th>
+            <th class="pb-4 pt-6 px-6" v-resizable>Organization</th>
+            <th class="pb-4 pt-6 px-6" v-resizable>Description</th>
+            <th class="pb-4 pt-6 px-6" v-resizable>Soft Skills</th>
+            <th class="pb-4 pt-6 px-6" v-resizable>Strengths</th>
+            <th class="pb-4 pt-6 px-6" v-resizable>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -49,7 +50,6 @@
                 <icon v-if="contact.deleted_at" name="trash" class="shrink-0 ml-2 w-3 h-3 fill-gray-400" />
               </Link>
             </td>
-
             <td class="border-t">
               <Link :href="`/contacts/${contact.id}/edit`" class="flex items-center px-6 py-4" tabindex="-1">
                 <div v-if="contact.organization">
@@ -87,7 +87,7 @@
             </td>
           </tr>
           <tr v-if="contacts.data.length === 0">
-            <td class="px-6 py-4 border-t" colspan="4">No contacts found.</td>
+            <td class="px-6 py-4 border-t" colspan="6">No contacts found.</td>
           </tr>
         </tbody>
       </table>
