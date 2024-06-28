@@ -45,7 +45,8 @@
       </div>
     </div>
       <!-- EmailForm component -->
-      <email-form v-if="showEmail" @close="closeEmailForm" />
+      <email-form v-if="showEmail" @emailSent="handleEmailSent" @close="closeEmailForm" :contacte="contact" />
+
   </div>
 </template>
 
@@ -105,6 +106,8 @@ export default {
         soft_skillsText: "",
       }),
       showEmail: false, // State variable to control EmailForm visibility
+      contacte: this.contact,
+
 
     }
   },
@@ -118,9 +121,7 @@ export default {
       this.form.strengths = JSON.stringify(this.form.strengthsText.split(',').map(str => str.trim()));
       this.form.soft_skills = JSON.stringify(this.form.soft_skillsText.split(',').map(str => str.trim()));
 
-      this.form.put(`/contacts/${this.contact.id}`).then(() => {
-        this.initializeFormFields(); // Re-initialize form fields to display correctly
-      });
+      this.form.put(`/contacts/${this.contact.id}`).then(this.initializeFormFields());
     },
     destroy() {
       if (confirm('Are you sure you want to delete this contact?')) {
@@ -140,6 +141,20 @@ export default {
     closeEmailForm() {
       this.showEmail = false;
     },
+    handleEmailSent(data) {
+      if (confirm('Are you sure you want to send an email to this contact?')){
+      this.$inertia.post(`/reports/${this.contact.id}/send-email`, data)
+
+
+      // Ensure $refs.flashMessages is defined and accessible
+     // if (this.$refs.FlashMessages) {
+       // this.$refs.FlashMessages.showSuccess(`Email sent successfully: Subject - ${data.subject}`);
+      //} else {
+       // console.error('Cannot find flashMessages component');
+     // }
+      }
+    },
+
   },
 }
 </script>

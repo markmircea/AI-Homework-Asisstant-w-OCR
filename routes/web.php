@@ -151,6 +151,8 @@ Route::post('/reports/{contact}/send-email', [ReportsController::class, 'sendEma
 
 
 
+
+
 // Images
 
 Route::get('/img/{path}', [ImagesController::class, 'show'])

@@ -27,7 +27,13 @@
 </template>
 
 <script>
+
+import axios from 'axios';
+
 export default {
+  props: {
+    contacte: Object, // Define the contact prop
+  },
   data() {
     return {
       subject: '',
@@ -36,10 +42,26 @@ export default {
   },
   methods: {
     sendEmail() {
-      // Implement logic to send email
-      // This can include an Axios request to your backend to send the email
-      console.log('Sending email with subject:', this.subject, 'and message:', this.message);
+      // Prepare data to send
+      const postData = {
+        subject: this.subject,
+        message: this.message,
+      };
+      this.$emit('emailSent', postData);
       this.closeForm();
+/**
+      // Make Axios POST request to Laravel backend
+      axios.post(`/reports/${this.contacte.id}/send-email`, postData)
+        .then(response => {
+          console.log('Email sent successfully!', response.data);
+          // Emit an event to notify parent component (optional)
+          this.$emit('emailSent', { subject: this.subject, message: this.message });
+          this.closeForm();
+        })
+        .catch(error => {
+          console.error('Error sending email:', error.response ? error.response.data : error.message);
+          // Handle error scenario as needed
+        });**/
     },
     closeForm() {
       // Emit an event to notify parent component to close this form
