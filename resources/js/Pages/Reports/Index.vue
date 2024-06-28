@@ -81,7 +81,7 @@
               </Link>
             </td>
             <td class="w-px border-t">
-              <Link :href="`/contacts/${contact.id}/edit`" class="flex items-center px-4" tabindex="-1">
+              <Link :href="`/reports/${contact.id}/edit`" class="flex items-center px-4" tabindex="-1">
                 <icon name="cheveron-right" class="block w-6 h-6 fill-gray-400" />
               </Link>
             </td>

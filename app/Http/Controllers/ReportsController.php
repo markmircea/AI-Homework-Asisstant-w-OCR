@@ -96,7 +96,7 @@ class ReportsController extends Controller
 
     public function edit(Contact $contact): Response
     {
-        return Inertia::render('Contacts/Edit', [
+        return Inertia::render('Reports/Edit', [
             'contact' => [
                 'id' => $contact->id,
                 'first_name' => $contact->first_name,

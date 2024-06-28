@@ -14,7 +14,6 @@ export default {
        // Make the handle visible
     resizeHandle.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
 
-    // Add a border or line to make it more visible
 
       el.style.position = 'relative';
       el.appendChild(resizeHandle);

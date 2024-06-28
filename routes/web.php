@@ -140,6 +140,10 @@ Route::get('reports', [ReportsController::class, 'index'])
     ->name('reports')
     ->middleware('auth');
 
+Route::get('reports/{contact}/edit', [ReportsController::class, 'edit'])
+    ->name('reports.edit')
+    ->middleware('auth');
+
 
 
 // Images
