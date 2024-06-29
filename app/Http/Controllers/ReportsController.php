@@ -79,11 +79,13 @@ class ReportsController extends Controller
     public function hire(Contact $contact)
     {
 
-
+    $contact->hired_by = Auth::id();
+    $contact->hired_on = now();
+    $contact->save();
     // Send email logic
     // Mail::to($contact->email)->send(new ContactEmail($data['subject'], $data['message']));
 
-    return Redirect::back()->with('success', "$contact->first_name $contact->last_name hired.");
+    return Redirect::back()->with('success', "$contact->first_name $contact->last_name hired at $contact->hired_on by $contact->hired_by");
     }
 
     public function create(): Response

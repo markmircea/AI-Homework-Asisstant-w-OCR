@@ -136,7 +136,7 @@ export default {
       }
     },
       // Method to show EmailForm
-      showEmailForm() {
+    showEmailForm() {
       this.showEmail = true;
     },
     // Method to close EmailForm
@@ -157,17 +157,10 @@ export default {
       }
     },
     hireContact() {
-      if (confirm('Are you sure you want to hire this contact?')){
-      this.$inertia.post(`/reports/${this.contact.id}/hire`)
+      if (confirm('Are you sure you want to hire this contact?')) {
+        this.$inertia.post(`/reports/${this.contact.id}/hire`);
+        };
 
-
-      // Ensure $refs.flashMessages is defined and accessible
-     // if (this.$refs.FlashMessages) {
-       // this.$refs.FlashMessages.showSuccess(`Email sent successfully: Subject - ${data.subject}`);
-      //} else {
-       // console.error('Cannot find flashMessages component');
-     // }
-      }
     },
 
   },

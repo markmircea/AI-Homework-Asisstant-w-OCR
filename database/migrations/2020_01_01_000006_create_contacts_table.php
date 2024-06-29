@@ -28,8 +28,12 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->json('strengths')->nullable();
             $table->json('soft_skills')->nullable();
-            $table->boolean('hired')->nullable()->default(null);
-            $table->boolean('contactedby')->nullable()->default(null);
+
+            $table->string('hired_by')->nullable()->default(null);
+            $table->dateTime('hired_on')->nullable()->default(null);
+            $table->string('contacted_by')->nullable()->default(null);
+            $table->dateTime('contacted_on')->nullable()->default(null);
+
 
             $table->timestamps();
             $table->softDeletes();
