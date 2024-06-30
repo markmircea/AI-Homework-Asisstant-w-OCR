@@ -152,6 +152,9 @@ Route::post('/reports/{contact}/hire', [ReportsController::class, 'hire'])
     ->name('reports.hire')
     ->middleware('auth');
 
+Route::post('/reports/{contact}/fire', [ReportsController::class, 'fire'])
+    ->name('reports.fire')
+    ->middleware('auth');
 
 
 

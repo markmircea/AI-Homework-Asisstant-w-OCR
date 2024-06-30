@@ -17,7 +17,7 @@ class ReportsController extends Controller
 {
     public function index(): Response
     {
-        $filters = Request::all('search', 'trashed', 'strengths','hired'); // Retrieve all filters including strengths
+        $filters = Request::all('search', 'trashed', 'strengths', 'hired'); // Retrieve all filters including strengths
 
         // Query builder for contacts
         $contactsQuery = Auth::user()->account->contacts()
@@ -27,9 +27,9 @@ class ReportsController extends Controller
         // Apply search filter
         if ($filters['search']) {
             $contactsQuery->where(function ($query) use ($filters) {
-                $query->where('first_name', 'like', '%'.$filters['search'].'%')
-                      ->orWhere('description', 'like', '%'.$filters['search'].'%')
-                      ->orWhere('last_name', 'like', '%'.$filters['search'].'%');
+                $query->where('first_name', 'like', '%' . $filters['search'] . '%')
+                    ->orWhere('description', 'like', '%' . $filters['search'] . '%')
+                    ->orWhere('last_name', 'like', '%' . $filters['search'] . '%');
             });
         }
 
@@ -67,31 +67,42 @@ class ReportsController extends Controller
 
     public function sendEmail(Contact $contact)
     {
-    // Validate input (subject and message)
-    $data = request()->validate([
-        'subject' => ['required', 'string', 'max:255'],
-       'message' => ['required', 'string', 'max:2000'],
-    ]);
+        // Validate input (subject and message)
+        $data = request()->validate([
+            'subject' => ['required', 'string', 'max:255'],
+            'message' => ['required', 'string', 'max:2000'],
+        ]);
 
-    $sub = $data['subject'];
+        $sub = $data['subject'];
 
-    // Send email logic
-   // Mail::to($contact->email)->send(new ContactEmail($data['subject'], $data['message']));
+        // Send email logic
+        // Mail::to($contact->email)->send(new ContactEmail($data['subject'], $data['message']));
 
-   return Redirect::back()->with('success', "Contact emailed. Subject: $sub");
+        return Redirect::back()->with('success', "Contact emailed. Subject: $sub");
     }
 
     public function hire(Contact $contact)
     {
 
-    $contact->hired_by = Auth::id();
-    $contact->hired_on = now();
-    $contact->save();
-    // Send email logic
-    // Mail::to($contact->email)->send(new ContactEmail($data['subject'], $data['message']));
-        sleep(2);
+        $contact->hired_by = Auth::id();
+        $contact->hired_on = now();
+        $contact->save();
+        // Send email logic
+        // Mail::to($contact->email)->send(new ContactEmail($data['subject'], $data['message']));
 
-    return Redirect::back()->with('success', "$contact->first_name $contact->last_name hired at $contact->hired_on by $contact->hired_by");
+        return Inertia::location(Redirect::back()->with(
+            'success',
+            "$contact->first_name $contact->last_name hired at $contact->hired_on by $contact->hired_by"
+        )->getTargetUrl());
+    }
+
+    public function fire(Contact $contact)
+    {
+
+        $contact->hired_on = null;
+        $contact->save();
+
+        return Inertia::location(Redirect::back()->with('success', "$contact->first_name $contact->last_name fired.")->getTargetUrl());
     }
 
     public function create(): Response
@@ -152,6 +163,9 @@ class ReportsController extends Controller
                 'description' => $contact->description,
                 'strengths' => $contact->strengths,
                 'soft_skills' => $contact->soft_skills,
+
+                'hired_by' => $contact->hired_by,
+                'hired_on' => $contact->hired_on,
             ],
             'organizations' => Auth::user()->account->organizations()
                 ->orderBy('name')
@@ -180,7 +194,7 @@ class ReportsController extends Controller
                 'postal_code' => ['nullable', 'max:25'],
                 'description' => ['nullable', 'max:2000'],
                 'strengths' => ['nullable', 'max:2000'],
-                'soft_skills' => ['nullable' , 'max:2000'],
+                'soft_skills' => ['nullable', 'max:2000'],
 
             ])
         );
