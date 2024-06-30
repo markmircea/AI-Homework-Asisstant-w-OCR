@@ -10,6 +10,10 @@
           <option value="with">Deleted Included</option>
           <option value="only">Deleted Only</option>
         </select>
+        <select v-model="form.hired" class="form-select mt-1 w-full">
+         <option :value="null">Hired Included</option>
+         <option value="only">Hired Only</option>
+        </select>
       </search-filter>
       <Link class="btn-indigo" href="/contacts/create">
         <span>Create</span>
@@ -29,6 +33,8 @@
             <Link class="flex items-center px-6 py-4 focus:text-indigo-500" :href="`/contacts/${contact.id}/edit`">
               {{ contact.name }}
               <icon v-if="contact.deleted_at" name="trash" class="shrink-0 ml-2 w-3 h-3 fill-gray-400" />
+              <icon v-if="contact.hired_on" name="check-circle" class="shrink-0 ml-2 w-3 h-3 fill-green-500" />
+
             </Link>
           </td>
           <td class="border-t">

@@ -12,6 +12,11 @@
           <option value="with">Deleted Included</option>
           <option value="only">Deleted Only</option>
         </select>
+        <select v-model="form.hired" class="form-select mt-1 w-full">
+          <option :value="null" />
+           <option value="with">Hired Included</option>
+           <option value="only">Hired Only</option>
+        </select>
       </search-filter>
 
       <!-- Strengths filter -->
@@ -19,6 +24,7 @@
         <label for="strengths" class="block text-gray-700">Strengths:</label>
         <select id="strengths" v-model="form.strengths" multiple class="form-multiselect mt-1 block w-full">
           <option v-for="strength in strengths" :key="strength" :value="strength">{{ strength }}</option>
+
         </select>
       </div>
 
@@ -45,25 +51,27 @@
         <tbody>
           <tr v-for="contact in contacts.data" :key="contact.id" class="hover:bg-gray-100 focus-within:bg-gray-100">
             <td class="border-t">
-              <Link :href="`/contacts/${contact.id}/edit`" class="flex items-center px-6 py-4 focus:text-indigo-500">
+              <Link :href="`/reports/${contact.id}/edit`" class="flex items-center px-6 py-4 focus:text-indigo-500">
                 {{ contact.first_name }}  {{  contact.last_name }}
                 <icon v-if="contact.deleted_at" name="trash" class="shrink-0 ml-2 w-3 h-3 fill-gray-400" />
+                <icon v-if="contact.hired_on" name="checkmark" class="shrink-0 ml-2 w-3 h-3 fill-green-500" />
+
               </Link>
             </td>
             <td class="border-t">
-              <Link :href="`/contacts/${contact.id}/edit`" class="flex items-center px-6 py-4" tabindex="-1">
+              <Link :href="`/reports/${contact.id}/edit`" class="flex items-center px-6 py-4" tabindex="-1">
                 <div v-if="contact.organization">
                   {{ contact.organization.name }}
                 </div>
               </Link>
             </td>
             <td class="border-t max-w-xs whitespace-nowrap overflow-hidden overflow-ellipsis px-6 py-4">
-              <Link :href="`/contacts/${contact.id}/edit`" class="flex items-center" tabindex="-1">
+              <Link :href="`/reports/${contact.id}/edit`" class="flex items-center" tabindex="-1">
                 {{ contact.description }}
               </Link>
             </td>
             <td class="border-t">
-              <Link :href="`/contacts/${contact.id}/edit`" class="flex items-center px-6 py-4" tabindex="-1">
+              <Link :href="`/reports/${contact.id}/edit`" class="flex items-center px-6 py-4" tabindex="-1">
                 <template v-if="contact.soft_skills">
                   <ul>
                     <li v-for="skill in JSON.parse(contact.soft_skills)" :key="skill">{{ skill }}</li>
@@ -72,7 +80,7 @@
               </Link>
             </td>
             <td class="border-t">
-              <Link :href="`/contacts/${contact.id}/edit`" class="flex items-center px-6 py-4" tabindex="-1">
+              <Link :href="`/reports/${contact.id}/edit`" class="flex items-center px-6 py-4" tabindex="-1">
                 <template v-if="contact.strengths">
                   <ul>
                     <li v-for="strength in JSON.parse(contact.strengths)" :key="strength">{{ strength }}</li>

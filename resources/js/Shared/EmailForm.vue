@@ -30,6 +30,7 @@
 
 import axios from 'axios';
 
+
 export default {
   props: {
     contacte: Object, // Define the contact prop
@@ -40,6 +41,7 @@ export default {
       message: '',
     };
   },
+
   methods: {
     sendEmail() {
       // Prepare data to send
@@ -67,6 +69,7 @@ export default {
       // Emit an event to notify parent component to close this form
       this.$emit('close');
     },
+
   },
 };
 </script>

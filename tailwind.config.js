@@ -14,6 +14,9 @@ export default {
           800: '#2f365f',
           900: '#191e38',
         },
+        red: {
+            DEFAULT: '#DC2626'
+        }
       },
       fontFamily: {
         sans: ['"Cerebri Sans"', ...defaultTheme.fontFamily.sans],

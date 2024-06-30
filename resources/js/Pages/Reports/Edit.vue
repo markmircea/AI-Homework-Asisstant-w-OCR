@@ -31,6 +31,7 @@
           <text-input v-model="form.strengthsText" :error="form.errors.strengths" class="pb-8 pr-6 w-full lg:w-1/2" label="Strengths" />
           <text-input v-model="form.soft_skillsText" :error="form.errors.soft_skills" class="pb-8 pr-6 w-full lg:w-1/2" label="Soft Skills" />
         </div>
+
         <div class="flex items-center px-8 py-4 bg-gray-50 border-t border-gray-100">
           <button v-if="!contact.deleted_at" class="text-red-600 hover:underline" tabindex="-1" type="button" @click="destroy">Delete Contact</button>
           <loading-button :loading="form.processing" class="btn-indigo ml-auto" type="submit">Update Contact</loading-button>
@@ -60,6 +61,7 @@ import SelectInput from '@/Shared/SelectInput.vue'
 import LoadingButton from '@/Shared/LoadingButton.vue'
 import TrashedMessage from '@/Shared/TrashedMessage.vue'
 import EmailForm from '../../Shared/EmailForm.vue'
+
 
 export default {
   components: {
@@ -135,34 +137,30 @@ export default {
         this.$inertia.put(`/contacts/${this.contact.id}/restore`)
       }
     },
+
       // Method to show EmailForm
     showEmailForm() {
       this.showEmail = true;
     },
+
     // Method to close EmailForm
     closeEmailForm() {
       this.showEmail = false;
     },
+
     handleEmailSent(data) {
       if (confirm('Are you sure you want to send an email to this contact?')){
       this.$inertia.post(`/reports/${this.contact.id}/send-email`, data)
-
-
-      // Ensure $refs.flashMessages is defined and accessible
-     // if (this.$refs.FlashMessages) {
-       // this.$refs.FlashMessages.showSuccess(`Email sent successfully: Subject - ${data.subject}`);
-      //} else {
-       // console.error('Cannot find flashMessages component');
-     // }
       }
     },
+
     hireContact() {
       if (confirm('Are you sure you want to hire this contact?')) {
-        this.$inertia.post(`/reports/${this.contact.id}/hire`);
-        };
+
+      this.$inertia.post(`/reports/${this.contact.id}/hire`)
+    }
 
     },
-
-  },
+  }
 }
 </script>

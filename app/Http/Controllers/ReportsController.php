@@ -17,7 +17,7 @@ class ReportsController extends Controller
 {
     public function index(): Response
     {
-        $filters = Request::all('search', 'trashed', 'strengths'); // Retrieve all filters including strengths
+        $filters = Request::all('search', 'trashed', 'strengths','hired'); // Retrieve all filters including strengths
 
         // Query builder for contacts
         $contactsQuery = Auth::user()->account->contacts()
@@ -31,6 +31,11 @@ class ReportsController extends Controller
                       ->orWhere('description', 'like', '%'.$filters['search'].'%')
                       ->orWhere('last_name', 'like', '%'.$filters['search'].'%');
             });
+        }
+
+        // Apply hired filter
+        if ($filters['hired'] === 'only') {
+            $contactsQuery->whereNotNull('hired_on');
         }
 
         // Apply trashed filter
@@ -84,6 +89,7 @@ class ReportsController extends Controller
     $contact->save();
     // Send email logic
     // Mail::to($contact->email)->send(new ContactEmail($data['subject'], $data['message']));
+        sleep(2);
 
     return Redirect::back()->with('success', "$contact->first_name $contact->last_name hired at $contact->hired_on by $contact->hired_by");
     }
