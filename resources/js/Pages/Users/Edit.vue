@@ -4,7 +4,7 @@
     <div class="flex justify-start mb-8 max-w-3xl">
       <h1 class="text-3xl font-bold">
         <Link class="text-indigo-400 hover:text-indigo-600" href="/users">Users</Link>
-        <span class="text-indigo-400 font-medium">/</span>
+        <span class="text-indigo-400 font-medium"> /</span>
         {{ form.first_name }} {{ form.last_name }}
       </h1>
       <img v-if="user.photo" class="block ml-4 w-8 h-8 rounded-full" :src="user.photo" />

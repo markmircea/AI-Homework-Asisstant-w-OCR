@@ -2,11 +2,16 @@
   <div>
 
     <Head :title="`${form.first_name} ${form.last_name}`" />
-    <h1 class="mb-8 text-3xl font-bold">
-      <Link class="text-indigo-400 hover:text-indigo-600" href="/reports">Reports</Link>
-      <span class="text-indigo-400 font-medium">/</span>
-      {{ form.first_name }} {{ form.last_name }}
-    </h1>
+    <div class="flex justify-start mb-8 max-w-3xl">
+      <h1 class="text-3xl font-bold">
+        <Link class="text-indigo-400 hover:text-indigo-600" href="/reports">Reports</Link>
+        <span class="text-indigo-400 font-medium"> /</span>
+        {{ form.first_name }} {{ form.last_name }}
+      </h1>
+      <img v-if="contact.photo" class="block ml-4 w-8 h-8 rounded-full" :src="contact.photo" />
+
+     <img>
+    </div>
     <trashed-message v-if="contact.deleted_at" class="mb-6" @restore="restore"> This contact has been deleted.
     </trashed-message>
     <div class="max-w-3xl bg-white rounded-md shadow overflow-hidden">
@@ -43,10 +48,13 @@
             label="Strengths" />
           <text-input v-model="form.soft_skillsText" :error="form.errors.soft_skills" class="pb-8 pr-6 w-full lg:w-1/2"
             label="Soft Skills" />
-            <text-input  v-if="contact.hired_by" v-model="form.hired_by" :value="contact.hired_by" class="pb-8 pr-6 w-full lg:w-1/2"
-              label="Hired By USER ID#" disabled />
-            <text-input  v-if="contact.hired_on" v-model="form.hired_on" :value="contact.hired_on" class="pb-8 pr-6 w-full lg:w-1/2"
-              label="Hired On" disabled />
+          <file-input v-model="form.photo" :error="form.errors.photo" class="pb-8 pr-6 w-full lg:w-1/2" type="file"
+            accept="image/*" label="Photo" />
+
+          <text-input v-if="contact.hired_by" v-model="form.hired_by" :value="contact.hired_by"
+            class="pb-8 pr-6 w-full lg:w-1/2" label="Hired By USER ID#" disabled />
+          <text-input v-if="contact.hired_on" v-model="form.hired_on" :value="contact.hired_on"
+            class="pb-8 pr-6 w-full lg:w-1/2" label="Hired On" disabled />
         </div>
 
         <div class="flex items-center px-8 py-4 bg-gray-50 border-t border-gray-100">
@@ -77,6 +85,8 @@
 import { Head, Link } from '@inertiajs/vue3'
 import Layout from '@/Shared/Layout.vue'
 import TextInput from '@/Shared/TextInput.vue'
+import FileInput from '@/Shared/FileInput.vue'
+
 import SelectInput from '@/Shared/SelectInput.vue'
 import LoadingButton from '@/Shared/LoadingButton.vue'
 import TrashedMessage from '@/Shared/TrashedMessage.vue'
@@ -85,6 +95,7 @@ import EmailForm from '../../Shared/EmailForm.vue'
 
 export default {
   components: {
+    FileInput,
     Head,
     Link,
     LoadingButton,
@@ -130,6 +141,8 @@ export default {
         soft_skillsText: "",
         hired_by: this.contact.hired_by,
         hired_on: this.contact.hired_on,
+        photo: null,
+
       }),
       showEmail: false, // State variable to control EmailForm visibility
       contacte: this.contact,
@@ -147,7 +160,11 @@ export default {
       this.form.strengths = JSON.stringify(this.form.strengthsText.split(',').map(str => str.trim()));
       this.form.soft_skills = JSON.stringify(this.form.soft_skillsText.split(',').map(str => str.trim()));
 
-      this.form.put(`/contacts/${this.contact.id}`).then(this.initializeFormFields());
+      this.form.post(`/reports/${this.contact.id}`, {
+        onSuccess: () => this.form.reset('photo'),
+      }).then(this.initializeFormFields());
+
+
     },
     destroy() {
       if (confirm('Are you sure you want to delete this contact?')) {

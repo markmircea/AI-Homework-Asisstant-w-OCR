@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
         $organizations = Organization::factory(100)
             ->create(['account_id' => $account->id]);
 
-        Contact::factory(2000)
+        Contact::factory(200)
             ->create(['account_id' => $account->id])
             ->each(function ($contact) use ($organizations) {
                 $contact->update(['organization_id' => $organizations->random()->id]);

@@ -140,6 +140,10 @@ Route::get('reports', [ReportsController::class, 'index'])
     ->name('reports')
     ->middleware('auth');
 
+Route::post('reports', [ReportsController::class, 'store'])
+    ->name('reports.store')
+    ->middleware('auth');
+
 Route::get('reports/{contact}/edit', [ReportsController::class, 'edit'])
     ->name('reports.edit')
     ->middleware('auth');
@@ -155,6 +159,11 @@ Route::post('/reports/{contact}/hire', [ReportsController::class, 'hire'])
 Route::post('/reports/{contact}/fire', [ReportsController::class, 'fire'])
     ->name('reports.fire')
     ->middleware('auth');
+
+Route::post('reports/{contact}', [ReportsController::class, 'update'])
+    ->name('reports.update')
+    ->middleware('auth');
+
 
 
 

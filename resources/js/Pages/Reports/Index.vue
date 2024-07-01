@@ -16,6 +16,11 @@
           <option :value="null" />
            <option value="with">Hired Included</option>
            <option value="only">Hired Only</option>
+           </select>
+        <select v-model="form.fired" class="form-select mt-1 w-full">
+            <option :value="null" />
+           <option value="with">Fired Included</option>
+           <option value="only">Fired Only</option>
         </select>
       </search-filter>
 
@@ -52,9 +57,13 @@
           <tr v-for="contact in contacts.data" :key="contact.id" class="hover:bg-gray-100 focus-within:bg-gray-100">
             <td class="border-t">
               <Link :href="`/reports/${contact.id}/edit`" class="flex items-center px-6 py-4 focus:text-indigo-500">
+                <img v-if="contact.photo" class="block -my-2 mr-2 w-5 h-5 rounded-full" :src="contact.photo" />
+
                 {{ contact.first_name }}  {{  contact.last_name }}
                 <icon v-if="contact.deleted_at" name="trash" class="shrink-0 ml-2 w-3 h-3 fill-gray-400" />
                 <icon v-if="contact.hired_on" name="checkmark" class="shrink-0 ml-2 w-3 h-3 fill-green-500" />
+                <icon v-else-if="contact.hired_by" name="x-circle" class="shrink-0 ml-2 w-3 h-3 fill-red-500" />
+                <icon v-else class="shrink-0 ml-2 w-3 h-3 fill-gray-500" />
 
               </Link>
             </td>
@@ -134,6 +143,8 @@ export default {
       form: {
         search: this.filters.search,
         trashed: this.filters.trashed,
+        hired: this.filters.hired,
+        fired: this.filters.fired,
         strengths: [], // Array to hold selected strengths
       },
       strengths: ['PHP', 'Laravel', 'Angular', 'React', 'Python', 'Vue.js', 'TailwindCSS', 'Wordpress'], // List of available strengths

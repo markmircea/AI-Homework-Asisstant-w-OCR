@@ -34,6 +34,8 @@ return new class extends Migration
             $table->string('contacted_by')->nullable()->default(null);
             $table->dateTime('contacted_on')->nullable()->default(null);
 
+            $table->string('photo_path', 100)->nullable();
+
 
             $table->timestamps();
             $table->softDeletes();
