@@ -35,6 +35,13 @@ Route::post('login', [AuthenticatedSessionController::class, 'store'])
 Route::delete('logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
 
+
+// Google OAuth routes
+Route::get('/login/google', [AuthenticatedSessionController::class, 'redirectToGoogle'])->name('login.google');
+
+Route::get('/login/google/callback', [AuthenticatedSessionController::class, 'handleGoogleCallback']);
+
+
 // Dashboard
 
 

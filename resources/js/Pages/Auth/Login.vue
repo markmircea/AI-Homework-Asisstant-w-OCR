@@ -18,6 +18,15 @@
           <loading-button :loading="form.processing" class="btn-indigo ml-auto" type="submit">Login</loading-button>
         </div>
       </form>
+
+      <!-- Add Google login button -->
+      <div class="block mt-4">
+                <div class="flex items-center justify-end mt-4">
+                    <a href="login/google">
+                        <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png">
+                    </a>
+                </div>
+            </div>
     </div>
   </div>
 </template>
@@ -48,6 +57,11 @@ export default {
     login() {
       this.form.post('/login')
     },
+    loginWithGoogle() {
+      window.location.href = '/login/google'; // Redirect to Google OAuth flow
+    },
   },
 }
 </script>
+
+
