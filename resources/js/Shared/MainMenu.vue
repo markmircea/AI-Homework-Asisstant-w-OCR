@@ -30,23 +30,6 @@
 </template>
 
 
-<script setup>
-import { defineProps, onMounted } from 'vue';
-import { Head } from '@inertiajs/vue3';
-
-
-const props = defineProps({
-  coins: {
-    type: Number,
-
-  },
-});
-
-onMounted(() => {
-  console.log('Coins in Dashboard:', props.coins); // Debug statement
-});
-</script>
-
 
 <script>
 import { Link } from '@inertiajs/vue3'

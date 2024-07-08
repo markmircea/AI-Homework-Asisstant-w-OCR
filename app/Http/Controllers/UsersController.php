@@ -39,17 +39,7 @@ class UsersController extends Controller
         ]);
     }
 
-    public function dashboard(Request $request)
-    {
-        // Fetch authenticated user and coins
-        $user = Auth::user();
-        $coins = $user ? $user->coins : 100; // Default to 100 for testing
 
-        // Ensure the correct view path
-        return Inertia::render('Dashboard/Index', [
-            'coins' => 100,
-        ]);
-    }
 
     public function create(): Response
     {

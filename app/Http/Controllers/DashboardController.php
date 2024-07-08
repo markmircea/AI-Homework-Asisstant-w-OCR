@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\URL;
+
 
 
 class DashboardController extends Controller
@@ -18,6 +21,7 @@ class DashboardController extends Controller
 
         return Inertia::render('Dashboard/Index', [
             'coins' => $coins,
+            'user' => Auth::user(),
         ]);
     }
 }
