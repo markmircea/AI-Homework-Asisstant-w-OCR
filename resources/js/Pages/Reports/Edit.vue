@@ -21,6 +21,8 @@
             label="First name" />
           <text-input v-model="form.last_name" :error="form.errors.last_name" class="pb-8 pr-6 w-full lg:w-1/2"
             label="Last name" />
+            <text-input v-model="form.id" :error="form.errors.first_name" class="pb-8 pr-6 w-full lg:w-1/2"
+            label="ID #" disabled/>
           <select-input v-model="form.organization_id" :error="form.errors.organization_id"
             class="pb-8 pr-6 w-full lg:w-1/2" label="Organization">
             <option :value="null" />
@@ -142,6 +144,7 @@ export default {
         hired_by: this.contact.hired_by,
         hired_on: this.contact.hired_on,
         photo: null,
+        id: this.contact.id,
 
       }),
       showEmail: false, // State variable to control EmailForm visibility

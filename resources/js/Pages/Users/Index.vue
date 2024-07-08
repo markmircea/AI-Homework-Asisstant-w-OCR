@@ -26,6 +26,7 @@
       <table class="w-full whitespace-nowrap">
         <tr class="text-left font-bold">
           <th class="pb-4 pt-6 px-6">Name</th>
+          <th class="pb-4 pt-6 px-6">ID#</th>
           <th class="pb-4 pt-6 px-6">Email</th>
           <th class="pb-4 pt-6 px-6">Coins</th>
           <th class="pb-4 pt-6 px-6" colspan="2">Role</th>
@@ -37,6 +38,11 @@
               <img v-if="user.photo" class="block -my-2 mr-2 w-5 h-5 rounded-full" :src="user.photo" />
               {{ user.name }}
               <icon v-if="user.deleted_at" name="trash" class="shrink-0 ml-2 w-3 h-3 fill-gray-400" />
+            </Link>
+          </td>
+          <td class="border-t">
+            <Link class="flex items-center px-6 py-4" :href="`/users/${user.id}/edit`" tabindex="-1">
+              {{ user.id }}
             </Link>
           </td>
           <td class="border-t">
