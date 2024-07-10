@@ -33,3 +33,11 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.form-textarea {
+
+  height: 300px;
+
+}
+</style>

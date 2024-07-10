@@ -1,12 +1,43 @@
 <template>
-    <div>
+  <div>
+    <div class="flex justify-start mb-8 max-w-3xl">
     <Head title="Dashboard" />
-    <h1 class="mb-8 text-3xl font-bold">Dashboard</h1>
     <div>
-      <h2>Hi {{ user.first_name }}! Welcome to your dashboard, here are some announcements. </h2>
+      <h1 class="mb-8 text-3xl font-bold">Dashboard</h1>
+      <h2 class="p-4 border rounded-lg">Hi {{ user.first_name }}! Welcome to your dashboard, here are some announcements. </h2>
+      <div class="flex mb-4 p-4">
 
-      <DIV/>
+        <button @click="showCreateModal" class="btn-indigo">Create Announcement</button>
+
+        </div>
+
+      <div v-for="announcement in announcements" :key="announcement.id" class="announcement mb-4 p-4 border rounded-lg shadow">
+        <div class="flex justify-between items-center">
+          <div>
+            <h3 class="font-bold text-xl">{{ announcement.title }}</h3>
+            <p>{{ announcement.content }}</p>
+          </div>
+
+          <div class="flex space-x-2">
+            <button @click="showEditModal(announcement)" class="btn-indigo">Edit</button>
+
+            <button @click="destroy(announcement.id)" class="btn-red">Delete</button>
+          </div>
+        </div>
+      </div>
+
       <p>You have {{ coins }} coins.</p>
+    </div>
+
+        <!-- Create Announcement Modal -->
+        <Modal :visible="isCreateModalVisible" @close="hideCreateModal">
+      <CreateAnnouncement @submitted="hideCreateModal" />
+    </Modal>
+
+    <!-- Edit Announcement Modal -->
+    <Modal :visible="isEditModalVisible" @close="hideEditModal">
+      <EditAnnouncement :announcement="selectedAnnouncement" @submitted="hideEditModal" />
+    </Modal>
     </div>
   </div>
 </template>
@@ -14,23 +45,98 @@
 
 
 
+
 <script>
 import { Head } from '@inertiajs/vue3'
 import Layout from '@/Shared/Layout.vue'
+import Modal from '@/Shared/Modal.vue'
+import CreateAnnouncement from '@/Pages/Announcements/Create.vue'
+import EditAnnouncement from '@/Pages/Announcements/Edit.vue'
 
 export default {
   props: {
     coins: Number,
-    user: Object
+    user: Object,
+    announcements: Array,
   },
 
-
-
-
+  data() {
+    return {
+      isCreateModalVisible: false,
+      isEditModalVisible: false,
+      selectedAnnouncement: null,
+    }
+  },
 
   components: {
     Head,
+    Modal,
+    CreateAnnouncement,
+    EditAnnouncement,
   },
+
   layout: Layout,
+
+  methods: {
+    showCreateModal() {
+      this.isCreateModalVisible = true;
+    },
+    hideCreateModal() {
+      this.isCreateModalVisible = false;
+    },
+    showEditModal(announcement) {
+      this.selectedAnnouncement = announcement;
+      this.isEditModalVisible = true;
+    },
+    hideEditModal() {
+      this.isEditModalVisible = false;
+      this.selectedAnnouncement = null;
+    },
+    destroy(id) {
+      if (confirm('Are you sure you want to delete this announcement?')) {
+        this.$inertia.delete(`/announcements/${id}`)
+      }
+    }
+  }
 }
 </script>
+
+<style scoped>
+
+.announcement {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.flex {
+  display: flex;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.items-center {
+  align-items: center;
+}
+.space-x-2 > :not(:last-child) {
+  margin-right: 0.5rem;
+}
+.btn-indigo {
+  background-color: #5a67d8;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  text-align: center;
+  text-decoration: none;
+}
+.btn-red {
+  background-color: #e53e3e;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  text-align: center;
+  text-decoration: none;
+}
+</style>
+

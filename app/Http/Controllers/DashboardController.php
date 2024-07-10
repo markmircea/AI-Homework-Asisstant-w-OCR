@@ -7,6 +7,8 @@ use Inertia\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
+use App\Models\Announcement;
+
 
 
 
@@ -19,9 +21,12 @@ class DashboardController extends Controller
 
         Inertia::share('coins', $coins);
 
+        $announcements = Announcement::where('user_id', $user->id)->get();
+
         return Inertia::render('Dashboard/Index', [
             'coins' => $coins,
-            'user' => Auth::user(),
+            'user' => $user,
+            'announcements' => $announcements,
         ]);
     }
 }
