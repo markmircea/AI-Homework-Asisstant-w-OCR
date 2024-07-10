@@ -44,6 +44,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('announcements', AnnouncementController::class)->except(['show', 'index']);
 });
 
+Route::post('/announcements/update-order', [AnnouncementController::class, 'updateOrder'])
+    ->name('updateOrder')
+    ->middleware('auth');
+
+
 // Google OAuth routes
 Route::get('/login/google', [AuthenticatedSessionController::class, 'redirectToGoogle'])->name('login.google');
 

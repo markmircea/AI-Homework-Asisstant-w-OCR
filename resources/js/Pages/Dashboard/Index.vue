@@ -105,10 +105,13 @@ export default {
         this.$inertia.delete(`/announcements/${id}`)
       }
     },
-    updateOrder(event) {
-      // Sync the local array with the prop array
-      this.$emit('update:announcements', this.localAnnouncements);
-      console.log('Order updated', this.localAnnouncements);
+    updateOrder() {
+      this.$inertia.post('/announcements/update-order', {
+        announcements: this.localAnnouncements.map((announcement, index) => ({
+          id: announcement.id,
+          order: index
+        }))
+      });
     }
   },
 

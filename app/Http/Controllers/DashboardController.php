@@ -21,7 +21,9 @@ class DashboardController extends Controller
 
         Inertia::share('coins', $coins);
 
-        $announcements = Announcement::where('user_id', $user->id)->get();
+     //   $announcements = Announcement::where('user_id', $user->id)->get();
+        $announcements = $user->announcements()->orderBy('order')->get();
+
 
         return Inertia::render('Dashboard/Index', [
             'coins' => $coins,

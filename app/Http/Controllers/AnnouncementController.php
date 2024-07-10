@@ -61,4 +61,24 @@ class AnnouncementController extends Controller
 
         return redirect()->route('dashboard')->with('success', 'Announcement deleted.');
     }
+
+    public function updateOrder(Request $request)
+    {
+        $user = Auth::user();
+        $announcements = $request->input('announcements', []);
+
+        foreach ($announcements as $announcementData) {
+            $announcement = Announcement::where('user_id', $user->id)
+                ->where('id', $announcementData['id'])
+                ->first();
+
+            if ($announcement) {
+                $announcement->order = $announcementData['order'];
+                $announcement->updated_at = now(); // Update the updated_at column
+                $announcement->save();
+            }
+        }
+
+        return redirect()->route('dashboard')->with('success', 'Announcements reordered.');
+    }
 }
