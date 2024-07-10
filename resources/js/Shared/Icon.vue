@@ -8,7 +8,7 @@
   <svg v-else-if="name === 'users'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M7 8a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0 1c2.15 0 4.2.4 6.1 1.09L12 16h-1.25L10 20H4l-.75-4H2L.9 10.09A17.93 17.93 0 0 1 7 9zm8.31.17c1.32.18 2.59.48 3.8.92L18 16h-1.25L16 20h-3.96l.37-2h1.25l1.65-8.83zM13 0a4 4 0 1 1-1.33 7.76 5.96 5.96 0 0 0 0-7.52C12.1.1 12.53 0 13 0z" /></svg>
   <svg v-else-if="name === 'checkmark'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="w-6 h-6"><path d="M6 10l2 2 6-6-1.414-1.414L8 9.172l-2.586-2.586L4 6z" /></svg>
   <svg v-else-if="name === 'x-circle'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="w-6 h-6"><circle cx="10" cy="10" r="9" stroke="red" stroke-width="2" fill="transparent" /><line x1="6" y1="6" x2="14" y2="14" stroke="red" stroke-width="2" /><line x1="6" y1="14" x2="14" y2="6" stroke="red" stroke-width="2" />  </svg>
-
+  <svg v-else-if="name === 'drag-drop'" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 9h16M4 15h16" /></svg>
   </template>
 
 <script>

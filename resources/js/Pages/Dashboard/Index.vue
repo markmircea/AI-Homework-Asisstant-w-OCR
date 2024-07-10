@@ -1,44 +1,39 @@
 <template>
   <div>
     <div class="flex justify-start mb-8 max-w-3xl">
-
       <Head title="Dashboard" />
       <div>
         <h1 class="mb-8 text-3xl font-bold">Dashboard</h1>
-        <h2 class="p-4 border rounded-lg">Hi {{ user.first_name }}! Welcome to your dashboard, here are some
-          announcements. </h2>
+        <h2 class="p-4 border rounded-lg">Hi {{ user.first_name }}! Welcome to your dashboard, here are some announcements.</h2>
         <div class="flex mb-4 p-4">
-
           <button @click="showCreateModal" class="btn-indigo">Create Announcement</button>
-
         </div>
-        <draggable :list="localAnnouncements" @update="updateOrder">
-          <div v-for="announcement in announcements" :key="announcement.id"
-            class="announcement mb-4 p-4 border rounded-lg shadow">
+        <draggable :list="localAnnouncements" @update="updateOrder" class="drag-handle">
+          <div v-for="announcement in localAnnouncements" :key="announcement.id" class="announcement mb-4 p-4 border rounded-lg shadow cursor-move" @dblclick="showEditModal(announcement)">
             <div class="flex justify-between items-center">
-              <div>
+              <div class="flex-1">
                 <h3 class="font-bold text-xl">{{ announcement.title }}</h3>
                 <p>{{ announcement.content }}</p>
               </div>
-
-              <div class="flex space-x-2">
+              <div class="flex space-x-2 items-center">
                 <button @click="showEditModal(announcement)" class="btn-indigo">Edit</button>
-
                 <button @click="destroy(announcement.id)" class="btn-red">Delete</button>
+
+                <!-- SVG drag handle -->
+                <div class="drag-handle ml-2">
+                  <Icon name="drag-drop" />
+                </div>
+
               </div>
             </div>
           </div>
         </draggable>
-
-
         <p>You have {{ coins }} coins.</p>
       </div>
-
       <!-- Create Announcement Modal -->
       <Modal :visible="isCreateModalVisible" @close="hideCreateModal">
         <CreateAnnouncement @submitted="hideCreateModal" />
       </Modal>
-
       <!-- Edit Announcement Modal -->
       <Modal :visible="isEditModalVisible" @close="hideEditModal">
         <EditAnnouncement :announcement="selectedAnnouncement" @submitted="hideEditModal" />
@@ -47,10 +42,6 @@
   </div>
 </template>
 
-
-
-
-
 <script>
 import { Head } from '@inertiajs/vue3'
 import Layout from '@/Shared/Layout.vue'
@@ -58,6 +49,8 @@ import Modal from '@/Shared/Modal.vue'
 import CreateAnnouncement from '@/Pages/Announcements/Create.vue'
 import EditAnnouncement from '@/Pages/Announcements/Edit.vue'
 import { VueDraggableNext } from 'vue-draggable-next'
+import Icon from '@/Shared/Icon.vue' // Import the Icon component
+
 
 export default {
   props: {
@@ -81,6 +74,7 @@ export default {
     CreateAnnouncement,
     EditAnnouncement,
     draggable: VueDraggableNext,
+    Icon,
   },
 
   layout: Layout,
@@ -126,7 +120,6 @@ export default {
 }
 </script>
 
-
 <style scoped>
 .announcement {
   margin-bottom: 1rem;
@@ -136,8 +129,8 @@ export default {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.dragging {
-  opacity: 0.5;
+.cursor-move {
+  cursor: move;
 }
 
 .flex {
@@ -173,5 +166,4 @@ export default {
   text-align: center;
   text-decoration: none;
 }
-
 </style>
