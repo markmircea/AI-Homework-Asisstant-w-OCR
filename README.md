@@ -1,4 +1,4 @@
-# Ping CRM
+# Modified version Ping CRM
 
 A demo application to illustrate how Inertia.js works.
 
