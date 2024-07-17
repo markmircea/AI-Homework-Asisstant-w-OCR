@@ -1,8 +1,8 @@
 <!-- js/Shared/EmailForm.vue -->
 
 <template>
-  <div class="fixed inset-0 flex items-center justify-center z-50">
-    <div class="fixed inset-0 bg-gray-500 bg-opacity-50"></div> <!-- Semi-transparent grey background -->
+  <div class="fixed inset-0 flex items-center justify-center z-50" >
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-50" @click="closeForm"></div> <!-- Semi-transparent grey background -->
     <div class="bg-white rounded-md shadow-lg p-8 w-2/5 max-w-3xl mx-auto relative z-50">
       <h2 class="text-2xl font-bold mb-6">Send Email</h2>
 
@@ -69,7 +69,23 @@ export default {
       // Emit an event to notify parent component to close this form
       this.$emit('close');
     },
+    handleEscape(event) {
+      if (event.key === 'Escape' && this.visible) {
+        // Emit the close event when Escape is pressed
+        this.closeForm();
+      }
+    },
 
+  },
+
+  mounted() {
+    // Add event listener for Escape key on mount
+    document.addEventListener('keyup', this.handleEscape);
+  },
+
+  beforeDestroy() {
+    // Remove event listener on component destruction
+    document.removeEventListener('keyup', this.handleEscape);
   },
 };
 </script>

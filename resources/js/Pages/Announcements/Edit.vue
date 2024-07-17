@@ -17,14 +17,14 @@
 import { Head, useForm } from '@inertiajs/vue3'
 import TextInput from '@/Shared/TextInput.vue'
 import TextareaInput from '@/Shared/TextareaInput.vue'
-import SelectInput from '@/Shared/SelectInput.vue'
+
 
 export default {
   components: {
     Head,
     TextInput,
     TextareaInput,
-    SelectInput,
+
   },
   props: {
     announcement: Object,

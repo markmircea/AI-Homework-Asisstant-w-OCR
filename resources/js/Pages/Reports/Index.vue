@@ -74,9 +74,10 @@
                 </div>
               </Link>
             </td>
-            <td class="border-t max-w-xs whitespace-nowrap overflow-hidden overflow-ellipsis px-6 py-4">
+            <td class="border-t max-w-xs overflow-hidden px-6 py-4">
               <Link :href="`/reports/${contact.id}/edit`" class="flex items-center" tabindex="-1">
                 {{ contact.description }}
+
               </Link>
             </td>
             <td class="border-t">
@@ -168,5 +169,5 @@ export default {
 </script>
 
 <style scoped>
-/* Add scoped styles here */
+
 </style>

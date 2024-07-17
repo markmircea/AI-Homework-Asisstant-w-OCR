@@ -15,7 +15,7 @@ export default {
           900: '#191e38',
         },
         red: {
-            DEFAULT: '#DC2626'
+            600: '#DC2626'
         }
       },
       fontFamily: {

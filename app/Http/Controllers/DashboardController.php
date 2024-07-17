@@ -25,6 +25,21 @@ class DashboardController extends Controller
         $announcements = $user->announcements()->orderBy('order')->get();
 
 
+        // Transform each contact to include the 'photo' attribute
+        $announcements->transform(function ($announcement) {
+            return [
+                'title' => $announcement->title,
+                'content' => $announcement->content,
+                'user_id' => $announcement->user_id,
+                'id' => $announcement->id,
+                'created_at' => $announcement->created_at,
+                'updated_at' => $announcement->updated_at,
+                'deleted_at' => $announcement->deleted_at,
+                'photo' => $announcement->photo_path ? URL::route('image', ['path' => $announcement->photo_path, 'w' => 400, 'h' => 400, 'fit' => 'crop']) : null,
+            ];
+        });
+
+
         return Inertia::render('Dashboard/Index', [
             'coins' => $coins,
             'user' => $user,

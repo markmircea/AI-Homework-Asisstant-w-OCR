@@ -19,9 +19,21 @@ class AnnouncementController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
+            'photo' => 'nullable|image', // Validation rule for photo upload
         ]);
 
-        Auth::user()->announcements()->create($request->all());
+        // Handle photo upload
+        $photoPath = null;
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('announcements'); // Store photo
+        }
+
+        // Create announcement with photo path
+        Auth::user()->announcements()->create([
+            'title' => $request->title,
+            'content' => $request->content,
+            'photo_path' => $photoPath, // Assign photo path to the announcement
+        ]);
 
         return redirect()->route('dashboard')->with('success', 'Announcement created.');
     }

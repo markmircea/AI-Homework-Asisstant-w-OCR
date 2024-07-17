@@ -12,6 +12,8 @@
           <div v-for="announcement in localAnnouncements" :key="announcement.id" class="announcement mb-4 p-4 border rounded-lg shadow cursor-move" @dblclick="showEditModal(announcement)">
             <div class="flex justify-between items-center">
               <div class="flex-1">
+               <img v-if="announcement.photo" class="rounded-lg shadow" style="width: 200px; height: auto;" :src="announcement.photo" />
+
                 <h3 class="font-bold text-xl">{{ announcement.title }}</h3>
                 <p>{{ announcement.content }}</p>
               </div>
