@@ -7,6 +7,8 @@
         <h2 class="p-4 border rounded-lg">Hi {{ user.first_name }}! Welcome to your dashboard, here are some announcements.</h2>
         <div class="flex mb-4 p-4">
           <button @click="showCreateModal" class="btn-indigo">Create Announcement</button>
+          <button @click="toggleOCRModal" class="btn-indigo">Analyze</button>
+
         </div>
         <draggable :list="localAnnouncements" @update="updateOrder" class="drag-handle">
           <div v-for="announcement in localAnnouncements" :key="announcement.id" class="announcement mb-4 p-4 border rounded-lg shadow cursor-move" @dblclick="showEditModal(announcement)">
@@ -32,6 +34,10 @@
         </draggable>
         <p>You have {{ coins }} coins.</p>
       </div>
+       <!-- Create Announcement Modal -->
+       <Modal :visible="OCRModalVisible" @close="toggleOCRModal">
+        <OCR @submitted="toggleOCRModal" />
+      </Modal>
       <!-- Create Announcement Modal -->
       <Modal :visible="isCreateModalVisible" @close="hideCreateModal">
         <CreateAnnouncement @submitted="hideCreateModal" />
@@ -50,8 +56,11 @@ import Layout from '@/Shared/Layout.vue'
 import Modal from '@/Shared/Modal.vue'
 import CreateAnnouncement from '@/Pages/Announcements/Create.vue'
 import EditAnnouncement from '@/Pages/Announcements/Edit.vue'
+import OCR from '@/Pages/Announcements/OCR.vue'
+
 import { VueDraggableNext } from 'vue-draggable-next'
 import Icon from '@/Shared/Icon.vue' // Import the Icon component
+
 
 
 export default {
@@ -65,6 +74,7 @@ export default {
     return {
       isCreateModalVisible: false,
       isEditModalVisible: false,
+      OCRModalVisible: false,
       selectedAnnouncement: null,
       localAnnouncements: [...this.announcements], // Create a local copy of the announcements array
     }
@@ -75,8 +85,9 @@ export default {
     Modal,
     CreateAnnouncement,
     EditAnnouncement,
+    OCR,
     draggable: VueDraggableNext,
-    Icon,
+    Icon
   },
 
   layout: Layout,
@@ -87,6 +98,9 @@ export default {
     },
     hideCreateModal() {
       this.isCreateModalVisible = false;
+    },
+    toggleOCRModal(){
+      this.OCRModalVisible = !this.OCRModalVisible;
     },
     showEditModal(announcement) {
       this.selectedAnnouncement = announcement;

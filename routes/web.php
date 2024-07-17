@@ -9,6 +9,10 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\OCRController;
+use App\Http\Controllers\OCRMController;
+
+
 
 
 
@@ -47,6 +51,14 @@ Route::middleware('auth')->group(function () {
 Route::post('/announcements/update-order', [AnnouncementController::class, 'updateOrder'])
     ->name('updateOrder')
     ->middleware('auth');
+
+// Google OCR
+
+Route::post('/ocr', [OCRMController::class, 'store'])
+->name('ocr.store')
+->middleware('auth');
+
+
 
 
 // Google OAuth routes
