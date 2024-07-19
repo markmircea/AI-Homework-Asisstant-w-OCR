@@ -68,7 +68,5 @@ export default {
   margin: 0 auto;
 }
 
-.btn-red {
-  color: #e53e3e;
-}
+
 </style>

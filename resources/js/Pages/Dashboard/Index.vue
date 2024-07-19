@@ -14,10 +14,15 @@
           <div v-for="announcement in localAnnouncements" :key="announcement.id" class="announcement mb-4 p-4 border rounded-lg shadow cursor-move" @dblclick="showEditModal(announcement)">
             <div class="flex justify-between items-center">
               <div class="flex-1">
-               <img v-if="announcement.photo" class="rounded-lg shadow" style="width: 200px; height: auto;" :src="announcement.photo" />
+               <!-- Add click event handler to expand image -->
+               <img v-if="announcement.photo" class="rounded-lg shadow" style="width: 200px; height: auto; cursor: pointer;" :src="expandedImageUrl(announcement)" @click="expandImage(announcement)" :class="{ 'expanded': announcement.expanded }" />
+              <br><br>
+               <p>{{ announcement.title }}</p>
+                <br><br>
+                <h3 class="font-bold text-xl">{{ announcement.content }}</h3>
+                <br><br>
+                <p class="text-gray-500 text-sm">Created at: {{ formatDate(announcement.created_at) }}</p>
 
-                <h3 class="font-bold text-xl">{{ announcement.title }}</h3>
-                <p>{{ announcement.content }}</p>
               </div>
               <div class="flex space-x-2 items-center">
                 <button @click="showEditModal(announcement)" class="btn-indigo">Edit</button>
@@ -76,7 +81,10 @@ export default {
       isEditModalVisible: false,
       OCRModalVisible: false,
       selectedAnnouncement: null,
-      localAnnouncements: [...this.announcements], // Create a local copy of the announcements array
+      localAnnouncements: [...this.announcements].map(announcement => ({
+        ...announcement,
+        expanded: false // Initialize expanded state for each announcement
+      }))
     }
   },
 
@@ -122,13 +130,30 @@ export default {
           order: index
         }))
       });
+    },
+    expandImage(announcement) {
+      announcement.expanded = !announcement.expanded; // Toggle expanded state
+    },
+    expandedImageUrl(announcement) {
+      // Check if announcement is expanded and modify URL accordingly
+      if (announcement.expanded) {
+        return announcement.photo.replace(/&?w=400&h=400&fit=crop$/, '');
+      } else {
+        return announcement.photo;
+      }
+    },
+    formatDate(date) {
+      return new Date(date).toLocaleString();
     }
   },
 
   watch: {
     announcements: {
       handler(newAnnouncements) {
-        this.localAnnouncements = [...newAnnouncements];
+        this.localAnnouncements = newAnnouncements.map(announcement => ({
+          ...announcement,
+          expanded: false // Reset expanded state when announcements change
+        }));
       },
       deep: true,
     }
@@ -181,5 +206,18 @@ export default {
   border-radius: 0.375rem;
   text-align: center;
   text-decoration: none;
+}
+
+
+/* Styling for expanded image */
+.expanded {
+  width: 600px; /* Three times larger than original */
+  height: auto; /* Maintain aspect ratio */
+  position: fixed; /* Position fixed to overlay on top */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%) scale(3); /* Center the image and scale it */
+  z-index: 999; /* Ensure expanded image is on top of everything else */
+  cursor: zoom-out; /* Change cursor to indicate closing */
 }
 </style>

@@ -3,10 +3,10 @@
     <Head title="Analyze" />
     <h1 class="mb-8 text-3xl font-bold">Analyze</h1>
     <form @submit.prevent="submit" class="space-y-4">
-      <TextInput id="title" v-model="form.title" label="Title" :error="form.errors.title" />
-      <TextareaInput id="content" v-model="form.content" label="Content" :error="form.errors.content" />
+      <TextInput id="instructions" v-model="form.instructions" label="AI Instructions" :error="form.errors.instructions" />
 
-      <file-input v-model="form.photo" :error="form.errors.photo" class="w-full lg:w-1/2" type="file" accept="image/*" label="Photo" />
+
+      <image-upload v-model="form.photo" :error="form.errors.photo" class="w-full lg:w-100%" type="file" accept="image/*" label="Photo" />
 
       <loading-button type="submit" :loading="form.processing" class="btn-indigo">
         Analyze
@@ -20,7 +20,7 @@
 import { Head, useForm } from '@inertiajs/vue3'
 import TextInput from '@/Shared/TextInput.vue'
 import TextareaInput from '@/Shared/TextareaInput.vue'
-import FileInput from '@/Shared/FileInput.vue'
+import ImageUpload from '@/Shared/ImageUpload.vue'
 import LoadingButton from '@/Shared/LoadingButton.vue'
 
 
@@ -30,13 +30,13 @@ export default {
     TextInput,
     TextareaInput,
     LoadingButton,
-    FileInput,
+    ImageUpload,
   },
   setup(_, { emit }) {
     const form = useForm({
-      title: '',
-      content: '',
+
       photo: null,
+      instructions: '',
       // Add more fields as needed
     })
 
