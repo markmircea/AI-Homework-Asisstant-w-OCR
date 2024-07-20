@@ -15,7 +15,11 @@ class Announcement extends Model
         'title',
         'content',
         'user_id',
-        'photo_path'
+        'photo_path',
+        'aiquery',
+        'extracted_text',
+        'subject'
+
     ];
 
 

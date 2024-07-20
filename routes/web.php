@@ -38,6 +38,15 @@ Route::post('login', [AuthenticatedSessionController::class, 'store'])
     ->name('login.store')
     ->middleware('guest');
 
+    Route::get('register', [AuthenticatedSessionController::class, 'createRegistration'])
+    ->name('register')
+    ->middleware('guest');
+
+Route::post('register', [AuthenticatedSessionController::class, 'storeRegistration'])
+    ->name('register.store')
+    ->middleware('guest');
+
+
 Route::delete('logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
 

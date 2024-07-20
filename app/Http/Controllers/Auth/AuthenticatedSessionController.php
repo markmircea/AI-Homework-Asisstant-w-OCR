@@ -11,10 +11,42 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User; // Adjust the namespace as per your User model
-
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class AuthenticatedSessionController extends Controller
 {
+
+    public function createRegistration(): \Inertia\Response
+    {
+        return Inertia::render('Auth/Register');
+    }
+
+    public function storeRegistration(Request $request): RedirectResponse
+    {
+        $validated = $this->validator($request->all())->validate();
+
+        $user = User::create([
+            'first_name' => $validated['first_name'],
+            'last_name' => $validated['last_name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        auth()->login($user);
+
+        return redirect()->intended('/');
+    }
+
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+    }
     /**
      * Display the login view.
      */
@@ -22,6 +54,7 @@ class AuthenticatedSessionController extends Controller
     {
         return Inertia::render('Auth/Login');
     }
+
 
     /**
      * Handle an incoming authentication request.

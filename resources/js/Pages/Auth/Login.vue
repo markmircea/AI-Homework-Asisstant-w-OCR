@@ -15,8 +15,16 @@
           </label>
         </div>
         <div class="flex px-10 py-4 bg-gray-100 border-t border-gray-100">
+<!-- Registration Link -->
+  <p class="text-sm mt-3 mb-0">
+        <Link href="/register" class="text-dark font-weight-bolder">        Don't have an account?
+        </Link>
+      </p>
           <loading-button :loading="form.processing" class="btn-indigo ml-auto" type="submit">Login</loading-button>
+
         </div>
+
+
       </form>
 
       <!-- Add Google login button -->
@@ -32,7 +40,7 @@
 </template>
 
 <script>
-import { Head } from '@inertiajs/vue3'
+import { Head, Link } from '@inertiajs/vue3'
 import Logo from '@/Shared/Logo.vue'
 import TextInput from '@/Shared/TextInput.vue'
 import LoadingButton from '@/Shared/LoadingButton.vue'
@@ -40,6 +48,7 @@ import LoadingButton from '@/Shared/LoadingButton.vue'
 export default {
   components: {
     Head,
+    Link,
     LoadingButton,
     Logo,
     TextInput,

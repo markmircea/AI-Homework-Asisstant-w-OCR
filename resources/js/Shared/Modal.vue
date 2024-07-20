@@ -1,14 +1,19 @@
 <template>
   <transition name="modal">
     <div class="fixed inset-0 flex items-center justify-center z-50" v-if="visible">
-
+      <!-- Overlay -->
       <div class="absolute inset-0 bg-black opacity-50" @click="close"></div>
-      <div class="bg-white rounded-lg shadow-lg overflow-hidden z-10 modal-container">
-        <div class="p-4">
+      <!-- Modal Container -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden z-10 max-w-lg mx-auto w-full">
+        <!-- Modal Content -->
+        <div class="p-6">
           <slot></slot>
         </div>
+        <!-- Modal Footer -->
         <div class="p-4 border-t border-gray-200 flex justify-end">
-          <button @click="close" class="btn-red">Close</button>
+          <button @click="close" class="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out">
+            Close
+          </button>
         </div>
       </div>
     </div>
@@ -34,7 +39,6 @@ export default {
         this.close();
       }
     },
-
   },
 
   mounted() {
@@ -42,7 +46,7 @@ export default {
     document.addEventListener('keyup', this.handleEscape);
   },
 
-  beforeDestroy() {
+  beforeUnmount() {
     // Remove event listener on component destruction
     document.removeEventListener('keyup', this.handleEscape);
   },
@@ -52,21 +56,11 @@ export default {
 <style scoped>
 .modal-enter-active,
 .modal-leave-active {
-  transition: opacity 0.5s;
+  transition: opacity 0.5s ease;
 }
 
 .modal-enter,
 .modal-leave-to {
   opacity: 0;
 }
-
-.modal-container {
-  width: 80%;
-  /* Adjust this percentage to make the modal wider or narrower */
-  max-width: 1000px;
-  /* Adjust the max width as needed */
-  margin: 0 auto;
-}
-
-
 </style>

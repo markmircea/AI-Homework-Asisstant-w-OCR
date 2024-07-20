@@ -13,7 +13,8 @@ class OCRMController extends Controller
     {
         $request->validate([
             'title' => 'string|max:255',
-            'content' => 'string',
+            'aiquery' => 'nullable|string',
+            'subject' => 'nullable|string',
             'instructions' => 'string|nullable',
             'photo' => 'nullable|image', // Validation rule for photo upload
         ]);
@@ -25,7 +26,7 @@ class OCRMController extends Controller
         }
 
         // Function to send text to ChatGPT API
-        function sendToChatGPT($text, $instructions = null)
+        function sendToChatGPT($text, $instructions = null, $subject = null)
         {
             $apiKey = env('OPENAI_API_KEY'); // Replace with your ChatGPT API key
             $endpoint = 'https://api.openai.com/v1/chat/completions'; // ChatGPT API endpoint
@@ -36,7 +37,7 @@ class OCRMController extends Controller
             ];
 
             // Use provided instructions or fallback to default
-            $systemContent = $instructions ?? 'Analyze the question and possible answers, select one answer from those provided. If there is no answer provided then answer the question to the best of your ability.';
+            $systemContent = 'The current subject is:' . $subject . 'If the subject is auto-detect, before your response include a string called "subject=" after which you specify in one word what subject matter you believe the text to be in out of the 25 most common educational subjects' . $instructions ?? 'The current subject is:' . $subject . 'If the subject is auto-detect, before your response include a string called "subject=" after which you specify in one word what subject matter you believe the text to be in out of the 25 most common educational subjects, then Analyze the question and possible answers, select one answer from those provided. If there is no answer provided then answer the question to the best of your ability.';
 
             $data = [
                 'model' => 'gpt-4o-mini', // or another model if applicable
@@ -116,9 +117,16 @@ class OCRMController extends Controller
 
         // Get instructions from the request if provided
         $instructions = $request->input('instructions');
+        $aiquery = $request->input('aiquery');
+        $subject = $request->input('subject');
+        $title = $request->input('title');
 
         // Send the extracted text to ChatGPT API with optional instructions
-        $chatGPTResponse = sendToChatGPT($extractedText, $instructions);
+        if ($request->input('aiquery')) {
+            $chatGPTResponse = sendToChatGPT($aiquery, $instructions, $subject);
+        } else {
+            $chatGPTResponse = sendToChatGPT($extractedText, $instructions, $subject);
+        }
 
         // Ensure ChatGPT response is valid
         if ($chatGPTResponse === null || !isset($chatGPTResponse['choices'][0]['message']['content'])) {
@@ -132,10 +140,24 @@ class OCRMController extends Controller
         $unixTimestamp = $chatGPTResponse['created'] ?? time();
         $createdAt = \Carbon\Carbon::createFromTimestamp($unixTimestamp);
 
+
+
+        // Extract the subject value using regex
+        preg_match('/subject=([^\s]+)/', $chatGPTContent, $matches);
+
+        // If a subject was found, capitalize the first letter
+        $subject = isset($matches[1]) ? ucfirst($matches[1]) : null;
+
+        // Remove the subject part from the response
+        $responseBody = preg_replace('/subject=[^\s]+ /', '', $chatGPTContent);
+
         // Create announcement with photo path and created_at timestamp
         Auth::user()->announcements()->create([
-            'title' => $extractedText,
-            'content' => $chatGPTContent,
+            'extracted_text' => $extractedText,
+            'title' => $title,
+            'content' => $responseBody,
+            'aiquery' => $aiquery,
+            'subject' => $subject,
             'photo_path' => $photoPath, // Assign photo path to the announcement
             'created_at' => $createdAt, // Assign the created_at timestamp
         ]);

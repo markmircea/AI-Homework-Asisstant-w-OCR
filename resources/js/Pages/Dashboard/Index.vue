@@ -4,10 +4,10 @@
       <Head title="Dashboard" />
       <div>
         <h1 class="mb-8 text-3xl font-bold">Dashboard</h1>
-        <h2 class="p-4 border rounded-lg">Hi {{ user.first_name }}! Welcome to your dashboard, here are some announcements.</h2>
-        <div class="flex mb-4 p-4">
+        <h2 class="p-4 border rounded-lg">Hi {{ user.first_name }}! Welcome to your dashboard, here are some of your historic.</h2>
+        <div class="flex justify-between mb-4 p-4">
           <button @click="showCreateModal" class="btn-indigo">Create Announcement</button>
-          <button @click="toggleOCRModal" class="btn-indigo">Analyze</button>
+          <button @click="toggleOCRModal" class="btn-indigo justify-end">Analyze</button>
 
         </div>
         <draggable :list="localAnnouncements" @update="updateOrder" class="drag-handle">
@@ -21,7 +21,11 @@
                 <br><br>
                 <h3 class="font-bold text-xl">{{ announcement.content }}</h3>
                 <br><br>
-                <p class="text-gray-500 text-sm">Created at: {{ formatDate(announcement.created_at) }}</p>
+                <p class="text-gray-500 text-sm"> Subject: {{ announcement.subject }}</p><br>
+                <p class="text-gray-500 text-sm"> Extracted Text: {{ announcement.extracted_text }}</p><br><br>
+                <p class="text-gray-500 text-sm">Created at: {{ formatDate(announcement.created_at) }} </p><br>
+
+
 
               </div>
               <div class="flex space-x-2 items-center">
@@ -190,23 +194,7 @@ export default {
   margin-right: 0.5rem;
 }
 
-.btn-indigo {
-  background-color: #5a67d8;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  text-align: center;
-  text-decoration: none;
-}
 
-.btn-red {
-  background-color: #e53e3e;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  text-align: center;
-  text-decoration: none;
-}
 
 
 /* Styling for expanded image */
