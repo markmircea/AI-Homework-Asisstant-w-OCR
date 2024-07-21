@@ -149,7 +149,7 @@ class OCRMController extends Controller
         $subject = isset($matches[1]) ? ucfirst($matches[1]) : null;
 
         // Remove the subject part from the response
-        $responseBody = preg_replace('/subject=[^\s]+ /', '', $chatGPTContent);
+        $responseBody = preg_replace('/\bsubject=[^\s]+(\s|$)/', '', $chatGPTContent);
 
         // Create announcement with photo path and created_at timestamp
         Auth::user()->announcements()->create([
@@ -158,6 +158,7 @@ class OCRMController extends Controller
             'content' => $responseBody,
             'aiquery' => $aiquery,
             'subject' => $subject,
+            'instructions' => $instructions,
             'photo_path' => $photoPath, // Assign photo path to the announcement
             'created_at' => $createdAt, // Assign the created_at timestamp
         ]);

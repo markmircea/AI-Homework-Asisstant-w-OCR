@@ -2,51 +2,96 @@
 
   <div>
 
-<Nav/>
+    <div class="flex justify-start mb-8 max-w-3xl">
 
+      <Head title="History" />
+      <div>
+        <h1 class="mb-8 text-3xl font-bold">History</h1>
+        <h2 class="p-4 border rounded-lg">Hi {{ user.first_name }}! Welcome to your dashboard, here are some of your
+          historic.</h2>
+        <div class="flex justify-between mb-4 p-4">
+          <!-- <button @click="showCreateModal" class="btn-indigo">Create Announcement</button> -->
+          <button @click="toggleOCRModal" class="btn-indigo justify-end">Analyze</button>
+        </div>
 
+        <draggable :list="paginatedAnnouncements" @update="updateOrder" class="drag-handle announcement-grid">
+          <div v-for="announcement in paginatedAnnouncements" :key="announcement.id"
+            :class="['announcement', { 'announcement-expanded': !announcement.collapsed }]"
+            class="p-4 border rounded-lg shadow cursor-move" @dblclick="showEditModal(announcement)">
+            <div class="flex flex-col h-full">
+              <div class="flex-1">
+                <p class="announcement-title">{{ announcement.title }}</p>
+                <p class="text-gray-500 text-sm">Created at: {{ formatDate(announcement.created_at) }}</p><br>
 
-<Hero/>
+                <div v-if="!announcement.collapsed">
+                  <!-- Add click event handler to expand image -->
+                  <img v-if="announcement.photo" class="rounded-lg shadow"
+                    style="width: 200px; height: auto; cursor: pointer;" :src="expandedImageUrl(announcement)"
+                    @click="expandImage(announcement)" :class="{ 'expanded': announcement.expanded }" />
+                  <br><br>
 
+                  <p>{{ announcement.title }}</p>
+                  <br><br>
+                  <h3 class="font-bold text-xl">{{ announcement.content }}</h3>
+                  <br><br>
+                  <p class="text-gray-500 text-sm">Subject: {{ announcement.subject }}</p><br>
+                  <p class="text-gray-500 text-sm">Extracted Text: {{ announcement.extracted_text }}</p><br><br>
+                </div>
+              </div>
 
-<feature-section/>
-<black-bar/>
-   <steps></steps>
+              <!-- Arrow button to collapse/expand announcement -->
+              <div class="flex space-x-2 items-center center-icon">
+                <button @click="showEditModal(announcement)" class="btn-indigo">Edit</button>
+                <button @click="destroy(announcement.id)" class="btn-red">Delete</button>
+              </div>
+              <Icon class="center-icon"  name="drag-drop"/>
 
-<dark-divider/>
+              <Icon @click="toggleCollapse(announcement)" :class="['btn-arrow small-icon', { 'icon-collapsed': announcement.collapsed, 'icon-expanded': !announcement.collapsed }]"
+      :name="announcement.collapsed ? 'cheveron-down' : 'cheveron-down'" />
+            </div>
+          </div>
+        </draggable>
 
-   <pricing/>
+        <!-- Pagination Controls -->
+        <div class="pagination-controls mt-4 flex justify-center space-x-2 items-center">
+          <button @click="goToPage(currentPage - 1)" :disabled="currentPage <= 1">Previous</button>
+          <div class="page-numbers flex space-x-1">
+            <button v-for="number in pageNumbers" :key="number" @click="goToPage(number)"
+              :class="{ 'active': number === currentPage }">
+              {{ number }}
+            </button>
+          </div>
+          <button @click="goToPage(currentPage + 1)" :disabled="currentPage >= totalPages">Next</button>
+        </div>
 
-
-
- <Footer/>
-
-
-
-
+        <p>You have {{ coins }} coins.</p>
+      </div>
+      <!-- Create Announcement Modal -->
+      <Modal :visible="OCRModalVisible" @close="toggleOCRModal">
+        <OCR @submitted="toggleOCRModal" />
+      </Modal>
+      <!-- Create Announcement Modal -->
+      <Modal :visible="isCreateModalVisible" @close="hideCreateModal">
+        <CreateAnnouncement @submitted="hideCreateModal" />
+      </Modal>
+      <!-- Edit Announcement Modal -->
+      <Modal :visible="isEditModalVisible" @close="hideEditModal">
+        <EditAnnouncement :announcement="selectedAnnouncement" @submitted="hideEditModal" />
+      </Modal>
+    </div>
   </div>
 </template>
 
 
 <script>
 import { Head } from '@inertiajs/vue3'
+import Layout from '@/Shared/Layout.vue'
 import Modal from '@/Shared/Modal.vue'
-import CreateAnnouncement from '@/Pages/Announcements/Create.vue'
-import EditAnnouncement from '@/Pages/Announcements/Edit.vue'
-import OCR from '@/Pages/Announcements/OCR.vue'
+import EditAnnouncement from '@/Pages/History/Edit.vue'
+import OCR from '@/Pages/History/OCR.vue'
 
 import { VueDraggableNext } from 'vue-draggable-next'
 import Icon from '@/Shared/Icon.vue' // Import the Icon component
-
-import FeatureSection from './FeatureSection.vue'; // Adjust the path as necessary
-import BlackBar from './BlackBar.vue'
-import Nav from './Nav.vue'
-import Hero from './Hero.vue'
-import Steps from './Steps.vue'
-import DarkDivider from './DarkDivider.vue'
-import Pricing from './Pricing.vue'
-import Footer from './Footer.vue'
-
 
 
 
@@ -59,7 +104,6 @@ export default {
 
   data() {
     return {
-      isCreateModalVisible: false,
       isEditModalVisible: false,
       OCRModalVisible: false,
       selectedAnnouncement: null,
@@ -76,19 +120,10 @@ export default {
   components: {
     Head,
     Modal,
-    CreateAnnouncement,
     EditAnnouncement,
     OCR,
     draggable: VueDraggableNext,
-    Icon,
-    FeatureSection,
-    BlackBar,
-    Nav,
-    Hero,
-    Steps,
-    DarkDivider,
-    Pricing,
-    Footer
+    Icon
   },
 
   computed: {
@@ -124,6 +159,7 @@ export default {
     }
   },
 
+  layout: Layout,
 
   methods: {
     toggleCollapse(announcement) {
@@ -148,11 +184,11 @@ export default {
     },
     destroy(id) {
       if (confirm('Are you sure you want to delete this announcement?')) {
-        this.$inertia.delete(`/announcements/${id}`)
+        this.$inertia.delete(`/history/${id}`)
       }
     },
     updateOrder() {
-      this.$inertia.post('/announcements/update-order', {
+      this.$inertia.post('/history/update-order', {
         announcements: this.localAnnouncements.map((announcement, index) => ({
           id: announcement.id,
           order: index
@@ -285,21 +321,17 @@ export default {
   border: none;
   cursor: pointer;
   padding: 0;
-  margin-left: auto;
-  /* Ensures it aligns to the right */
-  transition: margin 0.3s;
-  /* Smooth transition for margin change */
+  margin-left: auto; /* Ensures it aligns to the right */
+  transition: margin 0.3s; /* Smooth transition for margin change */
 }
 
 /* Additional styles for collapsed and expanded states */
 .icon-collapsed {
-  margin-right: 0;
-  /* Default position when collapsed */
+  margin-right: 0; /* Default position when collapsed */
 }
 
 .icon-expanded {
-  margin-right: 1rem;
-  /* Adjust this value to move the icon to the right */
+  margin-right: 1rem; /* Adjust this value to move the icon to the right */
 }
 
 .small-icon {
@@ -311,8 +343,7 @@ export default {
 
 /* Add to your scoped <style> section */
 .move-right {
-  margin-left: auto;
-  /* Pushes the icon to the right in a flex container */
+  margin-left: auto; /* Pushes the icon to the right in a flex container */
 }
 
 
@@ -351,21 +382,19 @@ export default {
   background-color: #007bff;
   color: #fff;
 }
-
-.display-none {
+.display-none{
   display: none;
 }
 
 
 /* Add this to center the icon when expanded */
 .center-icon {
-  margin: 0 auto;
-  /* Center the icon horizontally */
+  margin: 0 auto; /* Center the icon horizontally */
 }
 
 /* Flex container adjustment */
 .announcement .flex-col.items-center {
-  align-items: center;
-  /* Center all children horizontally */
+  align-items: center; /* Center all children horizontally */
 }
+
 </style>

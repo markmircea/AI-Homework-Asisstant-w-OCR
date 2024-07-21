@@ -18,7 +18,8 @@ class Announcement extends Model
         'photo_path',
         'aiquery',
         'extracted_text',
-        'subject'
+        'subject',
+        'instructions'
 
     ];
 

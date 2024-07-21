@@ -6,6 +6,8 @@ use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
+
 
 class AnnouncementController extends Controller
 {
@@ -49,6 +51,11 @@ class AnnouncementController extends Controller
 
     public function update(Request $request, Announcement $announcement)
     {
+
+        Log::info('Update request data:', $request->all());
+        Log::info('Current User ID: ' . Auth::id());
+
+
         if ($announcement->user_id !== Auth::id()) {
             abort(403);
         }

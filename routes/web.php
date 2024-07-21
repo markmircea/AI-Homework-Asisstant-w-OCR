@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\OCRController;
 use App\Http\Controllers\OCRMController;
+use App\Http\Controllers\HistoryController;
 
 
 
@@ -38,7 +39,7 @@ Route::post('login', [AuthenticatedSessionController::class, 'store'])
     ->name('login.store')
     ->middleware('guest');
 
-    Route::get('register', [AuthenticatedSessionController::class, 'createRegistration'])
+Route::get('register', [AuthenticatedSessionController::class, 'createRegistration'])
     ->name('register')
     ->middleware('guest');
 
@@ -50,22 +51,13 @@ Route::post('register', [AuthenticatedSessionController::class, 'storeRegistrati
 Route::delete('logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
 
-// Announcement
 
-Route::middleware('auth')->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    Route::resource('announcements', AnnouncementController::class)->except(['show', 'index']);
-});
-
-Route::post('/announcements/update-order', [AnnouncementController::class, 'updateOrder'])
-    ->name('updateOrder')
-    ->middleware('auth');
 
 // Google OCR
 
 Route::post('/ocr', [OCRMController::class, 'store'])
-->name('ocr.store')
-->middleware('auth');
+    ->name('ocr.store')
+    ->middleware('auth');
 
 
 
@@ -76,13 +68,37 @@ Route::get('/login/google', [AuthenticatedSessionController::class, 'redirectToG
 Route::get('/login/google/callback', [AuthenticatedSessionController::class, 'handleGoogleCallback']);
 
 
-// Dashboard
+// Route for authenticated users
+Route::middleware('auth')->group(function () {
+    Route::get('/index', [DashboardController::class, 'index'])
+        ->name('dashboard');
+});
+
+// Route for non-authenticated users
+Route::get('/index-no-auth', [DashboardController::class, 'indexNoAuth'])
+->middleware('guest')
+    ->name('indexNoAuth');
+
+// Redirect root to non-authenticated route if user is not authenticated
+Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    } else {
+        return redirect()->route('indexNoAuth');
+    }
+});
 
 
+// Announcement
 
-Route::get('/', [DashboardController::class, 'index'])
-    ->name('dashboard')
+Route::middleware('auth')->group(function () {
+    Route::resource('announcements', AnnouncementController::class)->except(['show', 'index']);
+});
+
+Route::post('/announcements/update-order', [AnnouncementController::class, 'updateOrder'])
+    ->name('updateOrder')
     ->middleware('auth');
+
 
 
 // Users
@@ -204,6 +220,27 @@ Route::post('/reports/{contact}/fire', [ReportsController::class, 'fire'])
 Route::post('reports/{contact}', [ReportsController::class, 'update'])
     ->name('reports.update')
     ->middleware('auth');
+
+
+// History
+
+Route::middleware('auth')->group(function () {
+    Route::get('history', [HistoryController::class, 'index'])->name('history');
+    Route::get('history/{announcement}/edit', [HistoryController::class, 'edit'])->name('history.edit');
+    Route::put('history/{announcement}', [HistoryController::class, 'update'])->name('history.update');
+    Route::delete('history/{announcement}', [HistoryController::class, 'destroy'])->name('history.destroy');
+    Route::post('history/update-order', [HistoryController::class, 'updateOrder'])->name('history.updateOrder');
+});
+
+
+
+Route::post('/history/{id}/send-email', [HistoryController::class, 'sendEmail'])
+    ->name('history.sendEmail')
+    ->middleware('auth');
+
+
+
+
 
 
 

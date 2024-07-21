@@ -1,7 +1,7 @@
 <template>
   <div class="container mx-auto p-6">
     <Head title="Edit Announcement" />
-    <h1 class="mb-8 text-3xl font-bold text-gray-900">Edit Announcement</h1>
+    <h1 class="mb-8 text-3xl font-bold text-gray-900">Modify Query</h1>
     <form @submit.prevent="submit" class="space-y-6 bg-white p-6 rounded-lg shadow-lg">
       <TextInput id="title" v-model="form.title" label="Title" :error="form.errors.title" />
 
@@ -87,7 +87,8 @@ export default {
 
     // Define the submit function
     const submit = () => {
-      form.put(`/announcements/${props.announcement.id}`, {
+
+      form.put(`/history/${props.announcement.id}`, {
         onSuccess: () => emit('submitted')
       });
     };
