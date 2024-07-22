@@ -12,6 +12,7 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\OCRController;
 use App\Http\Controllers\OCRMController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\ActiveSessionController;
 
 
 
@@ -51,10 +52,14 @@ Route::post('register', [AuthenticatedSessionController::class, 'storeRegistrati
 Route::delete('logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
 
-    Route::get('log-out', [AuthenticatedSessionController::class, 'destroy'])
+Route::get('log-out', [AuthenticatedSessionController::class, 'destroy'])
     ->name('log-out');
 
 
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/active-sessions', [ActiveSessionController::class, 'index']);
+        Route::post('/logout-session/{sessionId}', [ActiveSessionController::class, 'logout']);
+    });
 
 // Google OCR
 

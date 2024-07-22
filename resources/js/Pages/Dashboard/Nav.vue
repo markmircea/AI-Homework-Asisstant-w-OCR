@@ -63,30 +63,31 @@
           <div class="relative ml-3 group">
             <div>
               <button type="button"
-                class="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                class="relative flex rounded-full bg-gray-800 text-sm group-hover:ring-2 group-hover:ring-white group-hover:ring-offset-2 group-hover:ring-offset-gray-800">
                 <span class="absolute -inset-1.5"></span>
                 <span class="sr-only">Open user menu</span>
-
-                  <img v-if="user.photo" class="h-8 w-8 rounded-full" :src="user.photo" />
-
+                <img v-if="user.photo" class="h-8 w-8 rounded-full" :src="user.photo" />
               </button>
             </div>
 
             <!-- Dropdown menu -->
-
             <div
-                class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none opacity-0 scale-95 transition-opacity transition-transform duration-150 ease-out group-hover:opacity-100 group-hover:scale-100">
-                <!-- Active: "bg-gray-100", Not Active: "" -->
-                <button @click="goToProfile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem"
-                  tabindex="-1" id="user-menu-item-0">Your Profile</button>
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem"
-                  tabindex="-1" id="user-menu-item-1">Settings</a>
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem"
-                  tabindex="-1" id="user-menu-item-2">Sign out</a>
-              </div>
+              class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 scale-95 transition-opacity transition-transform duration-150 ease-out group-hover:opacity-100 group-hover:scale-100">
+              <!-- Active: "bg-gray-100", Not Active: "" -->
+              <a @click="goToProfile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                role="menuitem" tabindex="-1" id="user-menu-item-0">
+                Your Profile
+              </a>
 
-
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1"
+                id="user-menu-item-1">Settings</a>
+              <a href="/log-out" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1"
+                id="user-menu-item-2">Sign out</a>
+            </div>
           </div>
+
+
+
         </div>
       </div>
     </div>
