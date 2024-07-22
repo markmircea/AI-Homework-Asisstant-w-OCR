@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Illuminate\Support\Facades\URL;
+
 
 class HandleInertiaRequests extends Middleware
 {
@@ -43,7 +45,7 @@ class HandleInertiaRequests extends Middleware
                         'email' => $request->user()->email,
                         'owner' => $request->user()->owner,
                         'coins' => $request->user()->coins,
-                        'account' => [
+                        'photo' => $request->user()->photo_path ? URL::route('image', ['path' => $request->user()->photo_path, 'w' => 400, 'h' => 400, 'fit' => 'crop']) : null,                        'account' => [
                             'id' => $request->user()->account->id,
                             'name' => $request->user()->account->name,
                         ],

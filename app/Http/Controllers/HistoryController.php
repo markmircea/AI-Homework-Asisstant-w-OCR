@@ -23,7 +23,7 @@ class HistoryController extends Controller
 
         Inertia::share('coins', $coins);
 
-     //   $announcements = Announcement::where('user_id', $user->id)->get();
+        //   $announcements = Announcement::where('user_id', $user->id)->get();
         $announcements = $user->announcements()->orderBy('order')->get();
 
 
@@ -62,7 +62,7 @@ class HistoryController extends Controller
         Log::info('Current User ID: ' . Auth::id());
         Log::info('Announcement User ID: ' . $announcement->user_id);
 
-           if ($announcement->user_id !== Auth::id()) {
+        if ($announcement->user_id !== Auth::id()) {
             abort(403);
         }
 
@@ -74,7 +74,7 @@ class HistoryController extends Controller
     public function update(Request $request, Announcement $announcement)
     {
         Log::info('Update request data:', $request->all());
-    Log::info('Current User ID: ' . Auth::id());
+        Log::info('Current User ID: ' . Auth::id());
 
 
         if ($announcement->user_id !== Auth::id()) {
@@ -123,5 +123,4 @@ class HistoryController extends Controller
 
         return redirect()->route('history')->with('success', 'Announcements reordered.');
     }
-
 }

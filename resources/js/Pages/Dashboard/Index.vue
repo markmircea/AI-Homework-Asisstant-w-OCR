@@ -2,7 +2,7 @@
 
   <div>
 
-<Nav/>
+<Nav :user="user"/>
 
 
 
@@ -69,8 +69,13 @@ export default {
         expanded: false // Initialize expanded state for each announcement
       })),
       currentPage: 1, // Track the current page
-      itemsPerPage: 12 // Number of items per page
+      itemsPerPage: 12, // Number of items per page
+      user: this.$page.props.user
     }
+  },
+
+  mounted () {
+    console.log(this.user.id)       // gets undefined
   },
 
   components: {
@@ -196,176 +201,4 @@ export default {
 </script>
 
 <style scoped>
-/* Grid layout for announcements */
-.announcement-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  /* 3-column layout */
-  gap: 1rem;
-  /* Space between grid items */
-}
-
-.announcement {
-  margin-bottom: 1rem;
-  padding: 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.375rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-/* Styling for expanded announcement */
-.announcement-expanded {
-  grid-column: span 3;
-  /* Span all 3 columns */
-}
-
-.announcement-title {
-  display: -webkit-box;
-  /* Required for ellipsis */
-  -webkit-line-clamp: 2;
-  /* Limit to 2 lines */
-  -webkit-box-orient: vertical;
-  /* Vertical orientation of the box */
-  overflow: hidden;
-  /* Hide overflow */
-  text-overflow: ellipsis;
-  /* Show ellipsis for overflow text */
-  white-space: normal;
-  /* Ensure normal white space handling */
-  margin: 0;
-  /* Optional: Adjust margin as needed */
-}
-
-.cursor-move {
-  cursor: move;
-}
-
-.flex {
-  display: flex;
-}
-
-.justify-between {
-  justify-content: space-between;
-}
-
-.items-center {
-  align-items: center;
-}
-
-.space-x-2> :not(:last-child) {
-  margin-right: 0.5rem;
-}
-
-
-
-
-/* Styling for expanded image */
-.expanded {
-  width: 600px;
-  /* Three times larger than original */
-  height: auto;
-  /* Maintain aspect ratio */
-  position: fixed;
-  /* Position fixed to overlay on top */
-  top: 50%;
-  /* Center vertically */
-  left: 50%;
-  /* Center horizontally */
-  transform: translate(-50%, -50%) scale(3);
-  /* Center the image and scale it */
-  z-index: 999;
-  /* Ensure expanded image is on top of everything else */
-  cursor: zoom-out;
-  /* Change cursor to indicate closing */
-}
-
-/* Base styles for the icon */
-.btn-arrow {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  margin-left: auto;
-  /* Ensures it aligns to the right */
-  transition: margin 0.3s;
-  /* Smooth transition for margin change */
-}
-
-/* Additional styles for collapsed and expanded states */
-.icon-collapsed {
-  margin-right: 0;
-  /* Default position when collapsed */
-}
-
-.icon-expanded {
-  margin-right: 1rem;
-  /* Adjust this value to move the icon to the right */
-}
-
-.small-icon {
-  width: 20px;
-  /* Adjust width as needed */
-  height: 20px;
-  /* Adjust height as needed */
-}
-
-/* Add to your scoped <style> section */
-.move-right {
-  margin-left: auto;
-  /* Pushes the icon to the right in a flex container */
-}
-
-
-
-/* Pagination controls styling */
-.pagination-controls {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.pagination-controls button {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  cursor: pointer;
-}
-
-.pagination-controls button:disabled {
-  background-color: #e9ecef;
-  cursor: not-allowed;
-}
-
-.page-numbers button {
-  background-color: #fff;
-  color: #007bff;
-  border: 1px solid #007bff;
-  padding: 0.5rem;
-  border-radius: 0.375rem;
-  cursor: pointer;
-}
-
-.page-numbers button.active {
-  background-color: #007bff;
-  color: #fff;
-}
-
-.display-none {
-  display: none;
-}
-
-
-/* Add this to center the icon when expanded */
-.center-icon {
-  margin: 0 auto;
-  /* Center the icon horizontally */
-}
-
-/* Flex container adjustment */
-.announcement .flex-col.items-center {
-  align-items: center;
-  /* Center all children horizontally */
-}
 </style>

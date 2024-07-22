@@ -51,6 +51,9 @@ Route::post('register', [AuthenticatedSessionController::class, 'storeRegistrati
 Route::delete('logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
 
+    Route::get('log-out', [AuthenticatedSessionController::class, 'destroy'])
+    ->name('log-out');
+
 
 
 // Google OCR
@@ -69,14 +72,13 @@ Route::get('/login/google/callback', [AuthenticatedSessionController::class, 'ha
 
 
 // Route for authenticated users
-Route::middleware('auth')->group(function () {
-    Route::get('/index', [DashboardController::class, 'index'])
-        ->name('dashboard');
-});
+Route::get('/index', [DashboardController::class, 'index'])
+    ->middleware('auth')
+    ->name('dashboard');
 
 // Route for non-authenticated users
 Route::get('/index-no-auth', [DashboardController::class, 'indexNoAuth'])
-->middleware('guest')
+    ->middleware('guest')
     ->name('indexNoAuth');
 
 // Redirect root to non-authenticated route if user is not authenticated

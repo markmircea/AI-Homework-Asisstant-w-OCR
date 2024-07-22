@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <div id="dropdown" />
     <div class="md:flex md:flex-col">
       <div class="md:flex md:flex-col md:h-screen">
@@ -14,7 +15,7 @@
               </template>
               <template #dropdown>
                 <div class="mt-2 px-8 py-4 bg-indigo-800 rounded shadow-lg">
-                  <main-menu :coins= auth.user.coins />
+                  <main-menu />
                 </div>
               </template>
             </dropdown>
@@ -25,10 +26,12 @@
               <template #default>
                 <div class="group flex items-center cursor-pointer select-none">
                   <div class="mr-1 text-gray-700 group-hover:text-indigo-600 focus:text-indigo-600 whitespace-nowrap">
-                  <span class="hidden md:inline">Coins: {{ auth.user.coins }}&nbsp;&nbsp;||</span>
+                  <span class="hidden md:inline">Tokens: {{ auth.user.coins }}&nbsp;&nbsp;</span>
                     <span>&nbsp;&nbsp;{{ auth.user.first_name }}</span>
-                    <span class="hidden md:inline">&nbsp;{{ auth.user.last_name }}&nbsp;&nbsp;||</span>
-                    <span class="hidden md:inline">&nbsp;User ID: {{ auth.user.id }}</span>
+                    <span class="hidden md:inline">&nbsp;{{ auth.user.last_name }}&nbsp;&nbsp;</span>
+                    <img v-if="auth.user.photo" class="inline-block ml-4 w-8 h-8 rounded-full" :src="auth.user.photo" />
+
+
 
 
                   </div>
@@ -79,9 +82,15 @@ export default {
     Logo,
     MainMenu,
   },
+
+
   props: {
     auth: Object,
 
+  },
+
+  mounted() {
+    console.log('User photo:', this.auth.user.photo);
   },
 }
 </script>
