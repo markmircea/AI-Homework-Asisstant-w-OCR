@@ -163,6 +163,6 @@ class OCRMController extends Controller
             'created_at' => $createdAt, // Assign the created_at timestamp
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Announcement created.');
+        return redirect()->route('history')->with('success', 'Question Analyzed .');
     }
 }

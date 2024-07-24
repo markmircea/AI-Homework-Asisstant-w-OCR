@@ -12,8 +12,18 @@ class CreateAnnouncementsTable extends Migration
         Schema::create('announcements', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->text('title');
-            $table->text('content');
+            $table->text('title')->nullable();
+            $table->text('content')->nullable();
+            $table->text('extracted_text')->nullable();
+            $table->text('aiquery')->nullable();
+            $table->text('instructions')->nullable();
+
+            $table->string('subject')->nullable();
+
+            $table->integer('order')->default(0);
+            $table->string('photo_path')->nullable();
+
+
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

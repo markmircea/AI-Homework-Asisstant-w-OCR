@@ -3,12 +3,16 @@ import defaultTheme from 'tailwindcss/defaultTheme'
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 export default {
-  content: ['./resources/**/*.{js,vue,blade.php}'],
+  content: ['./resources/**/*.{js,vue,blade.php}',
+    "./node_modules/flowbite/**/*.js"
+
+  ],
   theme: {
     extend: {
       fontFamily: {
         sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
       },
+      darkMode: 'off',
       colors: {
 
         red: {
@@ -328,6 +332,9 @@ export default {
     opacity: ['responsive', 'hover', 'focus', 'group-hover'],
     backgroundColor: ['responsive', 'hover', 'focus', 'group-hover'],
   },
-  plugins: [],
+  plugins: [
+    require('flowbite/plugin')
+],
+
 }
 

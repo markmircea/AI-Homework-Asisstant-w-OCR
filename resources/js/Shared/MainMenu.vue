@@ -10,9 +10,9 @@
 
     <!-- Organizations Link -->
     <div class="mb-4">
-      <Link class="group flex items-center py-3" href="/organizations">
-        <icon name="office" class="mr-2 w-4 h-4" :class="isUrl('organizations') ? 'fill-white' : 'fill-indigo-400'" />
-        <div :class="isUrl('organizations') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Organizations</div>
+      <Link class="group flex items-center py-3" href="/ask">
+        <icon name="question" class="mr-2 w-4 h-4" :class="isUrl('ask') ? 'fill-white' : 'fill-indigo-400'" />
+        <div :class="isUrl('ask') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Ask</div>
       </Link>
     </div>
 
@@ -49,8 +49,8 @@
         @leave="leave"
       >
         <div v-show="submenuOpen" class="pl-4 mt-2">
-          <Link class="group flex items-center text-sm py-2" :class="isUrl(`users/${auth.user.id}/edit`) ? 'text-white' : 'text-indigo-300'" :href="`/users/${auth.user.id}/edit`">
-            <icon name="profile" class="mr-2 w-4 h-4" :class="isUrl(`users/${auth.user.id}/edit`) ? 'text-white' : 'text-red-500'" />
+          <Link class="group flex items-center text-sm py-2" :class="isUrl(`users/${auth.user.id}/edit`) ? 'text-white' : 'text-indigo-300  hover:text-white'" :href="`/users/${auth.user.id}/edit`">
+            <icon name="profile" class="mr-2 w-4 h-4" :class="isUrl(`users/${auth.user.id}/edit`) ? 'text-white' : 'text-white'" />
             <div>Profile</div>
           </Link>          <Link class="group flex items-center text-sm py-2 text-indigo-300  hover:text-white" href="/logout">
         <icon name="billing" class="mr-2 w-4 h-4 text-red-500" />

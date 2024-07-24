@@ -12,11 +12,7 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\OCRController;
 use App\Http\Controllers\OCRMController;
 use App\Http\Controllers\HistoryController;
-use App\Http\Controllers\ActiveSessionController;
-
-
-
-
+use App\Http\Controllers\AskController;
 
 
 /*
@@ -56,10 +52,6 @@ Route::get('log-out', [AuthenticatedSessionController::class, 'destroy'])
     ->name('log-out');
 
 
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::get('/active-sessions', [ActiveSessionController::class, 'index']);
-        Route::post('/logout-session/{sessionId}', [ActiveSessionController::class, 'logout']);
-    });
 
 // Google OCR
 
@@ -137,6 +129,19 @@ Route::delete('users/{user}', [UsersController::class, 'destroy'])
 Route::put('users/{user}/restore', [UsersController::class, 'restore'])
     ->name('users.restore')
     ->middleware('auth');
+
+    // Ask
+
+Route::get('ask', [AskController::class, 'index'])
+->name('ask')
+->middleware('auth');
+
+Route::post('ask', [AskController::class, 'store'])
+->name('ask.store')
+->middleware('auth');
+
+
+
 
 // Organizations
 
