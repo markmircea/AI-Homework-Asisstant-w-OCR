@@ -18,6 +18,7 @@
           <text-input v-model="form.instructions" :error="form.errors.instructions" class="pb-8 pr-6 w-full lg:w-1/2" label="Explanation + Steps" />
           <text-input v-model="form.subject" :error="form.errors.subject" class="pb-8 pr-6 w-full lg:w-1/2" label="Subject" />
           <text-input v-model="form.created_at" :error="form.errors.created_at" class="pb-8 pr-6 w-full lg:w-1/2" label="Created At" />
+          <text-input v-if="form.deleted_at" v-model="form.deleted_at" :error="form.errors.deleted_at" class="pb-8 pr-6 w-full lg:w-1/2" label="Deleted At" />
 
         </div>
         <div class="flex items-center px-8 py-4 bg-gray-50 border-t border-gray-100">

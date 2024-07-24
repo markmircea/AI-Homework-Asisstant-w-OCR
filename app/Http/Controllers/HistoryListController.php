@@ -28,7 +28,7 @@ class HistoryListController extends Controller
      // Apply filters
       $announcementsQuery->filter(Request::only('search', 'trashed'));
 
-    $announcements = $announcementsQuery->paginate(10);
+    $announcements = $announcementsQuery->paginate(10)->withQueryString();
 
         $announcements->transform(function ($announcement) {
             return [

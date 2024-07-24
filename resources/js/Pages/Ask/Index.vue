@@ -27,7 +27,7 @@
                   Title
                   <div class="relative inline-block ml-2">
                     <button type="button" @mouseover="showTooltip = true" @mouseleave="showTooltip = false"
-                      class="text-gray-600 transition-colors duration-200 focus:outline-none dark:text-gray-200 dark:hover:text-blue-400 hover:text-blue-500">
+                      class="text-gray-600 transition-colors duration-200  hover:text-indigo-500">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -90,7 +90,7 @@
 
                   <div class="relative inline-block ml-2">
                     <button type="button" @mouseover="showTooltip = true" @mouseleave="showTooltip = false"
-                      class="text-gray-600 transition-colors duration-200 focus:outline-none dark:text-gray-200 dark:hover:text-blue-400 hover:text-blue-500">
+                      class="text-gray-600 transition-colors duration-200  hover:text-indigo-500">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -161,9 +161,13 @@
 
             </div>
             <div class="flex items-center px-8 py-4 bg-gray-50 border-t border-gray-100">
+              <loading-button :loading="form.processing" class="w-full btn-indigo transition-colors duration-200  hover:text-indigo-500 flex items-center justify-center space-x-2" type="submit">
+        <!-- Animated Question Mark -->
+        <span class="question-mark">?</span>
+        <span>Ask</span>
+        <span class="hidden md:inline">&nbsp;Question</span>
+      </loading-button>
 
-              <loading-button :loading="form.processing" class="btn-indigo ml-auto" type="submit">Update
-                User</loading-button>
             </div>
           </form>
         </div>
@@ -177,31 +181,18 @@
 
 
             <div class="p-4">
-              <!-- Loader Section -->
-              <div id="answer-loader" v-if="form.processing">
-                <div class="flex justify-center items-center">
-                  <div>
-                    <svg class="w-60 h-60" width="240" height="240" viewBox="0 0 240 240">
-                      <circle class="text-gray-400" cx="120" cy="120" r="105" fill="none" stroke="currentColor"
-                        stroke-width="20" stroke-dasharray="0 660" stroke-dashoffset="-330" stroke-linecap="round">
-                      </circle>
-                      <circle class="text-gray-400" cx="120" cy="120" r="35" fill="none" stroke="currentColor"
-                        stroke-width="20" stroke-dasharray="0 220" stroke-dashoffset="-110" stroke-linecap="round">
-                      </circle>
-                      <circle class="text-gray-400" cx="85" cy="120" r="70" fill="none" stroke="currentColor"
-                        stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
-                      <circle class="text-gray-400" cx="155" cy="120" r="70" fill="none" stroke="currentColor"
-                        stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
-                    </svg>
-                  </div>
-                </div>
-                <div class="text-center mt-4">
-                  <h6 class="text-gray-600">One moment while I get the answer...</h6>
-                  <div id="answer-loader-text" class="text-gray-500">
-                    Did you know that the average human attention span is 8 seconds?
-                  </div>
-                </div>
-              </div>
+             <!-- Loader Section -->
+<div id="answer-loader" v-if="form.processing" class="flex flex-col items-center  ">
+
+    <div class="loader mb-10 mt-10"></div>
+
+  <div class="text-center mt-4">
+    <h6 class="text-gray-600">One moment while I get the answer...</h6>
+    <div class="text-gray-500">
+      Did you know that the average human attention span is 8 seconds?
+    </div>
+  </div>
+</div>
 
               <!-- Result Section -->
               <div id="result-card">
@@ -350,6 +341,48 @@ export default {
 </script>
 
 <style>
+/* Full Width Button */
+.btn-indigo {
+
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.btn-indigo:hover {
+  background-color: #2563eb;
+}
+
+/* Animated Question Mark */
+.question-mark {
+  display: inline-block;
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+  animation: flip-spin 5s ease-in-out infinite;
+}
+
+@keyframes flip-spin {
+  0% {
+    transform: rotate(0deg) scaleY(1);
+  }
+  25% {
+    transform: rotate(90deg) scaleY(-1);
+  }
+  50% {
+    transform: rotate(180deg) scaleY(1);
+  }
+  75% {
+    transform: rotate(270deg) scaleY(-1);
+  }
+  100% {
+    transform: rotate(360deg) scaleY(1);
+  }
+}
+
 /* Tooltip styles */
 .relative .tooltip {
   display: none;
@@ -402,5 +435,43 @@ export default {
   min-height: 4em;
   /* Adjust the height as needed */
   padding: 0.5em;
+}
+
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  height: 60px;
+  aspect-ratio: 1;
+  position: relative;
+}
+.loader::before,
+.loader::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transform-origin: bottom;
+}
+.loader::after {
+  background:
+    radial-gradient(at 75% 15%,#fffb,#0000 35%),
+    radial-gradient(at 80% 40%,#0000,#0008),
+    radial-gradient(circle  5px,#fff 94%,#0000),
+    radial-gradient(circle 10px,#000 94%,#0000),
+    linear-gradient(#F93318 0 0) top   /100% calc(50% - 5px),
+    linear-gradient(#fff    0 0) bottom/100% calc(50% - 5px)
+    #000;
+  background-repeat: no-repeat;
+  animation: l20 1s infinite cubic-bezier(0.5,120,0.5,-120);
+}
+.loader::before {
+  background:#ddd;
+  filter: blur(8px);
+  transform: scaleY(0.4) translate(-13px, 0px);
+}
+@keyframes l20 {
+ 30%,70% {transform:rotate(0deg)}
+ 49.99%  {transform:rotate(0.2deg)}
+ 50%     {transform:rotate(-0.2deg)}
 }
 </style>

@@ -13,10 +13,7 @@
         </select>
 
       </search-filter>
-      <Link class="btn-indigo" href="/ask">
-      <span>Ask</span>
-      <span class="hidden md:inline">&nbsp;Question</span>
-      </Link>
+
     </div>
     <div class="bg-white rounded-md shadow overflow-x-auto">
       <table class="w-full whitespace-wordwrap ">

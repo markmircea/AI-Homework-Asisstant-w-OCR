@@ -97,13 +97,12 @@ export default {
     }
   },
   methods: {
-    isUrl(...urls) {
-      let currentUrl = this.$page.url.substr(1)
-      if (urls[0] === '') {
-        return currentUrl === ''
-      }
-      return urls.filter((url) => currentUrl.startsWith(url)).length
-    },
+    isUrl(url) {
+    // Get the current path from the URL
+    const currentUrl = this.$page.url.replace(/^\/|\/$/g, ''); // Normalize URL by removing leading/trailing slashes
+    // Check if the current URL matches exactly or starts with the given URL
+    return currentUrl === url || currentUrl.startsWith(`${url}/`);
+  },
     toggleSubmenu() {
       this.submenuOpen = !this.submenuOpen
     },
