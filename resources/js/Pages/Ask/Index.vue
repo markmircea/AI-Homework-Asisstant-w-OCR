@@ -161,12 +161,14 @@
 
             </div>
             <div class="flex items-center px-8 py-4 bg-gray-50 border-t border-gray-100">
-              <loading-button :loading="form.processing" class="w-full btn-indigo transition-colors duration-200  hover:text-indigo-500 flex items-center justify-center space-x-2" type="submit">
-        <!-- Animated Question Mark -->
-        <span class="question-mark">?</span>
-        <span>Ask</span>
-        <span class="hidden md:inline">&nbsp;Question</span>
-      </loading-button>
+              <loading-button :loading="form.processing"
+                class="w-full btn-indigo transition-colors duration-200  hover:text-indigo-500 flex items-center justify-center space-x-2"
+                type="submit">
+                <!-- Animated Question Mark -->
+                <span class="question-mark">?</span>
+                <span>Ask</span>
+                <span class="hidden md:inline">&nbsp;Question</span>
+              </loading-button>
 
             </div>
           </form>
@@ -181,34 +183,44 @@
 
 
             <div class="p-4">
-             <!-- Loader Section -->
-<div id="answer-loader" v-if="form.processing" class="flex flex-col items-center  ">
+              <!-- Loader Section -->
+              <div id="answer-loader" v-if="form.processing" class="flex flex-col items-center  ">
 
-    <div class="loader mb-10 mt-10"></div>
+                <div class="loader mb-10 mt-10"></div>
 
-  <div class="text-center mt-4">
-    <h6 class="text-gray-600">One moment while I get the answer...</h6>
-    <div class="text-gray-500">
-      Did you know that the average human attention span is 8 seconds?
-    </div>
-  </div>
-</div>
+                <div class="text-center mt-4">
+                  <h6 class="text-gray-600">One moment while I get the answer...</h6>
+                  <div class="text-gray-500">
+                    Did you know that the average human attention span is 8 seconds?
+                  </div>
+                </div>
+              </div>
 
               <!-- Result Section -->
               <div id="result-card">
                 <h5 class="text-lg font-semibold mt-4 mb-2" id="result-scroll-point">Answer</h5>
                 <div>
                   <label class="flex justify-between items-end mb-2">
-                    <span class="text-gray-600"><i class="fa-solid fa-comments mr-2"></i> The answer to your
-                      question</span>
+      <span class="text-gray-600">
+        <i class="fa-solid fa-comments mr-2"></i>
+        The answer to your question
+      </span>
 
-                    <a class="bg-blue-500 text-white text-xs px-3 py-1 rounded-lg cursor-not-allowed opacity-50"
-                      href="javascript:;" aria-disabled="true">Copy</a>
-                  </label>
-                  <div class="form-textarea mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm"
-                    rows="3">
-                    {{ response || placeholderAnswer }}
-                  </div>
+      <a
+        :class="copyButtonClass"
+        @click="copyToClipboard"
+        :aria-disabled="!response || clicked"
+        href="javascript:;"
+      >
+        Copy
+      </a>
+    </label>
+    <div
+      class="form-textarea mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm"
+      rows="3"
+    >
+      {{ response || placeholderAnswer }}
+    </div>
                 </div>
 
                 <div class="mt-5">
@@ -258,7 +270,13 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
+import { initFlowbite } from 'flowbite'
 
+// initialize components based on data attribute selectors
+onMounted(() => {
+  initFlowbite();
+});
 
 const placeholderAnswer = 'Ask away!';
 const placeholderExplain = 'You can enable explanations in "Advanced Options" under the question box'
@@ -315,15 +333,40 @@ export default {
       showTooltip: false,
       showUploadSection: false,
       showAdvancedOptions: false,
+      clicked: false,
     }
   },
 
+  computed: {
+    copyButtonClass() {
+      return this.clicked
+        ? 'bg-gray-400 text-white text-xs px-3 py-1 rounded-lg cursor-not-allowed opacity-60'
+        : (this.response
+            ? 'bg-blue-500 text-white text-xs px-3 py-1 rounded-lg cursor-pointer'
+            : 'bg-blue-500 text-white text-xs px-3 py-1 rounded-lg cursor-not-allowed opacity-50');
+    },
+  },
+
   methods: {
+
+   copyToClipboard() {
+      if (this.response && !this.clicked) {
+        navigator.clipboard.writeText(this.response)
+          .then(() => {
+            this.clicked = true; // Update the clicked state
+            console.log('Text copied to clipboard');
+          })
+          .catch((err) => {
+            console.error('Failed to copy text: ', err);
+          });
+      }
+    },
     update() {
       console.log('Form data:', this.form)
 
       this.form.post(`/ask`, {
         onSuccess: () => this.form.reset(''),
+        onSuccess: this.clicked = true,
       })
     },
 
@@ -369,15 +412,19 @@ export default {
   0% {
     transform: rotate(0deg) scaleY(1);
   }
+
   25% {
     transform: rotate(90deg) scaleY(-1);
   }
+
   50% {
     transform: rotate(180deg) scaleY(1);
   }
+
   75% {
     transform: rotate(270deg) scaleY(-1);
   }
+
   100% {
     transform: rotate(360deg) scaleY(1);
   }
@@ -444,6 +491,7 @@ export default {
   aspect-ratio: 1;
   position: relative;
 }
+
 .loader::before,
 .loader::after {
   content: "";
@@ -452,26 +500,38 @@ export default {
   border-radius: 50%;
   transform-origin: bottom;
 }
+
 .loader::after {
   background:
-    radial-gradient(at 75% 15%,#fffb,#0000 35%),
-    radial-gradient(at 80% 40%,#0000,#0008),
-    radial-gradient(circle  5px,#fff 94%,#0000),
-    radial-gradient(circle 10px,#000 94%,#0000),
-    linear-gradient(#F93318 0 0) top   /100% calc(50% - 5px),
-    linear-gradient(#fff    0 0) bottom/100% calc(50% - 5px)
-    #000;
+    radial-gradient(at 75% 15%, #fffb, #0000 35%),
+    radial-gradient(at 80% 40%, #0000, #0008),
+    radial-gradient(circle 5px, #fff 94%, #0000),
+    radial-gradient(circle 10px, #000 94%, #0000),
+    linear-gradient(#F93318 0 0) top /100% calc(50% - 5px),
+    linear-gradient(#fff 0 0) bottom/100% calc(50% - 5px) #000;
   background-repeat: no-repeat;
-  animation: l20 1s infinite cubic-bezier(0.5,120,0.5,-120);
+  animation: l20 1s infinite cubic-bezier(0.5, 120, 0.5, -120);
 }
+
 .loader::before {
-  background:#ddd;
+  background: #ddd;
   filter: blur(8px);
   transform: scaleY(0.4) translate(-13px, 0px);
 }
+
 @keyframes l20 {
- 30%,70% {transform:rotate(0deg)}
- 49.99%  {transform:rotate(0.2deg)}
- 50%     {transform:rotate(-0.2deg)}
+
+  30%,
+  70% {
+    transform: rotate(0deg)
+  }
+
+  49.99% {
+    transform: rotate(0.2deg)
+  }
+
+  50% {
+    transform: rotate(-0.2deg)
+  }
 }
 </style>
