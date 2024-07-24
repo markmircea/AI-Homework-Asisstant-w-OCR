@@ -16,11 +16,11 @@
       </Link>
     </div>
 
-    <!-- Contacts Link -->
+    <!-- History List Link -->
     <div class="mb-4">
-      <Link class="group flex items-center py-3" href="/contacts">
-        <icon name="users" class="mr-2 w-4 h-4" :class="isUrl('contacts') ? 'fill-white' : 'fill-indigo-400'" />
-        <div :class="isUrl('contacts') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Contacts</div>
+      <Link class="group flex items-center py-3" href="/history-list">
+        <icon name="users" class="mr-2 w-4 h-4" :class="isUrl('history-list') ? 'fill-white' : 'fill-indigo-400'" />
+        <div :class="isUrl('history-list') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">History List</div>
       </Link>
     </div>
 

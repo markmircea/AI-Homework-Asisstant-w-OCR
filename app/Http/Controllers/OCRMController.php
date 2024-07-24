@@ -12,7 +12,7 @@ class OCRMController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'string|max:255',
+            'title' => 'nullable|string|max:255',
             'aiquery' => 'nullable|string',
             'subject' => 'nullable|string',
             'instructions' => 'string|nullable',
@@ -119,13 +119,12 @@ class OCRMController extends Controller
         $instructions = $request->input('instructions');
         $aiquery = $request->input('aiquery');
         $subject = $request->input('subject');
-        $title = $request->input('title');
 
         // Send the extracted text to ChatGPT API with optional instructions
         if ($request->input('aiquery')) {
             $chatGPTResponse = sendToChatGPT($aiquery, $instructions, $subject);
         } else {
-            $chatGPTResponse = sendToChatGPT($extractedText, $instructions, $subject);
+            $chatGPTResponse = sendToChatGPT($aiquery . $extractedText, $instructions, $subject);
         }
 
         // Ensure ChatGPT response is valid
@@ -139,6 +138,13 @@ class OCRMController extends Controller
         // Extract the Unix timestamp from the ChatGPT response and convert to a Carbon instance
         $unixTimestamp = $chatGPTResponse['created'] ?? time();
         $createdAt = \Carbon\Carbon::createFromTimestamp($unixTimestamp);
+
+
+        if(null !== $request->input('title')){
+            $title = $request->input('title') . "Created: " . $createdAt;
+        } else {
+            $title = $createdAt;
+        }
 
 
 

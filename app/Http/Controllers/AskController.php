@@ -86,8 +86,8 @@ class AskController extends Controller
             $photoPath = $request->file('photo')->store('public/announcements'); // Store photo
         }
 
-         // Initialize $ocrResult as null
-    $ocrResult = null;
+        // Initialize $ocrResult as null
+        $ocrResult = null;
 
 
         // Function to send text to ChatGPT API
@@ -193,15 +193,15 @@ class AskController extends Controller
         $extractedWords = [];
 
         // Traverse through regions and lines to extract words if $ocrResult is available
-    if ($ocrResult && isset($ocrResult['regions'])) {
-        foreach ($ocrResult['regions'] as $region) {
-            foreach ($region['lines'] as $line) {
-                foreach ($line['words'] as $word) {
-                    $extractedWords[] = $word['text'];
+        if ($ocrResult && isset($ocrResult['regions'])) {
+            foreach ($ocrResult['regions'] as $region) {
+                foreach ($region['lines'] as $line) {
+                    foreach ($line['words'] as $word) {
+                        $extractedWords[] = $word['text'];
+                    }
                 }
             }
         }
-    }
 
         // Join the extracted words into a single string
         $extractedText = implode(' ', $extractedWords);
@@ -235,40 +235,45 @@ class AskController extends Controller
         $unixTimestamp = $chatGPTResponse['created'] ?? time();
         $createdAt = \Carbon\Carbon::createFromTimestamp($unixTimestamp);
 
+        if(null !== $request->input('title')){
+            $title = $request->input('title') . "  |  " . $createdAt;
+        } else {
+            $title = $createdAt;
+        }
 
 
         // Extract the subject value using regex
         preg_match('/subject=([^\s]+)/', $chatGPTContent, $matches);
 
- // Remove the subject part from the response
- $responseBody = preg_replace('/\bsubject=[^\s]+(\s|$)/', '', $chatGPTContent);
+        // Remove the subject part from the response
+        $responseBody = preg_replace('/\bsubject=[^\s]+(\s|$)/', '', $chatGPTContent);
 
-   // If a subject was found, capitalize the first letter
-   $subject = isset($matches[1]) ? ucfirst($matches[1]) : null;
-
-
-   $explainText = "";
-   $stepsText = "";
+        // If a subject was found, capitalize the first letter
+        $subject = isset($matches[1]) ? ucfirst($matches[1]) : null;
 
 
-  // Extract and remove 'steps=' section
-    if (preg_match('/steps=([^$]*)\s*(\$#\$|$)/', $responseBody, $matches)) {
-        $stepsText = trim($matches[1]);
-        $responseBody = preg_replace('/steps=[^$]*(\$#\$|$)/', '', $responseBody);
-    } else {
-        $responseBody = preg_replace('/steps=[^$]*$/', '', $responseBody);
-    }
-
-   // Extract and remove 'explain=' section
-   if (preg_match('/explain=([^$]*)\s*(\$#\$|$)/', $responseBody, $matches)) {
-    $explainText = trim($matches[1]);
-    $responseBody = preg_replace('/explain=[^$]*(\$#\$|$)/', '', $responseBody);
-} else {
-    $responseBody = preg_replace('/explain=[^$]*$/', '', $responseBody);
-}
+        $explainText = "";
+        $stepsText = "";
 
 
+        // Extract and remove 'steps=' section
+        if (preg_match('/steps=([^$]*)\s*(\$#\$|$)/', $responseBody, $matches)) {
+            $stepsText = trim($matches[1]);
+            $responseBody = preg_replace('/steps=[^$]*(\$#\$|$)/', '', $responseBody);
+        } else {
+            $responseBody = preg_replace('/steps=[^$]*$/', '', $responseBody);
+        }
 
+        // Extract and remove 'explain=' section
+        if (preg_match('/explain=([^$]*)\s*(\$#\$|$)/', $responseBody, $matches)) {
+            $explainText = trim($matches[1]);
+            $responseBody = preg_replace('/explain=[^$]*(\$#\$|$)/', '', $responseBody);
+        } else {
+            $responseBody = preg_replace('/explain=[^$]*$/', '', $responseBody);
+        }
+
+
+        $instructions = $explainText . " " . $stepsText;
         $responseBody = trim($responseBody);
 
         // Create announcement with photo path and created_at timestamp
@@ -286,8 +291,8 @@ class AskController extends Controller
         $user = Auth::user();
         $coins = $user->coins;
 
-          // Transform the user object directly
-          $userTransformed = [
+        // Transform the user object directly
+        $userTransformed = [
             'id' => $user->id,
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
@@ -307,13 +312,11 @@ class AskController extends Controller
             'explainResponse' => $explainText,
         ]);
 
-       // return redirect()->route('ask')
+        // return redirect()->route('ask')
         //->with('success', 'Question Analyzed. Response Generated.')
         //->with('response',json_encode($responseBody));
-       // ->with('title', $title)
-       // ->with('explain', $explain)
-       // ->with('steps' , $steps);
+        // ->with('title', $title)
+        // ->with('explain', $explain)
+        // ->with('steps' , $steps);
     }
-
-
 }

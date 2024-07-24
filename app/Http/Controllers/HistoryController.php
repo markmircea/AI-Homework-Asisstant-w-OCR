@@ -23,8 +23,10 @@ class HistoryController extends Controller
 
         Inertia::share('coins', $coins);
 
-        //   $announcements = Announcement::where('user_id', $user->id)->get();
-        $announcements = $user->announcements()->orderBy('order')->get();
+        // For reorder $announcements = $user->announcements()->orderBy('order')->get();
+
+        // Fetch announcements ordered by creation date, newest first
+        $announcements = $user->announcements()->orderBy('created_at', 'desc')->get();
 
 
         $announcements->transform(function ($announcement) {

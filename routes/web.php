@@ -13,7 +13,8 @@ use App\Http\Controllers\OCRController;
 use App\Http\Controllers\OCRMController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\AskController;
-
+use App\Http\Controllers\HistoryListController;
+use Tests\Feature\ContactsTest;
 
 /*
 |--------------------------------------------------------------------------
@@ -175,6 +176,7 @@ Route::put('organizations/{organization}/restore', [OrganizationsController::cla
 
 // Contacts
 
+
 Route::get('contacts', [ContactsController::class, 'index'])
     ->name('contacts')
     ->middleware('auth');
@@ -244,14 +246,30 @@ Route::middleware('auth')->group(function () {
     Route::post('history/update-order', [HistoryController::class, 'updateOrder'])->name('history.updateOrder');
 });
 
-
-
 Route::post('/history/{id}/send-email', [HistoryController::class, 'sendEmail'])
     ->name('history.sendEmail')
     ->middleware('auth');
 
+    Route::get('history-list', [HistoryListController::class, 'index'])
+    ->name('history-list')
+    ->middleware('auth');
 
 
+    Route::get('history-list/{announcement}/edit', [HistoryListController::class, 'edit'])
+    ->name('history-list.edit')
+    ->middleware('auth');
+
+    Route::put('history/{announcement}', [HistoryListController::class, 'update'])
+    ->name('history-list.update')
+    ->middleware('auth');
+
+Route::delete('history-list/{announcement}', [HistoryListController::class, 'destroy'])
+    ->name('history-list.destroy')
+    ->middleware('auth');
+
+Route::put('history-list/{announcement}/restore', [HistoryListController::class, 'restore'])
+    ->name('history-list.restore')
+    ->middleware('auth');
 
 
 

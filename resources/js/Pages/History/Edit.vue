@@ -1,8 +1,8 @@
 <template>
-  <div class="container mx-auto p-6">
+  <div class="container mx-auto p-4">
     <Head title="Edit Announcement" />
-    <h1 class="mb-8 text-3xl font-bold text-gray-900">Modify Query</h1>
-    <form @submit.prevent="submit" class="space-y-6 bg-white p-6 rounded-lg shadow-lg">
+    <h1 class="mb-6 text-2xl font-bold text-gray-900">Modify Query</h1>
+    <form @submit.prevent="submit" class="space-y-4 bg-white p-4 rounded-lg shadow-md max-w-2xl mx-auto">
       <TextInput id="title" v-model="form.title" label="Title" :error="form.errors.title" />
 
       <div v-if="form.extracted_text">
@@ -53,7 +53,6 @@
   </div>
 </template>
 
-
 <script>
 import { Head, useForm } from '@inertiajs/vue3'
 import TextInput from '@/Shared/TextInput.vue'
@@ -69,36 +68,30 @@ export default {
     announcement: Object,
   },
   setup(props, { emit }) {
-    // Define the subjects array
     const subjects = [
       'Mathematics', 'Science', 'History', 'Geography', 'English',
       'Chemistry', 'Physics', 'Biology', 'Computer Science', 'Economics'
     ];
 
-    // Define the form with initial values
     const form = useForm({
       title: props.announcement.title,
       content: props.announcement.content,
       extracted_text: props.announcement.extracted_text,
       aiquery: props.announcement.aiquery,
       instructions: props.announcement.instructions,
-      subject: props.announcement.subject, // Ensure this is included
+      subject: props.announcement.subject,
     });
 
-    // Define the submit function
     const submit = () => {
-
       form.put(`/history/${props.announcement.id}`, {
         onSuccess: () => emit('submitted')
       });
     };
 
-    // Return form, subjects, and submit to the template
     return { form, subjects, submit };
   },
 }
 </script>
-
 
 <style scoped>
 /* Container for the form */
@@ -110,7 +103,7 @@ export default {
 /* Form container */
 form {
   background-color: #fff;
-  padding: 24px;
+  padding: 16px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -126,7 +119,7 @@ textarea:disabled {
 select {
   border: 1px solid #d1d5db;
   background-color: #fff;
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem;
   border-radius: 0.375rem;
 }
 
@@ -134,7 +127,7 @@ select {
 button {
   background-color: #4f46e5;
   color: #fff;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
   border-radius: 0.375rem;
   cursor: pointer;
   transition: background-color 0.3s ease;

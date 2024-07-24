@@ -24,11 +24,12 @@ class CreateAnnouncementsTable extends Migration
             $table->string('photo_path')->nullable();
 
 
-            $table->timestamps();
+
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-
+            $table->timestamps();
             $table->softDeletes();
+
 
         });
     }

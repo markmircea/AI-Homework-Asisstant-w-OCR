@@ -348,6 +348,7 @@ export default {
 
 
 
+
 /* Pagination controls styling */
 .pagination-controls {
   display: flex;
@@ -356,36 +357,24 @@ export default {
 }
 
 .pagination-controls button {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  cursor: pointer;
+  @apply bg-indigo-500 text-white border-none py-2 px-4 rounded-lg;
 }
 
 .pagination-controls button:disabled {
-  background-color: #e9ecef;
-  cursor: not-allowed;
+  @apply bg-gray-300 cursor-not-allowed;
 }
 
 .page-numbers button {
-  background-color: #fff;
-  color: #007bff;
-  border: 1px solid #007bff;
-  padding: 0.5rem;
-  border-radius: 0.375rem;
-  cursor: pointer;
+  @apply bg-white text-indigo-500 border-indigo-500 border py-2 px-4 rounded-lg;
 }
 
 .page-numbers button.active {
-  background-color: #007bff;
-  color: #fff;
-}
-.display-none{
-  display: none;
+  @apply bg-indigo-500 text-white;
 }
 
+.display-none {
+  display: none;
+}
 
 /* Add this to center the icon when expanded */
 .center-icon {
