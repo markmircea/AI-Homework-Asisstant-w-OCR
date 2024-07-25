@@ -50,7 +50,11 @@
                   placeholder="Enter the title here...(Optional)" />
 
 
+
               </div>
+
+
+
 
               <!-- Subject and Level Selection -->
               <div class="w-full lg:w-1/2 pb-8 pr-6">
@@ -85,28 +89,19 @@
               </div>
 
               <!-- Text Area for Homework Question -->
-              <div class="w-full pb-8 pr-6">
+              <div class="relative w-full pb-8 pr-6">
                 <label for="homework_question" class="block text-sm font-medium text-gray-700">Your homework question
 
-                  <div class="relative inline-block ml-2">
-                    <button type="button" @mouseover="showTooltip = true" @mouseleave="showTooltip = false"
-                      class="text-gray-600 transition-colors duration-200  hover:text-indigo-500">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
-                      </svg>
-                    </button>
-                    <p v-if="showTooltip"
-                      class="absolute flex items-center justify-center w-36 p-2 text-gray-600 bg-white rounded-lg shadow-lg left-10 -top-6 dark:shadow-none shadow-gray-200 dark:bg-gray-800 dark:text-white text-xs">
-                      <span>Enter the title of your question</span>
-                      <svg xmlns="http://www.w3.org/2000/svg"
-                        class="absolute w-4 h-4 text-white transform rotate-45 -translate-y-1/2 fill-current -left-2 top-1/2 dark:text-gray-800"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path d="M20 3H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1z"></path>
-                      </svg>
-                    </p>
-                  </div>
+
+                                <!-- SVG and Badge -->
+            <figure class="absolute top-0 right-0 text-nowrap">
+              <svg class="absolute ms-4 mt-4" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 99.3 57" width="48">
+                <path fill="none" stroke="#bdc5d1" stroke-width="4" stroke-linecap="round" stroke-miterlimit="10" d="M2,39.5l7.7,14.8c0.4,0.7,1.3,0.9,2,0.4L27.9,42"></path>
+                <path fill="none" stroke="#bdc5d1" stroke-width="4" stroke-linecap="round" stroke-miterlimit="10" d="M11,54.3c0,0,10.3-65.2,86.3-50"></path>
+              </svg>
+              <span class="badge  text-gray-600 badge-pill ms-7 fa-beat-fade" style="--fa-beat-fade-opacity: 0.90; --fa-beat-fade-scale: 1.075; --fa-animation-duration: 2s;">Type your question here!</span>
+            </figure>
+
                 </label>
 
                 <textarea v-model="form.question" id="question" rows="4"
@@ -162,7 +157,7 @@
             </div>
             <div class="flex items-center px-8 py-4 bg-gray-50 border-t border-gray-100">
               <loading-button :loading="form.processing"
-                class="w-full btn-indigo transition-colors duration-200  hover:text-indigo-500 flex items-center justify-center space-x-2"
+                class="w-full btn-indigo1 transition-colors duration-200  hover:text-indigo-500 flex items-center justify-center space-x-2"
                 type="submit">
                 <!-- Animated Question Mark -->
                 <span class="question-mark">?</span>
@@ -201,39 +196,48 @@
                 <h5 class="text-lg font-semibold mt-4 mb-2" id="result-scroll-point">Answer</h5>
                 <div>
                   <label class="flex justify-between items-end mb-2">
-      <span class="text-gray-600">
-        <i class="fa-solid fa-comments mr-2"></i>
-        The answer to your question
-      </span>
-
-      <a
-        :class="copyButtonClass"
-        @click="copyToClipboard"
-        :aria-disabled="!response || clicked"
-        href="javascript:;"
-      >
-        Copy
-      </a>
-    </label>
-    <div
-      class="form-textarea mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm"
-      rows="3"
-    >
-      {{ response || placeholderAnswer }}
-    </div>
+                    <span class="text-gray-600">
+                      <i class="fa-solid fa-comments mr-2"></i>
+                      The answer to your question
+                    </span>
+                    <a
+                      :class="copyButtonClass('answer')"
+                      @click="copyToClipboard('answer')"
+                      :aria-disabled="!response || clicked.answer"
+                      href="javascript:;"
+                    >
+                      Copy
+                    </a>
+                  </label>
+                  <div
+                    class="form-textarea mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm"
+                    rows="3"
+                  >
+                    {{ response || placeholderAnswer }}
+                  </div>
                 </div>
 
                 <div class="mt-5">
                   <h5 class="text-lg font-semibold mb-2">Explanation</h5>
                   <div>
                     <label class="flex justify-between items-end mb-2">
-                      <span class="text-gray-600"><i class="fa-solid fa-pen-to-square mr-2"></i> The explanation to
-                        your question</span>
-                      <a class="bg-blue-500 text-white text-xs px-3 py-1 rounded-lg cursor-not-allowed opacity-50"
-                        href="javascript:;" aria-disabled="true">Copy</a>
+                      <span class="text-gray-600">
+                        <i class="fa-solid fa-comments mr-2"></i>
+                        Explanation of the answer
+                      </span>
+                      <a
+                        :class="copyButtonClass('explanation')"
+                        @click="copyToClipboard('explanation')"
+                        :aria-disabled="!explanation || clicked.explanation"
+                        href="javascript:;"
+                      >
+                        Copy
+                      </a>
                     </label>
-                    <div class="form-textarea mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm"
-                      rows="3">
+                    <div
+                      class="form-textarea mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm"
+                      rows="3"
+                    >
                       {{ explainResponse || placeholderExplain }}
                     </div>
                   </div>
@@ -243,13 +247,23 @@
                   <h5 class="text-lg font-semibold mb-2">Steps</h5>
                   <div>
                     <label class="flex justify-between items-end mb-2">
-                      <span class="text-gray-600"><i class="fa-solid fa-list-ol mr-2"></i> The steps to your
-                        question</span>
-                      <a class="bg-blue-500 text-white text-xs px-3 py-1 rounded-lg cursor-not-allowed opacity-50"
-                        href="javascript:;" aria-disabled="true">Copy</a>
+                      <span class="text-gray-600">
+                        <i class="fa-solid fa-comments mr-2"></i>
+                        Steps to solve the problem
+                      </span>
+                      <a
+                        :class="copyButtonClass('steps')"
+                        @click="copyToClipboard('steps')"
+                        :aria-disabled="!steps || clicked.steps"
+                        href="javascript:;"
+                      >
+                        Copy
+                      </a>
                     </label>
-                    <div class="form-textarea mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm"
-                      rows="3">
+                    <div
+                      class="form-textarea mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm"
+                      rows="3"
+                    >
                       {{ stepsResponse || placeholderSteps }}
                     </div>
                   </div>
@@ -333,40 +347,51 @@ export default {
       showTooltip: false,
       showUploadSection: false,
       showAdvancedOptions: false,
-      clicked: false,
+      clicked: {
+        answer: false,
+
+      },
     }
   },
 
-  computed: {
-    copyButtonClass() {
-      return this.clicked
-        ? 'bg-gray-400 text-white text-xs px-3 py-1 rounded-lg cursor-not-allowed opacity-60'
-        : (this.response
-            ? 'bg-blue-500 text-white text-xs px-3 py-1 rounded-lg cursor-pointer'
-            : 'bg-blue-500 text-white text-xs px-3 py-1 rounded-lg cursor-not-allowed opacity-50');
-    },
-  },
+
 
   methods: {
 
-   copyToClipboard() {
-      if (this.response && !this.clicked) {
-        navigator.clipboard.writeText(this.response)
-          .then(() => {
-            this.clicked = true; // Update the clicked state
-            console.log('Text copied to clipboard');
-          })
-          .catch((err) => {
-            console.error('Failed to copy text: ', err);
-          });
+    copyToClipboard(type) {
+      let textToCopy = '';
+
+      if (type === 'answer') {
+        textToCopy = this.response || this.placeholderAnswer;
+        this.clicked.answer = true;
+      } else if (type === 'explanation') {
+        textToCopy = this.explainResponse || this.placeholderExplanation;
+        this.clicked.explanation = true;
+      } else if (type === 'steps') {
+        textToCopy = this.stepsResponse || this.placeholderSteps;
+        this.clicked.steps = true;
       }
+
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        this.copyButtonClass(type);
+          this.$forceUpdate();
+
+      });
     },
+    copyButtonClass(type) {
+      return this.clicked[type] ? 'bg-gray-500 text-white text-xs px-3 py-1 rounded-lg cursor-not-allowed opacity-50' : 'bg-indigo-500 text-white text-xs px-3 py-1 rounded-lg';
+    },
+
+
+
     update() {
       console.log('Form data:', this.form)
 
       this.form.post(`/ask`, {
         onSuccess: () => this.form.reset(''),
-        onSuccess: this.clicked = true,
+       onSuccess: this.clicked.answer = false,
+       onSuccess: this.clicked.explanation = false,
+       onsuccess: this.clicked.steps = false
       })
     },
 
@@ -385,8 +410,9 @@ export default {
 
 <style>
 /* Full Width Button */
-.btn-indigo {
-
+.btn-indigo1 {
+background:#3949ab;
+-webkit-text-fill-color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 0.375rem;
   font-weight: 600;
@@ -396,7 +422,7 @@ export default {
   width: 100%;
 }
 
-.btn-indigo:hover {
+.btn-indigo1:hover {
   background-color: #2563eb;
 }
 

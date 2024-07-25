@@ -139,7 +139,7 @@ class AskController extends Controller
                         'content' => $text
                     ]
                 ],
-                'max_tokens' => 200, // Adjust max tokens as needed
+                'max_tokens' => 500, // Adjust max tokens as needed
                 'temperature' => 0.4, // Adjust temperature as needed
                 'top_p' => 1.0,
                 'n' => 1,
