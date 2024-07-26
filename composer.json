@@ -19,7 +19,9 @@
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.15",
         "laravel/tinker": "^2.9",
-        "league/glide-symfony": "^2.0"
+        "league/glide-symfony": "^2.0",
+        "phpoffice/phpword": "^1.2",
+        "smalot/pdfparser": "^2.10"
     },
     "require-dev": {
         "larastan/larastan": "^2.8",

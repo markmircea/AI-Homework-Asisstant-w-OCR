@@ -1,17 +1,17 @@
 <template>
-  <transition name="modal">
+  <transition name="modal" appear>
     <div class="fixed inset-0 flex items-center justify-center z-50" v-if="visible">
       <!-- Overlay -->
-      <div class="absolute inset-0 bg-black opacity-50" @click.stop="close"></div>
+      <div class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm" @click.self="close"></div>
       <!-- Modal Container -->
-      <div class="modal-container bg-white rounded-lg shadow-lg overflow-hidden z-10 mx-4 sm:mx-6 lg:mx-8">
+      <div class="modal-container bg-white dark:bg-gray-800 rounded-lg shadow-xl z-10 mx-4 sm:mx-6 lg:mx-8 transform transition-all duration-300 ease-out flex flex-col">
         <!-- Modal Content -->
-        <div class="p-6">
+        <div class="p-6 flex-grow flex flex-col">
           <slot></slot>
         </div>
         <!-- Modal Footer -->
-        <div class="p-4 border-t border-gray-200 flex justify-end">
-          <button @click.stop="close" class="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out">
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 flex justify-end">
+          <button @click.stop="close" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out">
             Close
           </button>
         </div>
@@ -19,7 +19,6 @@
     </div>
   </transition>
 </template>
-
 <script>
 export default {
   props: {
@@ -54,30 +53,30 @@ export default {
 </script>
 
 <style scoped>
-/* Ensure modal container is centered and within viewport */
 .modal-container {
   max-width: 90%;
-  width: 800px; /* Default width */
-
-  max-height: 90vh;
+  width: 800px;
+  height: 90vh;
+  max-height: 900px;
   margin: auto;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-enter-active,
 .modal-leave-active {
-  transition: opacity 0.5s ease;
+  transition: all 0.3s ease-out;
 }
 
-.modal-enter,
+.modal-enter-from,
 .modal-leave-to {
   opacity: 0;
+  transform: scale(0.95);
 }
 
-/* Ensure modal does not overflow the screen */
-.modal-container {
-  box-sizing: border-box;
-  padding: 1.5rem;
-  border-radius: 0.375rem;
+.modal-enter-to,
+.modal-leave-from {
+  opacity: 1;
+  transform: scale(1);
 }
 </style>

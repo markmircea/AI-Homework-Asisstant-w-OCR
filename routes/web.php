@@ -14,7 +14,8 @@ use App\Http\Controllers\OCRMController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\AskController;
 use App\Http\Controllers\HistoryListController;
-use Tests\Feature\ContactsTest;
+use App\Http\Controllers\UserSessionController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -272,6 +273,11 @@ Route::put('history-list/{announcement}/restore', [HistoryListController::class,
     ->middleware('auth');
 
 
+    // Active Session
+
+    Route::get('/user/active-sessions', [UserSessionController::class, 'getActiveSessions'])->middleware('auth');
+
+    Route::delete('/user/active-sessions/{sessionId}', [UserSessionController::class, 'terminateSession'])->middleware('auth');
 
 
 

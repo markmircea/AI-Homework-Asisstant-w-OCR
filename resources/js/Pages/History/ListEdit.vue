@@ -107,3 +107,89 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+/* General styling */
+.container {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 2rem;
+  border-radius: 1rem;
+}
+
+/* Card styling */
+.bg-white {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.bg-white:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Button styling */
+.btn-indigo {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.btn-indigo:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Form styling */
+.form-input, .form-textarea, .form-select {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  outline: none;
+}
+
+/* Link styling */
+.text-indigo-400 {
+  color: #818cf8;
+  transition: color 0.3s ease;
+}
+
+.text-indigo-400:hover {
+  color: #6366f1;
+}
+
+/* Delete button styling */
+.text-red-600 {
+  color: #dc2626;
+  transition: all 0.3s ease;
+}
+
+.text-red-600:hover {
+  color: #b91c1c;
+  text-decoration: underline;
+}
+
+/* Ensure sharp text */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (max-width: 1024px) {
+  .lg\:w-1\/2 {
+    width: 100%;
+  }
+}
+</style>

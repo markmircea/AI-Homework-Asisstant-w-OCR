@@ -87,7 +87,7 @@ class OCRMController extends Controller
                 $client = new Client();
                 $response = $client->post('https://ocrphp.cognitiveservices.azure.com/vision/v3.2/ocr', [
                     'headers' => [
-                        'Ocp-Apim-Subscription-Key' => '4eafdaaa1d994e2c814538d47d2276d3',
+                        'Ocp-Apim-Subscription-Key' => env('AZURE_OCR_SUBSCRIPTION_KEY'),
                         'Content-Type' => 'application/octet-stream',
                     ],
                     'body' => fopen($photoFullPath, 'r'),

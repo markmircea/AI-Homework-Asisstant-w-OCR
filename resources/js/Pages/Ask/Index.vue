@@ -10,24 +10,20 @@
 
     <div class="container mt-20">
       <div class="flex flex-col lg:flex-row gap-4">
-
-
-
         <!-- Question Section -->
-        <div class="flex-1 bg-white shadow-lg rounded-lg  overflow-hidden">
+        <div class="flex-1 bg-white shadow-lg rounded-lg overflow-hidden">
           <div class="px-8 py-4 bg-white border-b border-gray-200">
             <h2 class="text-xl font-semibold">Question</h2>
           </div>
           <form @submit.prevent="update">
             <div class="flex flex-wrap -mb-8 -mr-6 p-8">
-
               <!-- Title with Tooltip -->
               <div class="w-full pb-8 pr-6 relative">
                 <label for="title" class="block text-sm font-medium text-gray-700 flex items-center">
                   Title
                   <div class="relative inline-block ml-2">
                     <button type="button" @mouseover="showTooltip = true" @mouseleave="showTooltip = false"
-                      class="text-gray-600 transition-colors duration-200  hover:text-indigo-500">
+                      class="text-gray-600 transition-colors duration-200 hover:text-indigo-500">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -48,13 +44,7 @@
                 <input v-model="form.title" id="title" type="text"
                   class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="Enter the title here...(Optional)" />
-
-
-
               </div>
-
-
-
 
               <!-- Subject and Level Selection -->
               <div class="w-full lg:w-1/2 pb-8 pr-6">
@@ -91,87 +81,123 @@
               <!-- Text Area for Homework Question -->
               <div class="relative w-full pb-8 pr-6">
                 <label for="homework_question" class="block text-sm font-medium text-gray-700">Your homework question
-
-
-                                <!-- SVG and Badge -->
-            <figure class="absolute top-0 right-0 text-nowrap">
-              <svg class="absolute ms-4 mt-4" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 99.3 57" width="48">
-                <path fill="none" stroke="#bdc5d1" stroke-width="4" stroke-linecap="round" stroke-miterlimit="10" d="M2,39.5l7.7,14.8c0.4,0.7,1.3,0.9,2,0.4L27.9,42"></path>
-                <path fill="none" stroke="#bdc5d1" stroke-width="4" stroke-linecap="round" stroke-miterlimit="10" d="M11,54.3c0,0,10.3-65.2,86.3-50"></path>
-              </svg>
-              <span class="badge  text-gray-600 badge-pill ms-7 fa-beat-fade" style="--fa-beat-fade-opacity: 0.90; --fa-beat-fade-scale: 1.075; --fa-animation-duration: 2s;">Type your question here!</span>
-            </figure>
-
+                  <!-- SVG and Badge -->
+                  <figure class="absolute top-0 right-0 text-nowrap">
+                    <svg class="absolute ms-4 mt-4" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                      viewBox="0 0 99.3 57" width="48">
+                      <path fill="none" stroke="#bdc5d1" stroke-width="4" stroke-linecap="round" stroke-miterlimit="10"
+                        d="M2,39.5l7.7,14.8c0.4,0.7,1.3,0.9,2,0.4L27.9,42"></path>
+                      <path fill="none" stroke="#bdc5d1" stroke-width="4" stroke-linecap="round" stroke-miterlimit="10"
+                        d="M11,54.3c0,0,10.3-65.2,86.3-50"></path>
+                    </svg>
+                    <span class="badge text-gray-600 badge-pill ms-7 fa-beat-fade"
+                      style="--fa-beat-fade-opacity: 0.90; --fa-beat-fade-scale: 1.075; --fa-animation-duration: 2s;">Type
+                      your question here!</span>
+                  </figure>
                 </label>
-
                 <textarea v-model="form.question" id="question" rows="4"
                   class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="Enter your homework question here..."></textarea>
               </div>
 
-              <!-- Expandable Area for Upload File or Image -->
+              <!-- Accordion for Upload and Advanced Options -->
               <div class="w-full pb-8 pr-6">
-                <div @click="toggleUploadSection" class="cursor-pointer">
-                  <h3 class="text-lg font-semibold text-indigo-600">
-                    {{ showUploadSection ? '- Hide Upload' : '+ Add Upload' }}
-                  </h3>
-                  <hr class="my-2 border-gray-300" />
-                </div>
-                <transition name="fade">
-                  <div v-if="showUploadSection" class="mt-4 p-4 border border-gray-300 rounded-md bg-gray-50">
-
-                    <file-input v-model="form.photo" :error="form.errors.photo" class="pb-8 pr-6 w-full lg:w-1/2"
-                      type="file" accept="image/*" label="Photo" />
-                    <!-- Image Upload -->
-                    <ImageUpload v-model="form.photo" :error="form.errors.photo" class="w-full lg:w-100%" type="file"
-                      accept="image/*" label="Photo" />
-
+                <!-- Upload Section -->
+                <div class="border border-gray-200 rounded-md mb-4">
+                  <button type="button" @click.prevent="toggleUploadSection"
+                  class="w-full px-4 py-2 text-left font-semibold text-indigo-600 hover:bg-indigo-50 focus:outline-none flex justify-between items-center">
+                    <span>{{ showUploadSection ? 'Hide Upload' : 'Add Upload' }}</span>
+                    <svg class="w-5 h-5 transform transition-transform duration-200"
+                      :class="{ 'rotate-180': showUploadSection }" xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                  <div v-show="showUploadSection" class="px-4 py-2 bg-white">
+                    <FileUpload v-model="form.photo" :error="form.errors.photo" name="photo"
+                      label="Upload File or Image" required />
                   </div>
-                </transition>
-              </div>
-
-              <!-- Advanced Options Section -->
-              <div class="w-full pb-8 pr-6">
-                <div @click="toggleAdvancedOptions" class="cursor-pointer">
-                  <h3 class="text-lg font-semibold text-indigo-600">{{ showAdvancedOptions ? '- Hide Advanced Options' :
-                    '+ Show Advanced Options' }}</h3>
-                  <hr class="my-2 border-gray-300" />
                 </div>
-                <transition name="fade">
-                  <div v-if="showAdvancedOptions" class="mt-4 p-4 border border-gray-300 rounded-md bg-gray-50">
+
+                <!-- Advanced Options Section -->
+                <div class="border border-gray-200 rounded-md">
+                  <button @click.prevent="toggleAdvancedOptions"
+                    class="w-full px-4 py-2 text-left font-semibold text-indigo-600 hover:bg-indigo-50 focus:outline-none flex justify-between items-center">
+                    <span>{{ showAdvancedOptions ? 'Hide Advanced Options' : 'Show Advanced Options' }}</span>
+                    <svg class="w-5 h-5 transform transition-transform duration-200"
+                      :class="{ 'rotate-180': showAdvancedOptions }" xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                  <div v-show="showAdvancedOptions" class="px-4 py-2 bg-white">
                     <div class="flex items-center mb-4">
                       <input v-model="form.explain" id="explanation" type="checkbox" class="mr-2" />
                       <label for="explain" class="text-sm font-medium text-gray-700">Explain why the answer is
                         correct</label>
                     </div>
-                    <div class="flex items-center">
+                    <div class="flex items-center mb-8">
                       <input v-model="form.steps" id="steps" type="checkbox" class="mr-2" />
                       <label for="steps" class="text-sm font-medium text-gray-700">Show the work done to get to the
                         answer</label>
                     </div>
+                    <div class="w-full lg:w-1/2 pb-8 pr-6">
+                      <label for="tokensCost" class="block text-sm font-medium text-gray-700">Response Length</label>
+                      <select v-model="form.tokensCost" id="tokensCost"
+                        class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="200" selected>Default 200 Tokens</option>
+                        <option value="100">100 Tokens</option>
+                        <option value="400">400 Tokens</option>
+                        <option value="600">600 Tokens</option>
+                        <option value="800">800 Tokens</option>
+                        <option value="1000">1000 Tokens</option>
+                        <option value="1500">1500 Tokens</option>
+                      </select>
+                    </div>
+                    <div class="w-full lg:w-1/2 pb-8 pr-6">
+                      <label for="temperature" class="block text-sm font-medium text-gray-700">Creativity (Higher = More
+                        Creative, Lower = Logical)</label>
+                      <select v-model="form.temperature" id="temperature"
+                        class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="0.6" selected>0.6</option>
+                        <option value="0.0">0.0</option>
+                        <option value="0.2">0.2</option>
+                        <option value="0.4">0.4</option>
+                        <option value="0.8">0.8</option>
+                        <option value="1.0">1.0</option>
+                      </select>
+                    </div>
+                    <div class="w-full lg:w-1/2 pb-8 pr-6">
+                      <label for="model" class="block text-sm font-medium text-gray-700">AI Model</label>
+                      <select v-model="form.model" id="model"
+                        class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="gpt-4o-mini" selected>GPT-4o Mini</option>
+                        <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                        <option value="gpt-4o">GPT-4o</option>
+                      </select>
+                    </div>
                   </div>
-                </transition>
+                </div>
               </div>
-
-
             </div>
             <div class="flex items-center px-8 py-4 bg-gray-50 border-t border-gray-100">
               <loading-button :loading="form.processing"
-                class="w-full btn-indigo1 transition-colors duration-200  hover:text-indigo-500 flex items-center justify-center space-x-2"
+                class="w-full btn-indigo1 transition-colors duration-200 hover:text-indigo-500 flex items-center justify-center space-x-2"
                 type="submit">
-                <!-- Animated Question Mark -->
                 <span class="question-mark">?</span>
                 <span>Ask</span>
                 <span class="hidden md:inline">&nbsp;Question</span>
               </loading-button>
-
             </div>
           </form>
         </div>
-
         <!-- Response Settings Section -->
         <div class="flex-1 bg-white shadow-lg rounded-lg overflow-hidden ">
-          <div class="bg-white shadow-lg rounded-lg overflow-hidden h-full">
+          <div class=" h-full">
             <div class="px-8 py-4 bg-white border-b border-gray-200">
               <h2 class="text-xl font-semibold">Response</h2>
             </div>
@@ -200,19 +226,13 @@
                       <i class="fa-solid fa-comments mr-2"></i>
                       The answer to your question
                     </span>
-                    <a
-                      :class="copyButtonClass('answer')"
-                      @click="copyToClipboard('answer')"
-                      :aria-disabled="!response || clicked.answer"
-                      href="javascript:;"
-                    >
+                    <a :class="copyButtonClass('answer')" @click="copyToClipboard('answer')"
+                      :aria-disabled="!response || clicked.answer" href="javascript:;">
                       Copy
                     </a>
                   </label>
-                  <div
-                    class="form-textarea mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm"
-                    rows="3"
-                  >
+                  <div class="form-textarea mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm"
+                    rows="3">
                     {{ response || placeholderAnswer }}
                   </div>
                 </div>
@@ -225,19 +245,13 @@
                         <i class="fa-solid fa-comments mr-2"></i>
                         Explanation of the answer
                       </span>
-                      <a
-                        :class="copyButtonClass('explanation')"
-                        @click="copyToClipboard('explanation')"
-                        :aria-disabled="!explanation || clicked.explanation"
-                        href="javascript:;"
-                      >
+                      <a :class="copyButtonClass('explanation')" @click="copyToClipboard('explanation')"
+                        :aria-disabled="!explanation || clicked.explanation" href="javascript:;">
                         Copy
                       </a>
                     </label>
-                    <div
-                      class="form-textarea mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm"
-                      rows="3"
-                    >
+                    <div class="form-textarea mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm"
+                      rows="3">
                       {{ explainResponse || placeholderExplain }}
                     </div>
                   </div>
@@ -251,19 +265,13 @@
                         <i class="fa-solid fa-comments mr-2"></i>
                         Steps to solve the problem
                       </span>
-                      <a
-                        :class="copyButtonClass('steps')"
-                        @click="copyToClipboard('steps')"
-                        :aria-disabled="!steps || clicked.steps"
-                        href="javascript:;"
-                      >
+                      <a :class="copyButtonClass('steps')" @click="copyToClipboard('steps')"
+                        :aria-disabled="!steps || clicked.steps" href="javascript:;">
                         Copy
                       </a>
                     </label>
-                    <div
-                      class="form-textarea mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm"
-                      rows="3"
-                    >
+                    <div class="form-textarea mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm"
+                      rows="3">
                       {{ stepsResponse || placeholderSteps }}
                     </div>
                   </div>
@@ -301,20 +309,18 @@ const placeholderSteps = 'You can enable steps in "Advanced Options" under the q
 import { Head, Link } from '@inertiajs/vue3'
 import Layout from '@/Shared/Layout.vue'
 import TextInput from '@/Shared/TextInput.vue'
-import FileInput from '@/Shared/FileInput.vue'
 import SelectInput from '@/Shared/SelectInput.vue'
 import LoadingButton from '@/Shared/LoadingButton.vue'
-import ImageUpload from '../../Shared/ImageUpload.vue'
+import FileUpload from '../../Shared/FileUpload.vue'
 
 export default {
   components: {
-    FileInput,
     Head,
     Link,
     LoadingButton,
     SelectInput,
     TextInput,
-    ImageUpload,
+    FileUpload
   },
   layout: Layout,
 
@@ -342,6 +348,9 @@ export default {
         question: '',
         explain: '',
         steps: '',
+        tokensCost: 200,
+        temperature: 0.6,
+        model: "gpt-4o-mini",
         photo: null,
       }),
       showTooltip: false,
@@ -374,7 +383,7 @@ export default {
 
       navigator.clipboard.writeText(textToCopy).then(() => {
         this.copyButtonClass(type);
-          this.$forceUpdate();
+        this.$forceUpdate();
 
       });
     },
@@ -389,14 +398,13 @@ export default {
 
       this.form.post(`/ask`, {
         onSuccess: () => this.form.reset(''),
-       onSuccess: this.clicked.answer = false,
-       onSuccess: this.clicked.explanation = false,
-       onsuccess: this.clicked.steps = false
+        onSuccess: this.clicked.answer = false,
+        onSuccess: this.clicked.explanation = false,
+        onsuccess: this.clicked.steps = false
       })
     },
 
     toggleUploadSection() {
-      console.log('Toggle Advanced Options clicked');
 
       this.showUploadSection = !this.showUploadSection
     },
@@ -409,21 +417,97 @@ export default {
 </script>
 
 <style>
-/* Full Width Button */
+
+/* General form styling */
+.container {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 2rem;
+  border-radius: 1rem;
+}
+/* Card styling */
+.bg-white {
+  background-color: rgba(255, 255, 255, 0.95);  /* Increased opacity */
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.bg-white:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+/* Input styling */
+input[type="text"], textarea, select {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+}
+
+input[type="text"]:focus, textarea:focus, select:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  outline: none;
+}
+
+/* Button styling */
 .btn-indigo1 {
-background:#3949ab;
--webkit-text-fill-color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.375rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
   font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s ease;
 }
 
 .btn-indigo1:hover {
-  background-color: #2563eb;
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Accordion styling */
+.border {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.border:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Checkbox styling */
+input[type="checkbox"] {
+  appearance: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid #4f46e5;
+  border-radius: 0.25rem;
+  transition: all 0.3s ease;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #4f46e5;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Tooltip styling */
+.tooltip {
+  background-color: #1f2937;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Animated Question Mark */
@@ -559,5 +643,22 @@ background:#3949ab;
   50% {
     transform: rotate(-0.2deg)
   }
+}
+
+
+
+/* Smooth transition for accordion content */
+.accordion-content-enter-active,
+.accordion-content-leave-active {
+  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+  max-height: 1000px;
+  /* Adjust this value based on your content's maximum height */
+  opacity: 1;
+}
+
+.accordion-content-enter-from,
+.accordion-content-leave-to {
+  max-height: 0;
+  opacity: 0;
 }
 </style>

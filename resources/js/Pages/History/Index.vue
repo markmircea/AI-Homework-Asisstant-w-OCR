@@ -1,80 +1,67 @@
 <template>
-
-  <div>
-
-    <div class="flex justify-start mb-8 max-w-3xl">
-
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
       <Head title="History" />
       <div>
         <h1 class="mb-8 text-3xl font-bold">History</h1>
-        <h2 class="p-4 border rounded-lg">Hi {{ user.first_name }}! Welcome to your dashboard, here are some of your
-          historic.</h2>
-        <div class="flex justify-between mb-4 p-4">
-          <!-- <button @click="showCreateModal" class="btn-indigo">Create Announcement</button> -->
-          <button @click="toggleOCRModal" class="btn-indigo justify-end">Analyze</button>
+        <h2 class="p-4 border rounded-lg text-sm sm:text-base">Hi {{ user.first_name }}! Welcome to your dashboard, here are some of your historic.</h2>
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-4 p-4">
+          <button @click="toggleOCRModal" class="btn-indigo w-full sm:w-auto mb-2 sm:mb-0">Analyze</button>
         </div>
 
-        <draggable :list="paginatedAnnouncements" @update="updateOrder" class="drag-handle announcement-grid">
+        <draggable :list="paginatedAnnouncements" @update="updateOrder" class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           <div v-for="announcement in paginatedAnnouncements" :key="announcement.id"
             :class="['announcement', { 'announcement-expanded': !announcement.collapsed }]"
             class="p-4 border rounded-lg shadow cursor-move" @dblclick="showEditModal(announcement)">
             <div class="flex flex-col h-full">
               <div class="flex-1">
-                <p class="announcement-title">{{ announcement.title }}</p>
-                <p class="text-gray-500 text-sm">Created at: {{ formatDate(announcement.created_at) }}</p><br>
+                <p class="announcement-title text-sm sm:text-base">{{ announcement.title }}</p>
+                <p class="text-gray-500 text-xs sm:text-sm">Created at: {{ formatDate(announcement.created_at) }}</p>
 
-                <div v-if="!announcement.collapsed">
-                  <!-- Add click event handler to expand image -->
-                  <img v-if="announcement.photo" class="rounded-lg shadow"
-                    style="width: 200px; height: auto; cursor: pointer;" :src="expandedImageUrl(announcement)"
+                <div v-if="!announcement.collapsed" class="mt-4">
+                  <img v-if="announcement.photo" class="rounded-lg shadow w-full sm:w-48 h-auto cursor-pointer"
+                    :src="expandedImageUrl(announcement)"
                     @click="expandImage(announcement)" :class="{ 'expanded': announcement.expanded }" />
-                  <br><br>
 
-                  <p>{{ announcement.title }}</p>
-                  <br><br>
-                  <h3 class="font-bold text-xl">{{ announcement.content }}</h3>
-                  <br><br>
-                  <p class="text-gray-500 text-sm">Subject: {{ announcement.subject }}</p><br>
-                  <p class="text-gray-500 text-sm">Extracted Text: {{ announcement.extracted_text }}</p><br><br>
+                  <p class="mt-4 text-sm sm:text-base">{{ announcement.title }}</p>
+                  <h3 class="font-bold text-lg sm:text-xl mt-2">{{ announcement.content }}</h3>
+                  <p class="text-gray-500 text-xs sm:text-sm mt-2">Subject: {{ announcement.subject }}</p>
+                  <p class="text-gray-500 text-xs sm:text-sm mt-2">Extracted Text: {{ announcement.extracted_text }}</p>
                 </div>
               </div>
 
-              <!-- Arrow button to collapse/expand announcement -->
-              <div class="flex space-x-2 items-center center-icon">
-                <button @click="showEditModal(announcement)" class="btn-indigo">Edit</button>
-                <button @click="destroy(announcement.id)" class="btn-red">Delete</button>
+              <div class="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-2 mt-4">
+                <button @click="showEditModal(announcement)" class="btn-indigo w-full sm:w-auto">Edit</button>
+                <button @click="destroy(announcement.id)" class="btn-red w-full sm:w-auto">Delete</button>
               </div>
-              <Icon class="center-icon"  name="drag-drop"/>
+              <Icon class="center-icon mt-2" name="drag-drop"/>
 
-              <Icon @click="toggleCollapse(announcement)" :class="['btn-arrow small-icon', { 'icon-collapsed': announcement.collapsed, 'icon-expanded': !announcement.collapsed }]"
-      :name="announcement.collapsed ? 'cheveron-down' : 'cheveron-down'" />
+              <Icon @click="toggleCollapse(announcement)"
+                :class="['btn-arrow small-icon mt-2', { 'icon-collapsed': announcement.collapsed, 'icon-expanded': !announcement.collapsed }]"
+                :name="announcement.collapsed ? 'cheveron-down' : 'cheveron-up'" />
             </div>
           </div>
         </draggable>
 
         <!-- Pagination Controls -->
-        <div class="pagination-controls mt-4 flex justify-center space-x-2 items-center">
-          <button @click="goToPage(currentPage - 1)" :disabled="currentPage <= 1">Previous</button>
-          <div class="page-numbers flex space-x-1">
+        <div class="pagination-controls mt-8 flex flex-wrap justify-center items-center space-x-2 space-y-2">
+          <button @click="goToPage(currentPage - 1)" :disabled="currentPage <= 1" class="w-full sm:w-auto">Previous</button>
+          <div class="page-numbers flex flex-wrap justify-center space-x-1 space-y-1">
             <button v-for="number in pageNumbers" :key="number" @click="goToPage(number)"
-              :class="{ 'active': number === currentPage }">
+              :class="{ 'active': number === currentPage }" class="w-8 h-8 sm:w-10 sm:h-10">
               {{ number }}
             </button>
           </div>
-          <button @click="goToPage(currentPage + 1)" :disabled="currentPage >= totalPages">Next</button>
+          <button @click="goToPage(currentPage + 1)" :disabled="currentPage >= totalPages" class="w-full sm:w-auto">Next</button>
         </div>
 
-        <p>You have {{ coins }} coins.</p>
+        <p class="mt-4 text-center">You have {{ coins }} coins.</p>
       </div>
-      <!-- Create Announcement Modal -->
+
+      <!-- Modals -->
       <Modal :visible="OCRModalVisible" @close="toggleOCRModal">
         <OCR @submitted="toggleOCRModal" />
       </Modal>
-      <!-- Create Announcement Modal -->
-      <Modal :visible="isCreateModalVisible" @close="hideCreateModal">
-        <CreateAnnouncement @submitted="hideCreateModal" />
-      </Modal>
-      <!-- Edit Announcement Modal -->
       <Modal :visible="isEditModalVisible" @close="hideEditModal">
         <EditAnnouncement :announcement="selectedAnnouncement" @submitted="hideEditModal" />
       </Modal>
@@ -230,134 +217,44 @@ export default {
   }
 }
 </script>
-
 <style scoped>
-/* Grid layout for announcements */
-.announcement-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  /* 3-column layout */
-  gap: 1rem;
-  /* Space between grid items */
+/* Tailwind CSS classes are used inline in the HTML */
+
+/* Custom CSS */
+.container {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  @apply p-8 rounded-2xl;
 }
 
-.announcement {
-  margin-bottom: 1rem;
-  padding: 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.375rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+.announcement, .border {
+  background-color: rgba(255, 255, 255, 0.95);
+  @apply rounded-2xl shadow-lg transition-all duration-300 ease-in-out;
 }
 
-/* Styling for expanded announcement */
-.announcement-expanded {
-  grid-column: span 3;
-  /* Span all 3 columns */
+.announcement:hover, .border:hover {
+  @apply transform -translate-y-1 shadow-xl;
+}
+
+.btn-indigo, .btn-red, .pagination-controls button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  @apply border-none rounded-lg text-white font-semibold py-3 px-6 transition-all duration-300 ease-in-out;
+}
+
+.btn-indigo:hover, .btn-red:hover, .pagination-controls button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  @apply transform -translate-y-0.5 shadow-md;
+}
+
+.btn-red {
+  background: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
+}
+
+.btn-red:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #f87171 100%);
 }
 
 .announcement-title {
-  display: -webkit-box;
-  /* Required for ellipsis */
-  -webkit-line-clamp: 2;
-  /* Limit to 2 lines */
-  -webkit-box-orient: vertical;
-  /* Vertical orientation of the box */
-  overflow: hidden;
-  /* Hide overflow */
-  text-overflow: ellipsis;
-  /* Show ellipsis for overflow text */
-  white-space: normal;
-  /* Ensure normal white space handling */
-  margin: 0;
-  /* Optional: Adjust margin as needed */
-}
-
-.cursor-move {
-  cursor: move;
-}
-
-.flex {
-  display: flex;
-}
-
-.justify-between {
-  justify-content: space-between;
-}
-
-.items-center {
-  align-items: center;
-}
-
-.space-x-2> :not(:last-child) {
-  margin-right: 0.5rem;
-}
-
-
-
-
-/* Styling for expanded image */
-.expanded {
-  width: 600px;
-  /* Three times larger than original */
-  height: auto;
-  /* Maintain aspect ratio */
-  position: fixed;
-  /* Position fixed to overlay on top */
-  top: 50%;
-  /* Center vertically */
-  left: 50%;
-  /* Center horizontally */
-  transform: translate(-50%, -50%) scale(3);
-  /* Center the image and scale it */
-  z-index: 999;
-  /* Ensure expanded image is on top of everything else */
-  cursor: zoom-out;
-  /* Change cursor to indicate closing */
-}
-
-/* Base styles for the icon */
-.btn-arrow {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  margin-left: auto; /* Ensures it aligns to the right */
-  transition: margin 0.3s; /* Smooth transition for margin change */
-}
-
-/* Additional styles for collapsed and expanded states */
-.icon-collapsed {
-  margin-right: 0; /* Default position when collapsed */
-}
-
-.icon-expanded {
-  margin-right: 1rem; /* Adjust this value to move the icon to the right */
-}
-
-.small-icon {
-  width: 20px;
-  /* Adjust width as needed */
-  height: 20px;
-  /* Adjust height as needed */
-}
-
-/* Add to your scoped <style> section */
-.move-right {
-  margin-left: auto; /* Pushes the icon to the right in a flex container */
-}
-
-
-
-
-/* Pagination controls styling */
-.pagination-controls {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.pagination-controls button {
-  @apply bg-indigo-500 text-white border-none py-2 px-4 rounded-lg;
+  @apply font-semibold text-gray-700 line-clamp-2;
 }
 
 .pagination-controls button:disabled {
@@ -365,25 +262,106 @@ export default {
 }
 
 .page-numbers button {
-  @apply bg-white text-indigo-500 border-indigo-500 border py-2 px-4 rounded-lg;
+  @apply bg-white text-indigo-500 border border-indigo-500 py-2 px-4 rounded-lg;
 }
 
 .page-numbers button.active {
   @apply bg-indigo-500 text-white;
 }
 
-.display-none {
-  display: none;
+.btn-arrow {
+  @apply text-gray-600 transition-all duration-300 ease-in-out;
 }
 
-/* Add this to center the icon when expanded */
+.btn-arrow:hover {
+  @apply text-indigo-500;
+}
+
+.small-icon {
+  @apply w-6 h-6;
+}
+
+img {
+  @apply rounded-lg transition-all duration-300 ease-in-out;
+}
+
+.expanded {
+  @apply shadow-2xl;
+  width: 90vw;
+  max-width: 600px;
+  height: auto;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+  cursor: zoom-out;
+}
+
 .center-icon {
-  margin: 0 auto; /* Center the icon horizontally */
+  @apply flex justify-center mt-4;
 }
 
-/* Flex container adjustment */
-.announcement .flex-col.items-center {
-  align-items: center; /* Center all children horizontally */
+.announcement-grid {
+  @apply grid gap-4;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.announcement {
+  @apply mb-4 p-4 border border-gray-200 rounded-lg shadow-sm;
+}
+
+.cursor-move {
+  cursor: move;
+}
+
+.icon-collapsed {
+  @apply mr-0;
+}
+
+.icon-expanded {
+  @apply mr-4;
+}
+
+.move-right {
+  @apply ml-auto;
+}
+
+/* Responsive styles */
+@screen sm {
+  .announcement-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@screen lg {
+  .announcement-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .announcement-expanded {
+    grid-column: span 1;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .announcement-expanded {
+    grid-column: span 2;
+  }
+}
+
+@media (min-width: 1025px) {
+  .announcement-expanded {
+    grid-column: span 3;
+  }
+}
+
+/* Ensure sharp text */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 </style>
