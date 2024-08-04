@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request; // Make sure this is at the top of your file
 use Illuminate\Support\Facades\URL;
 use App\Models\Announcement;
 
@@ -15,7 +15,7 @@ use App\Models\Announcement;
 
 class DashboardController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $user = Auth::user();
         $coins = $user->coins;
@@ -60,6 +60,8 @@ class DashboardController extends Controller
             'coins' => $coins,
             'user' => $userTransformed,
             'announcements' => $announcements,
+            'selectedSubject' => $request->query('subject', ''),
+
         ]);
     }
 
