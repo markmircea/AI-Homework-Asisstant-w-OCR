@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
       <div class="xl:grid xl:grid-cols-4 xl:gap-8">
         <div class="xl:col-span-1">
-          <img class="h-10" src="/path-to-your-logo.svg" alt="Company logo">
+          <icon name="logo" class="h-10 fill-indigo-200" />
           <p class="mt-4 text-sm text-indigo-200">
             Empowering students with AI-driven homework assistance.
           </p>
@@ -112,7 +112,12 @@
 </template>
 
 <script>
+import Icon from '../../Shared/Icon.vue';
+
 export default {
   name: 'Footer',
+  components: {
+    Icon,
+  },
 };
 </script>

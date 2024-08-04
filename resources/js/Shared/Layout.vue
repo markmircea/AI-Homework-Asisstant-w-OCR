@@ -89,8 +89,6 @@ export default {
 
   },
 
-  mounted() {
-    console.log('User photo:', this.auth.user.photo);
-  },
+
 }
 </script>

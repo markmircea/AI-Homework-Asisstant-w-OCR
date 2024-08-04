@@ -41,6 +41,7 @@ export default {
     selectedSubject: String,
 
   },
+
   components: {
     Head,
     Nav,
@@ -54,7 +55,9 @@ export default {
     ContactUs,
     PricingPage
   },
-  data() {
+
+
+    data() {
     return {
       localSelectedSubject: this.selectedSubject || '',
     }

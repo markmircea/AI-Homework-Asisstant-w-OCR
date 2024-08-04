@@ -1,6 +1,6 @@
 <template>
 
-<nav :user="user" :class="[
+  <nav :user="user" :class="[
     'transition-all duration-300 ease-in-out',
     scrolled ? 'bg-gray-800 sticky top-0' : 'bg-transparent'
   ]" style="z-index: 1000;">
@@ -28,43 +28,55 @@
         </div>
         <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
           <div class="flex flex-shrink-0 items-center">
-            <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-              alt="Your Company">
+
+              <icon name="logo" class="h-8 w-auto fill-gray-300" />
+
           </div>
           <div class="hidden sm:ml-6 sm:block">
             <div class="flex space-x-4">
               <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-              <Link href="/" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Dashboard</Link>
+              <Link href="/"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+              Dashboard</Link>
+              <!-- Subjects Dropdown -->
+              <div class="relative group">
+                <button
+                  class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+                  Subjects
+                  <svg class="w-4 h-4 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+                <div
+                  class="absolute left-0 w-48 mt-2 origin-top-left bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 scale-95 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:scale-100"
+                  style="z-index: 1001;">
+                  <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                    <a v-for="subject in subjects" :key="subject" @click.prevent="selectSubject(subject)"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+                      role="menuitem">
+                      {{ subject }}
+                    </a>
+                  </div>
+                </div>
+              </div>
 
-    <!-- Subjects Dropdown -->
-    <div class="relative group">
-      <button class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
-        Subjects
-        <svg class="w-4 h-4 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-        </svg>
-      </button>
-      <div class="absolute left-0 w-48 mt-2 origin-top-left bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 scale-95 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:scale-100" style="z-index: 1001;">
-        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-          <a v-for="subject in subjects" :key="subject"
-             @click.prevent="selectSubject(subject)"
-             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-             role="menuitem">
-            {{ subject }}
-          </a>
-        </div>
-      </div>
-    </div>
 
-          <Link href="/pricing" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Pricing</Link>
-              <Link href="/pricing#contact-us" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Contact Us</Link>
+
+              <Link href="/pricing"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+              Pricing</Link>
+              <Link href="/pricing#contact-us"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+              Contact Us</Link>
             </div>
           </div>
+
         </div>
-        <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+        <div class="inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
           <!-- Notification Button -->
           <button type="button"
-            class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+            class="relative rounded-full  p-1 text-gray-400 hover:outline-none hover:ring-2 hover:ring-white ">
             <span class="absolute -inset-1.5"></span>
             <span class="sr-only">View notifications</span>
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -82,26 +94,25 @@
           <div class="relative ml-3 group">
             <div>
               <button type="button"
-                class="relative flex rounded-full bg-gray-800 text-sm group-hover:ring-2 group-hover:ring-white group-hover:ring-offset-2 group-hover:ring-offset-gray-800">
+                class="relative flex rounded-full bg-indigo-800 text-sm focus:outline-none hover:ring-2 hover:ring-white hover:ring-offset-2 hover:ring-offset-gray-800">
                 <span class="absolute -inset-1.5"></span>
                 <span class="sr-only">Open user menu</span>
-                <img v-if="user.photo" class="h-8 w-8 rounded-full" :src="user.photo" />
+                <img v-if="user.photo" class="h-8 w-8 rounded-full" :src="user.photo" alt="User photo" />
+                <div v-else class="h-8 w-8 rounded-full bg-gray-500 flex items-center justify-center text-white">
+                  {{ user.name ? user.name.charAt(0).toUpperCase() : 'U' }}
+                </div>
               </button>
             </div>
 
             <!-- Dropdown menu -->
             <div
-              class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 scale-95 transition-opacity transition-transform duration-150 ease-out group-hover:opacity-100 group-hover:scale-100">
-              <!-- Active: "bg-gray-100", Not Active: "" -->
+              class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 scale-95 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:scale-100">
               <a @click="goToProfile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                role="menuitem" tabindex="-1" id="user-menu-item-0">
-                Your Profile
-              </a>
-
+                role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
               <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1"
                 id="user-menu-item-1">Settings</a>
-              <a href="/log-out" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1"
-                id="user-menu-item-2">Sign out</a>
+              <a @click="logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
             </div>
           </div>
 
@@ -114,10 +125,18 @@
     <!-- Mobile menu -->
     <div class="sm:hidden" id="mobile-menu">
       <div class="space-y-1 px-2 pb-3 pt-2">
-        <Link href="/" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Dashboard</Link>
-        <Link href="/subjects" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Subjects</Link>
-        <Link href="/pricing" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Pricing</Link>
-        <Link href="/pricing#contact-us" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Contact Us</Link>
+        <Link href="/"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+        Dashboard</Link>
+        <Link href="/subjects"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+        Subjects</Link>
+        <Link href="/pricing"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+        Pricing</Link>
+        <Link href="/pricing#contact-us"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+        Contact Us</Link>
       </div>
     </div>
   </nav>
@@ -125,12 +144,15 @@
 
 <script>
 import { Link } from '@inertiajs/vue3'
+import Icon from '../../Shared/Icon.vue';
+
 
 
 export default {
   name: 'Nav',
   components: {
-    Link
+    Link,
+    Icon
   },
 
   data() {
@@ -160,7 +182,7 @@ export default {
     selectSubject(subject) {
       this.$inertia.get('/index', { subject: subject }, {
         preserveState: true,
-        preserveScroll: true,
+        preserveScroll: false,
         only: ['selectedSubject']
       });
     },
@@ -199,7 +221,6 @@ nav {
   display: none;
 }
 
-/* Add this new rule */
 .group:hover::after {
   content: '';
   position: absolute;
