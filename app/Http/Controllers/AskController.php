@@ -9,13 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use GuzzleHttp\Client;
 use Smalot\PdfParser\Parser as PdfParser;
-use PhpOffice\PhpWord\IOFactory as PhpWordIOFactory;
-
+use PhpOffice\PhpWord\IOFactory;
 use App\Models\Announcement;
-
-
-
-
+use Carbon\Carbon;
 
 class AskController extends Controller
 {
@@ -23,42 +19,10 @@ class AskController extends Controller
     {
         $user = Auth::user();
         $coins = $user->coins;
+        $announcements = $this->getTransformedAnnouncements($user);
+        $userTransformed = $this->transformUser($user);
 
         Inertia::share('coins', $coins);
-
-        //   $announcements = Announcement::where('user_id', $user->id)->get();
-        $announcements = $user->announcements()->orderBy('order')->get();
-
-
-        $announcements->transform(function ($announcement) {
-            return [
-                'title' => $announcement->title,
-                'content' => $announcement->content,
-                'user_id' => $announcement->user_id,
-                'id' => $announcement->id,
-                'aiquery' => $announcement->aiquery,
-                'subject' => $announcement->subject,
-                'extracted_text' => $announcement->extracted_text,
-                'instructions' => $announcement->instructions,
-                'created_at' => $announcement->created_at,
-                'updated_at' => $announcement->updated_at,
-                'deleted_at' => $announcement->deleted_at,
-                'photo' => $announcement->photo_path ? URL::route('image', ['path' => $announcement->photo_path, 'w' => 400, 'h' => 400, 'fit' => 'crop']) : null,
-            ];
-        });
-
-        // Transform the user object directly
-        $userTransformed = [
-            'id' => $user->id,
-            'first_name' => $user->first_name,
-            'last_name' => $user->last_name,
-            'email' => $user->email,
-            'owner' => $user->owner,
-            'photo' => $user->photo_path ? URL::route('image', ['path' => $user->photo_path, 'w' => 60, 'h' => 60, 'fit' => 'crop']) : null,
-            'deleted_at' => $user->deleted_at,
-        ];
-
-
 
         return Inertia::render('Ask/Index', [
             'coins' => $coins,
@@ -67,20 +31,120 @@ class AskController extends Controller
         ]);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public function store(Request $request)
+    {
+        $this->validateRequest($request);
+
+        $file = $request->file('photo');
+        $extractedText = '';
+
+        if ($file) {
+            $mimeType = $file->getMimeType();
+            $extension = $file->getClientOriginalExtension();
+
+            $filePath = $this->handleFileUpload($file);
+
+            if (strpos($mimeType, 'image/') === 0) {
+                $extractedText = $this->performOCR($filePath);
+            } elseif ($mimeType === 'application/pdf') {
+                $extractedText = $this->extractTextFromPDF($filePath);
+            } elseif (in_array($extension, ['doc', 'docx']) || in_array($mimeType, ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])) {
+                $extractedText = $this->extractTextFromWord($filePath);
+            } else {
+                return redirect()->route('ask')->with('error', 'Unsupported file type.');
+            }
+        }
+
+        $chatGPTResponse = $this->getChatGPTResponse(
+            $request,
+            $extractedText,
+            $request->input('instructions'),
+            $request->input('subject', 'auto-detect'),
+            $request->boolean('steps', false),
+            $request->boolean('explain', false),
+            $request->input('level')
+        );
+
+        if ($chatGPTResponse === null) {
+            return redirect()->route('ask')->with('error', 'Nothing Submitted.');
+        }
+
+        $processedResponse = $this->processChatGPTResponse($chatGPTResponse, $request);
+
+        $this->createAnnouncement($processedResponse, $extractedText, $file ? $file->hashName() : null);
+
+        return $this->renderResponse($processedResponse);
+    }
+
+    private function getTransformedAnnouncements($user)
+    {
+        return $user->announcements()->orderBy('order')->get()->transform(function ($announcement) {
+            return $this->transformAnnouncement($announcement);
+        });
+    }
+
+
+    private function extractTextFromWord($filePath)
+{
+    try {
+        $fullPath = storage_path('app/' . $filePath);
+        $phpWord = IOFactory::load($fullPath);
+
+        $text = '';
+        foreach ($phpWord->getSections() as $section) {
+            foreach ($section->getElements() as $element) {
+                if (method_exists($element, 'getText')) {
+                    $text .= $element->getText() . ' ';
+                } elseif (method_exists($element, 'getElements')) {
+                    foreach ($element->getElements() as $childElement) {
+                        if (method_exists($childElement, 'getText')) {
+                            $text .= $childElement->getText() . ' ';
+                        }
+                    }
+                }
+            }
+        }
+
+        \Log::info('Extracted text from Word document:', ['text' => $text]);
+        return $text;
+    } catch (\Exception $e) {
+        \Log::error('Error extracting text from Word document: ' . $e->getMessage());
+        return '';
+    }
+}
+
+    private function transformAnnouncement($announcement)
+    {
+        return [
+            'title' => $announcement->title,
+            'content' => $announcement->content,
+            'user_id' => $announcement->user_id,
+            'id' => $announcement->id,
+            'aiquery' => $announcement->aiquery,
+            'subject' => $announcement->subject,
+            'extracted_text' => $announcement->extracted_text,
+            'instructions' => $announcement->instructions,
+            'created_at' => $announcement->created_at,
+            'updated_at' => $announcement->updated_at,
+            'deleted_at' => $announcement->deleted_at,
+            'photo' => $announcement->photo_path ? URL::route('image', ['path' => $announcement->photo_path, 'w' => 400, 'h' => 400, 'fit' => 'crop']) : null,
+        ];
+    }
+
+    private function transformUser($user)
+    {
+        return [
+            'id' => $user->id,
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'owner' => $user->owner,
+            'photo' => $user->photo_path ? URL::route('image', ['path' => $user->photo_path, 'w' => 60, 'h' => 60, 'fit' => 'crop']) : null,
+            'deleted_at' => $user->deleted_at,
+        ];
+    }
+
+    private function validateRequest(Request $request)
     {
         $request->validate([
             'title' => 'nullable|string|max:255',
@@ -89,129 +153,44 @@ class AskController extends Controller
             'question' => 'string|nullable',
             'explain' => 'boolean|nullable',
             'steps' => 'boolean|nullable',
-            'photo' => 'nullable|file',
+            'photo' => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf,doc,docx',
             'tokensCost' => 'nullable|integer',
             'temperature' => 'nullable|numeric|min:0|max:1',
             'model' => 'nullable|string',
-
         ]);
+    }
 
-        // Handle photo upload
-        $photoPath = null;
-        if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('public/announcements'); // Store photo
-        }
+    private function handleFileUpload($file)
+    {
+        return $file->store('public/uploads');
+    }
 
-        // Initialize $ocrResult as null
-        $ocrResult = null;
-        $tokensCost = $request->input('tokensCost', 200);
-        $temperature = $request->input('temperature', 0.6);
-        $model = $request->input('model', 'gpt-4o-mini');
-
-
-        // Function to send text to ChatGPT API
-        function sendToChatGPT($text, $instructions = null, $subject = null, $steps = null, $explain = null, $level = null, $maxTokens, $temperature, $model)
-        {
-            $apiKey = env('OPENAI_API_KEY'); // Replace with your ChatGPT API key
-            $endpoint = 'https://api.openai.com/v1/chat/completions'; // ChatGPT API endpoint
-
-            $headers = [
-                'Content-Type: application/json',
-                'Authorization: Bearer ' . $apiKey,
-            ];
-
-
-
-            // Use provided instructions or fallback to default
-            $systemContent = 'The current subject is:' . $subject . 'If the subject is auto-detect, before your response include a string called "subject=" after which you specify in one word which of the following subjects catagorize it best: Biology,Chemistry,Computer-Science,Economics,English,Geography,History,Mathematics,Physics,Science' . $instructions ?? 'The current subject is:' . $subject . 'If the subject is auto-detect, before your response include a string called "subject=" after which you specify in one word what subject matter you believe the text to be in out of the 25 most common educational subjects, then Analyze the question and possible answers, select one answer from those provided. If there is no answer provided then answer the question to the best of your ability.';
-
-            // Append instructions if provided
-            if ($instructions) {
-                $systemContent .= ' ' . $instructions;
-            } else {
-                $systemContent .= ' Analyze the question and possible answers, select one answer from those provided. If there are no answers provided then answer the best you can.';
-            }
-
-            // Append additional instructions based on the steps and explain flags
-            if ($steps) {
-                $systemContent .= ' After answering the question, Explain in numbered steps. The steps should follow the keyword steps= and should end with the delimiter $#$';
-            }
-            if ($explain) {
-                $systemContent .= 'After the steps,  Explain why the answer is correct, The explanation should follow the keyword explain= and should end with the delimiter $#$;';
-            }
-            if ($level) {
-                $systemContent .= ' Everything should be at a ' . $level . ' level';
-            }
-
-
-
-
-            $data = [
-                'model' => $model, // or another model if applicable
-                'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => $systemContent
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => $text
-                    ]
+    private function performOCR($imagePath)
+    {
+        try {
+            $client = new Client();
+            $photoFullPath = storage_path('app/' . $imagePath);
+            $response = $client->post('https://ocrphp.cognitiveservices.azure.com/vision/v3.2/ocr', [
+                'headers' => [
+                    'Ocp-Apim-Subscription-Key' => env('AZURE_OCR_SUBSCRIPTION_KEY'),
+                    'Content-Type' => 'application/octet-stream',
                 ],
-                'max_tokens' => (int) $maxTokens, // Use the tokensCost value here
-                'temperature' => (float) $temperature, // Adjust temperature as needed
-                'top_p' => 1.0,
-                'n' => 1,
-                'stop' => ['\n'],
-            ];
+                'body' => fopen($photoFullPath, 'r'),
+            ]);
 
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $endpoint);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            $ocrResult = json_decode($response->getBody()->getContents(), true);
+            \Log::info('OCR Result: ', $ocrResult);
 
-            $response = curl_exec($ch);
-            curl_close($ch);
-
-            // Ensure the response is decoded correctly
-            $decodedResponse = json_decode($response, true);
-            \Log::info($decodedResponse);
-
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                \Log::error('Error decoding JSON response from ChatGPT: ' . json_last_error_msg());
-                return null;
-            }
-
-            return $decodedResponse;
+            return $this->extractTextFromOCRResult($ocrResult);
+        } catch (\Exception $e) {
+            \Log::error('Error calling Azure OCR API: ' . $e->getMessage());
+            return '';
         }
+    }
 
-        // Call Azure Computer Vision OCR
-        if ($photoPath) {
-            try {
-                $photoFullPath = storage_path('app/' . $photoPath);
-
-                $client = new Client();
-                $response = $client->post('https://ocrphp.cognitiveservices.azure.com/vision/v3.2/ocr', [
-                    'headers' => [
-                        'Ocp-Apim-Subscription-Key' => env('AZURE_OCR_SUBSCRIPTION_KEY'),
-                        'Content-Type' => 'application/octet-stream',
-                    ],
-                    'body' => fopen($photoFullPath, 'r'),
-                ]);
-
-                $ocrResult = json_decode($response->getBody()->getContents(), true);
-                \Log::info('OCR Result: ', $ocrResult);
-            } catch (\Exception $e) {
-                \Log::error('Error calling Azure OCR API: ' . $e->getMessage());
-            }
-        }
-
-        // Initialize an empty array to collect words
+    private function extractTextFromOCRResult($ocrResult)
+    {
         $extractedWords = [];
-
-        // Traverse through regions and lines to extract words if $ocrResult is available
         if ($ocrResult && isset($ocrResult['regions'])) {
             foreach ($ocrResult['regions'] as $region) {
                 foreach ($region['lines'] as $line) {
@@ -221,123 +200,195 @@ class AskController extends Controller
                 }
             }
         }
+        return implode(' ', $extractedWords);
+    }
 
-        // Join the extracted words into a single string
-        $extractedText = implode(' ', $extractedWords);
-
-        // Get instructions from the request if provided
-        $instructions = $request->input('instructions');
-        $question = $request->input('question');
-        $subject = $request->input('subject');
-        $title = $request->input('title');
-        $steps = $request->input('steps');
-        $explain = $request->input('explain');
-        $level = $request->input('level');
-
-
-        // Send the extracted text to ChatGPT API with optional instructions
-        if ($request->input('question')) {
-            $chatGPTResponse = sendToChatGPT($question, $instructions, $subject, $steps, $explain, $level, $tokensCost, $temperature, $model);
-        } else {
-            $chatGPTResponse = sendToChatGPT($extractedText, $instructions, $subject, $steps, $explain, $level, $tokensCost, $temperature, $model);
+    private function extractTextFromPDF($pdfPath)
+    {
+        try {
+            $parser = new PdfParser();
+            $pdf = $parser->parseFile(storage_path('app/' . $pdfPath));
+            $extractedText = $pdf->getText();
+            \Log::info('Extracted text from PDF:', ['text' => $extractedText]);
+            return $extractedText;
+        } catch (\Exception $e) {
+            \Log::error('Error extracting text from PDF: ' . $e->getMessage());
+            return '';
         }
+    }
 
-        // Ensure ChatGPT response is valid
-        if ($chatGPTResponse === null || !isset($chatGPTResponse['choices'][0]['message']['content'])) {
-            return redirect()->route('ask')->with('error', 'Nothing Submitted.');
-        }
+   private function getChatGPTResponse(Request $request, $extractedText, $instructions, $subject, $steps, $explain, $level)
+{
+    $text = $request->input('question') ?: $extractedText;
+    return $this->sendToChatGPT(
+        $text,
+        $instructions,
+        $subject,
+        $steps,
+        $explain,
+        $level,
+        $request->input('tokensCost', 1000),
+        $request->input('temperature', 0.6),
+        $request->input('model', 'gpt-4o-mini')
+    );
+}
 
-        // Extract the content from the ChatGPT response
-        $chatGPTContent = $chatGPTResponse['choices'][0]['message']['content'];
+    private function sendToChatGPT($text, $instructions, $subject, $steps, $explain, $level, $maxTokens, $temperature, $model)
+    {
+        $apiKey = env('OPENAI_API_KEY');
+        $endpoint = 'https://api.openai.com/v1/chat/completions';
 
-        // Extract the Unix timestamp from the ChatGPT response and convert to a Carbon instance
-        $unixTimestamp = $chatGPTResponse['created'] ?? time();
-        $createdAt = \Carbon\Carbon::createFromTimestamp($unixTimestamp);
-
-        // Format the createdAt timestamp for the title
-        $titleFormatted = $createdAt->format('H:i d M Y');
-        if (null !== $request->input('title')) {
-            $title = $request->input('title') . "  |  " . $titleFormatted;
-        } else {
-            $title = $titleFormatted;
-        }
-
-
-        // Extract the subject value using regex
-        preg_match('/subject=([^\s]+)/', $chatGPTContent, $matches);
-
-        // Remove the subject part from the response
-        $responseBody = preg_replace('/\bsubject=[^\s]+(\s|$)/', '', $chatGPTContent);
-
-        // If a subject was found, capitalize the first letter
-        $subject = isset($matches[1]) ? ucfirst($matches[1]) : null;
-
-
-        $explainText = "";
-        $stepsText = "";
-
-
-        // Extract and remove 'steps=' section
-        if (preg_match('/steps=([^$]*)\s*(\$#\$|$)/', $responseBody, $matches)) {
-            $stepsText = trim($matches[1]);
-            $responseBody = preg_replace('/steps=[^$]*(\$#\$|$)/', '', $responseBody);
-        } else {
-            $responseBody = preg_replace('/steps=[^$]*$/', '', $responseBody);
-        }
-
-        // Extract and remove 'explain=' section
-        if (preg_match('/explain=([^$]*)\s*(\$#\$|$)/', $responseBody, $matches)) {
-            $explainText = trim($matches[1]);
-            $responseBody = preg_replace('/explain=[^$]*(\$#\$|$)/', '', $responseBody);
-        } else {
-            $responseBody = preg_replace('/explain=[^$]*$/', '', $responseBody);
-        }
-
-
-        $instructions = $explainText . " " . $stepsText;
-        $responseBody = trim($responseBody);
-
-        // Create announcement with photo path and created_at timestamp
-        Auth::user()->announcements()->create([
-            'extracted_text' => $extractedText,
-            'title' => $title,
-            'content' => $responseBody,
-            'aiquery' => $question,
-            'subject' => $subject,
-            'instructions' => $instructions,
-            'photo_path' => $photoPath, // Assign photo path to the announcement
-            'created_at' => $createdAt, // Assign the created_at timestamp
-        ]);
-
-        $user = Auth::user();
-        $coins = $user->coins;
-
-        // Transform the user object directly
-        $userTransformed = [
-            'id' => $user->id,
-            'first_name' => $user->first_name,
-            'last_name' => $user->last_name,
-            'email' => $user->email,
-            'owner' => $user->owner,
-            'photo' => $user->photo_path ? URL::route('image', ['path' => $user->photo_path, 'w' => 60, 'h' => 60, 'fit' => 'crop']) : null,
-            'deleted_at' => $user->deleted_at,
+        $headers = [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $apiKey,
         ];
 
+        $systemContent = $this->buildSystemContent($subject, $instructions, $steps, $explain, $level);
 
+        $data = [
+            'model' => $model,
+            'messages' => [
+                ['role' => 'system', 'content' => $systemContent],
+                ['role' => 'user', 'content' => $text]
+            ],
+            'max_tokens' => (int) $maxTokens,
+            'temperature' => (float) $temperature,
+            'top_p' => 1.0,
+            'n' => 1,
+            'stop' => ['\n'],
+        ];
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $endpoint);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $decodedResponse = json_decode($response, true);
+        \Log::info($decodedResponse);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            \Log::error('Error decoding JSON response from ChatGPT: ' . json_last_error_msg());
+            return null;
+        }
+
+        return $decodedResponse;
+    }
+    private function buildSystemContent($subject, $instructions, $steps, $explain, $level)
+    {
+        $content = "The current subject is: $subject. First, include a string called \"subject=\" followed by one word from this list that best categorizes the content: Biology,Chemistry,Computer-Science,Economics,English,Geography,History,Mathematics,Physics,Science. Then, provide a comprehensive summary of the content. ";
+
+        $content .= "Your response should be structured as follows (do not include number in your response):\n";
+        $content .= "1. Main content (without any specific keyword)\n";
+
+        if ($steps) {
+            $content .= "2. Keyword 'steps=' followed by numbered steps explaining key points, ending with '$#$'\n";
+        }
+
+        if ($explain) {
+            $content .= "3. Keyword 'explain=' followed by an explanation of the main concepts, ending with '$#$'\n";
+        }
+
+        if ($instructions) {
+            $content .= $instructions . " ";
+        }
+
+        if ($level) {
+            $content .= "Ensure all content is presented at a $level level. ";
+        }
+
+        return $content;
+    }
+
+    private function processChatGPTResponse($chatGPTResponse, Request $request)
+    {
+        $content = $chatGPTResponse['choices'][0]['message']['content'];
+        $createdAt = Carbon::createFromTimestamp($chatGPTResponse['created'] ?? time());
+
+        $subject = $this->extractSubject($content);
+        $responseBody = $this->removeSubjectFromResponse($content);
+
+        $stepsText = $this->extractAndRemoveSection($responseBody, 'steps=');
+        $explainText = $this->extractAndRemoveSection($responseBody, 'explain=');
+
+        // If no steps or explain sections were found, the entire response is the main content
+        if (empty($stepsText) && empty($explainText)) {
+            $mainContent = $responseBody;
+        } else {
+            // The main content is what's left after removing steps and explain sections
+            $mainContent = trim($responseBody);
+        }
+
+        $title = $this->generateTitle($request->input('title'), $createdAt);
+
+        return [
+            'responseBody' => $mainContent,
+            'stepsText' => $stepsText,
+            'explainText' => $explainText,
+            'subject' => $subject,
+            'title' => $title,
+            'createdAt' => $createdAt,
+        ];
+    }
+
+    private function extractSubject(&$content)
+    {
+        preg_match('/subject=([^\s]+)/', $content, $matches);
+        return isset($matches[1]) ? ucfirst($matches[1]) : null;
+    }
+
+    private function removeSubjectFromResponse($content)
+    {
+        return preg_replace('/\bsubject=[^\s]+(\s|$)/', '', $content);
+    }
+
+    private function extractAndRemoveSection(&$content, $keyword)
+    {
+        $text = "";
+        if (preg_match('/' . $keyword . '([^$]*)\s*(\$#\$|$)/', $content, $matches)) {
+            $text = trim($matches[1]);
+            $content = preg_replace('/' . $keyword . '[^$]*(\$#\$|$)/', '', $content);
+        } else {
+            $content = preg_replace('/' . $keyword . '[^$]*$/', '', $content);
+        }
+        return $text;
+    }
+
+    private function generateTitle($requestTitle, $createdAt)
+    {
+        $titleFormatted = $createdAt->format('H:i d M Y');
+        return $requestTitle ? "$requestTitle  |  $titleFormatted" : $titleFormatted;
+    }
+
+    private function createAnnouncement($processedResponse, $extractedText, $filePath)
+    {
+        Auth::user()->announcements()->create([
+            'extracted_text' => $extractedText,
+            'title' => $processedResponse['title'],
+            'content' => $processedResponse['responseBody'],
+            'aiquery' => request('question'),
+            'subject' => $processedResponse['subject'],
+            'instructions' => $processedResponse['explainText'] . " " . $processedResponse['stepsText'],
+            'photo_path' => $filePath,
+            'created_at' => $processedResponse['createdAt'],
+        ]);
+    }
+
+    private function renderResponse($processedResponse)
+    {
+        $user = Auth::user();
+        $userTransformed = $this->transformUser($user);
 
         return Inertia::render('Ask/Index', [
-            'coins' => $coins,
+            'coins' => $user->coins,
             'user' => $userTransformed,
-            'response' => $responseBody,
-            'stepsResponse' => $stepsText,
-            'explainResponse' => $explainText,
+            'response' => $processedResponse['responseBody'],
+            'stepsResponse' => $processedResponse['stepsText'],
+            'explainResponse' => $processedResponse['explainText'],
         ]);
-
-        // return redirect()->route('ask')
-        //->with('success', 'Question Analyzed. Response Generated.')
-        //->with('response',json_encode($responseBody));
-        // ->with('title', $title)
-        // ->with('explain', $explain)
-        // ->with('steps' , $steps);
     }
 }
