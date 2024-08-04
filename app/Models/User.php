@@ -15,6 +15,9 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
+    const SUBSCRIPTION_FREE = 1;
+    const SUBSCRIPTION_PAID = 2;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -26,6 +29,7 @@ class User extends Authenticatable
         'password',
         'coins',
         'google_id',
+        'subscription_type'
     ];
 
     /**
@@ -50,6 +54,28 @@ class User extends Authenticatable
             'owner' => 'boolean',
             'email_verified_at' => 'datetime',
         ];
+    }
+
+    public function isPaidTier()
+    {
+        return $this->subscription_type === self::SUBSCRIPTION_PAID;
+    }
+    public function dailyQuestionCounts()
+    {
+        return $this->hasMany(DailyQuestionCount::class);
+    }
+
+    public function getDailyQuestionCount()
+    {
+        return $this->dailyQuestionCounts()
+            ->where('date', now()->toDateString())
+            ->first()
+            ->count ?? 0;
+    }
+
+    public function getQuestionLimit()
+    {
+        return $this->isPaidTier() ? 10 : 3;
     }
 
     public function resolveRouteBinding($value, $field = null)

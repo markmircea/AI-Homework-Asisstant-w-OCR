@@ -49,6 +49,8 @@
 
           <div class="relative w-full pb-8 pr-6">
                         <label for="question" class="block text-sm font-medium text-gray-700">Your homework question
+
+                          <div class="hidden sm:block">
                            <!-- SVG and Badge -->
                   <figure class="absolute top-0 right-0 text-nowrap">
                     <svg class="absolute ms-4 mt-4" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
@@ -62,6 +64,7 @@
                       style="--fa-beat-fade-opacity: 0.90; --fa-beat-fade-scale: 1.075; --fa-animation-duration: 2s;">Type
                       your question here!</span>
                   </figure>
+                </div>
                         </label>
             <textarea v-model="form.question" id="question" rows="4"
               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"

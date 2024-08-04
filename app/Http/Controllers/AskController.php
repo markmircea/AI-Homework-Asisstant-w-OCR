@@ -12,6 +12,10 @@ use Smalot\PdfParser\Parser as PdfParser;
 use PhpOffice\PhpWord\IOFactory;
 use App\Models\Announcement;
 use Carbon\Carbon;
+use App\Models\DailyQuestionCount;
+use Illuminate\Support\Facades\DB;
+
+
 
 class AskController extends Controller
 {
@@ -21,6 +25,8 @@ class AskController extends Controller
         $coins = $user->coins;
         $announcements = $this->getTransformedAnnouncements($user);
         $userTransformed = $this->transformUser($user);
+        $limit = $user->getQuestionLimit();
+        $remainingQuestions = $limit - $user->getDailyQuestionCount();
 
         Inertia::share('coins', $coins);
 
@@ -28,52 +34,83 @@ class AskController extends Controller
             'coins' => $coins,
             'user' => $userTransformed,
             'announcements' => $announcements,
+            'remainingQuestions' => $remainingQuestions,
+
         ]);
     }
 
     public function store(Request $request)
     {
-        $this->validateRequest($request);
+        $user = Auth::user();
+        $today = Carbon::today();
 
-        $file = $request->file('photo');
-        $extractedText = '';
+        $dailyCount = $user->getDailyQuestionCount();
+        $limit = $user->getQuestionLimit();
 
-        if ($file) {
-            $mimeType = $file->getMimeType();
-            $extension = $file->getClientOriginalExtension();
+        if ($dailyCount >= $limit) {
+            return redirect()->route('ask')->with('error', 'You have reached your daily question limit.');
+        }
 
-            $filePath = $this->handleFileUpload($file);
+        DB::beginTransaction();
 
-            if (strpos($mimeType, 'image/') === 0) {
-                $extractedText = $this->performOCR($filePath);
-            } elseif ($mimeType === 'application/pdf') {
-                $extractedText = $this->extractTextFromPDF($filePath);
-            } elseif (in_array($extension, ['doc', 'docx']) || in_array($mimeType, ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])) {
-                $extractedText = $this->extractTextFromWord($filePath);
-            } else {
-                return redirect()->route('ask')->with('error', 'Unsupported file type.');
+
+
+
+        try {
+            $this->validateRequest($request);
+
+            $file = $request->file('photo');
+            $extractedText = '';
+
+            if ($file) {
+                $mimeType = $file->getMimeType();
+                $extension = $file->getClientOriginalExtension();
+
+                $filePath = $this->handleFileUpload($file);
+
+                if (strpos($mimeType, 'image/') === 0) {
+                    $extractedText = $this->performOCR($filePath);
+                } elseif ($mimeType === 'application/pdf') {
+                    $extractedText = $this->extractTextFromPDF($filePath);
+                } elseif (in_array($extension, ['doc', 'docx']) || in_array($mimeType, ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])) {
+                    $extractedText = $this->extractTextFromWord($filePath);
+                } else {
+                    return redirect()->route('ask')->with('error', 'Unsupported file type.');
+                }
             }
+
+            $chatGPTResponse = $this->getChatGPTResponse(
+                $request,
+                $extractedText,
+                $request->input('instructions'),
+                $request->input('subject', 'auto-detect'),
+                $request->boolean('steps', false),
+                $request->boolean('explain', false),
+                $request->input('level')
+            );
+
+            if ($chatGPTResponse === null) {
+                return redirect()->route('ask')->with('error', 'Nothing Submitted.');
+            }
+
+            $processedResponse = $this->processChatGPTResponse($chatGPTResponse, $request);
+
+            $this->createAnnouncement($processedResponse, $extractedText, $file ? $file->hashName() : null);
+
+            DailyQuestionCount::updateOrCreate(
+                ['user_id' => $user->id, 'date' => $today],
+                ['count' => $dailyCount + 1]
+            );
+
+            DB::commit();
+
+            return $this->renderResponse($processedResponse);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // Redirect back with an error message
+            return redirect()->route('ask')->with('error', $e->getMessage());
         }
-
-        $chatGPTResponse = $this->getChatGPTResponse(
-            $request,
-            $extractedText,
-            $request->input('instructions'),
-            $request->input('subject', 'auto-detect'),
-            $request->boolean('steps', false),
-            $request->boolean('explain', false),
-            $request->input('level')
-        );
-
-        if ($chatGPTResponse === null) {
-            return redirect()->route('ask')->with('error', 'Nothing Submitted.');
-        }
-
-        $processedResponse = $this->processChatGPTResponse($chatGPTResponse, $request);
-
-        $this->createAnnouncement($processedResponse, $extractedText, $file ? $file->hashName() : null);
-
-        return $this->renderResponse($processedResponse);
     }
 
     private function getTransformedAnnouncements($user)
@@ -85,33 +122,33 @@ class AskController extends Controller
 
 
     private function extractTextFromWord($filePath)
-{
-    try {
-        $fullPath = storage_path('app/' . $filePath);
-        $phpWord = IOFactory::load($fullPath);
+    {
+        try {
+            $fullPath = storage_path('app/' . $filePath);
+            $phpWord = IOFactory::load($fullPath);
 
-        $text = '';
-        foreach ($phpWord->getSections() as $section) {
-            foreach ($section->getElements() as $element) {
-                if (method_exists($element, 'getText')) {
-                    $text .= $element->getText() . ' ';
-                } elseif (method_exists($element, 'getElements')) {
-                    foreach ($element->getElements() as $childElement) {
-                        if (method_exists($childElement, 'getText')) {
-                            $text .= $childElement->getText() . ' ';
+            $text = '';
+            foreach ($phpWord->getSections() as $section) {
+                foreach ($section->getElements() as $element) {
+                    if (method_exists($element, 'getText')) {
+                        $text .= $element->getText() . ' ';
+                    } elseif (method_exists($element, 'getElements')) {
+                        foreach ($element->getElements() as $childElement) {
+                            if (method_exists($childElement, 'getText')) {
+                                $text .= $childElement->getText() . ' ';
+                            }
                         }
                     }
                 }
             }
-        }
 
-        \Log::info('Extracted text from Word document:', ['text' => $text]);
-        return $text;
-    } catch (\Exception $e) {
-        \Log::error('Error extracting text from Word document: ' . $e->getMessage());
-        return '';
+            \Log::info('Extracted text from Word document:', ['text' => $text]);
+            return $text;
+        } catch (\Exception $e) {
+            \Log::error('Error extracting text from Word document: ' . $e->getMessage());
+            return '';
+        }
     }
-}
 
     private function transformAnnouncement($announcement)
     {
@@ -217,21 +254,21 @@ class AskController extends Controller
         }
     }
 
-   private function getChatGPTResponse(Request $request, $extractedText, $instructions, $subject, $steps, $explain, $level)
-{
-    $text = $request->input('question') ?: $extractedText;
-    return $this->sendToChatGPT(
-        $text,
-        $instructions,
-        $subject,
-        $steps,
-        $explain,
-        $level,
-        $request->input('tokensCost', 1000),
-        $request->input('temperature', 0.6),
-        $request->input('model', 'gpt-4o-mini')
-    );
-}
+    private function getChatGPTResponse(Request $request, $extractedText, $instructions, $subject, $steps, $explain, $level)
+    {
+        $text = $request->input('question') ?: $extractedText;
+        return $this->sendToChatGPT(
+            $text,
+            $instructions,
+            $subject,
+            $steps,
+            $explain,
+            $level,
+            $request->input('tokensCost', 1000),
+            $request->input('temperature', 0.6),
+            $request->input('model', 'gpt-4o-mini')
+        );
+    }
 
     private function sendToChatGPT($text, $instructions, $subject, $steps, $explain, $level, $maxTokens, $temperature, $model)
     {

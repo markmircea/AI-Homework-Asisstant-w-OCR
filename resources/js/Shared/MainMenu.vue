@@ -49,8 +49,8 @@
         @leave="leave"
       >
         <div v-show="submenuOpen" class="pl-4 mt-2">
-          <Link class="group flex items-center text-sm py-2" :class="isUrl(`users/${auth.user.id}/edit`) ? 'text-white' : 'text-indigo-300  hover:text-white'" :href="`/users/${auth.user.id}/edit`">
-            <icon name="profile" class="mr-2 w-4 h-4" :class="isUrl(`users/${auth.user.id}/edit`) ? 'text-white' : 'text-white'" />
+          <Link class="group flex items-center text-sm py-2" :class="isUrl(`user/${auth.user.id}/edit`) ? 'text-white' : 'text-indigo-300  hover:text-white'" :href="`/user/${auth.user.id}/edit`">
+            <icon name="profile" class="mr-2 w-4 h-4" :class="isUrl(`user/${auth.user.id}/edit`) ? 'text-white' : 'text-white'" />
             <div>Profile</div>
           </Link>          <Link class="group flex items-center text-sm py-2 text-indigo-300  hover:text-white" href="/logout">
         <icon name="billing" class="mr-2 w-4 h-4 text-red-500" />

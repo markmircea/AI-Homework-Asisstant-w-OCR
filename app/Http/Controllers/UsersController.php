@@ -15,6 +15,23 @@ use Inertia\Response;
 
 class UsersController extends Controller
 {
+
+    public function accountIndex(User $user): Response
+    {
+
+        return Inertia::render('Users/Account', [
+            'user' => [
+                'id' => $user->id,
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'email' => $user->email,
+                'owner' => $user->owner,
+                'photo' => $user->photo_path ? URL::route('image', ['path' => $user->photo_path, 'w' => 60, 'h' => 60, 'fit' => 'crop']) : null,
+                'deleted_at' => $user->deleted_at,
+            ],
+        ]);
+    }
+
     public function index(): Response
     {
         $user = Auth::user();
@@ -71,6 +88,7 @@ class UsersController extends Controller
 
     public function edit(User $user): Response
     {
+
         return Inertia::render('Users/Edit', [
             'user' => [
                 'id' => $user->id,

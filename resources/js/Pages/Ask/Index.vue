@@ -4,7 +4,10 @@
     <Head :title="`${user.first_name} ${user.last_name}`" />
     <div class="flex justify-start mb-8 max-w-3xl">
       <h1 class="text-3xl font-bold">
-        <span class="mb-8 text-3xl font-bold">Hi {{ user.first_name }}, let's get started!</span>
+        <span class="mb-8 text-3xl font-bold">Hi {{ user.first_name }}, let's get started! <br><br>
+          Remaining questions today: {{ remainingQuestions }}
+
+        </span>
       </h1>
     </div>
 
@@ -322,6 +325,8 @@ export default {
     response: String,
     explainResponse: String,
     stepsResponse: String,
+    remainingQuestions: Number,
+
 
 
   },
