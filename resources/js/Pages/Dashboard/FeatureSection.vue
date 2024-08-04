@@ -1,84 +1,78 @@
 <template>
-  <div class="relative px-4 py-16 mx-auto bg-white md:px-24 lg:px-8 lg:py-20">
-    <div class="absolute inset-0">
-      <div class="absolute inset-y-0 z-0 w-full h-full bg-white lg:w-3/4"></div>
-    </div>
-    <div class="relative">
-      <div class="grid gap-12 row-gap-8 lg:grid-cols-2">
-        <div class="grid gap-12 row-gap-5 md:grid-cols-2">
+  <div class="py-16 bg-white">
+
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <div class="lg:text-center">
+        <h2 class="text-base text-indigo-600 font-semibold tracking-wide uppercase">Features</h2>
+        <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+          Smart Solutions for Every Subject
+        </p>
+        <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+          Our AI-powered platform offers comprehensive assistance across various academic disciplines.
+        </p>
+      </div>
+
+      <div class="mt-10">
+        <dl class="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10">
           <div class="relative">
-            <svg viewBox="0 0 52 24" fill="currentColor"
-              class="absolute top-0 left-0 z-0 w-32 -mt-8 -ml-16 text-blue-gray-100 lg:w-32 lg:-mt-12">
-              <defs>
-                <pattern id="d06ca312-d4ed-465f-ad18-fb0c0f92b6f1" x="0" y="0" width=".135" height=".30">
-                  <circle cx="1" cy="1" r=".7"></circle>
-                </pattern>
-              </defs>
-              <rect fill="url(#d06ca312-d4ed-465f-ad18-fb0c0f92b6f1)" width="52" height="24"></rect>
-            </svg>
-            <div class="relative">
-              <div class="flex items-center justify-center w-10 h-10 mb-3 rounded-full bg-teal-accent-400">
-                <svg class="w-8 h-8 text-teal-900" stroke="currentColor" viewBox="0 0 52 52">
-                  <polygon stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"
-                    points="29 13 14 29 25 29 23 39 38 23 27 23"></polygon>
+            <dt>
+              <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                 </svg>
               </div>
-              <h6 class="mb-2 font-semibold leading-5">
-                The quick, brown fox jumps over a lazy dog
-              </h6>
-              <p class="text-sm text-gray-900">
-                Baseball ipsum dolor sit amet cellar rubber win hack tossed. Slugging catcher slide bench league.
-              </p>
-            </div>
+              <p class="ml-16 text-lg leading-6 font-medium text-gray-900">Multi-Model AI Analysis</p>
+            </dt>
+            <dd class="mt-2 ml-16 text-base text-gray-500">
+              Our system uses multiple AI models to analyze and solve problems, ensuring comprehensive and accurate results.
+            </dd>
           </div>
-          <div>
-            <div class="flex items-center justify-center w-10 h-10 mb-3 rounded-full bg-teal-accent-400">
-              <svg class="w-8 h-8 text-teal-900" stroke="currentColor" viewBox="0 0 52 52">
-                <polygon stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"
-                  points="29 13 14 29 25 29 23 39 38 23 27 23"></polygon>
-              </svg>
-            </div>
-            <h6 class="mb-2 font-semibold leading-5">
-              A flower in my garden, a mystery
-            </h6>
-            <p class="text-sm text-gray-900">
-              They urge you to put down your sword and come join the winners.
-            </p>
+
+          <div class="relative">
+            <dt>
+              <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <p class="ml-16 text-lg leading-6 font-medium text-gray-900">Image Recognition</p>
+            </dt>
+            <dd class="mt-2 ml-16 text-base text-gray-500">
+              Simply take a photo of your homework or test, and our AI will instantly analyze and provide solutions.
+            </dd>
           </div>
-          <div>
-            <div class="flex items-center justify-center w-10 h-10 mb-3 rounded-full bg-teal-accent-400">
-              <svg class="w-8 h-8 text-teal-900" stroke="currentColor" viewBox="0 0 52 52">
-                <polygon stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"
-                  points="29 13 14 29 25 29 23 39 38 23 27 23"></polygon>
-              </svg>
-            </div>
-            <h6 class="mb-2 font-semibold leading-5">
-              Skate ipsum dolor sit amet, alley oop
-            </h6>
-            <p class="text-sm text-gray-900">
-              If one examines precultural libertarianism, one is faced with a choice: either accept rationalism.
-            </p>
+
+          <div class="relative">
+            <dt>
+              <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <p class="ml-16 text-lg leading-6 font-medium text-gray-900">Step-by-Step Explanations</p>
+            </dt>
+            <dd class="mt-2 ml-16 text-base text-gray-500">
+              Receive detailed, easy-to-follow explanations for each problem, enhancing your understanding of the subject matter.
+            </dd>
           </div>
-          <div>
-            <div class="flex items-center justify-center w-10 h-10 mb-3 rounded-full bg-teal-accent-400">
-              <svg class="w-8 h-8 text-teal-900" stroke="currentColor" viewBox="0 0 52 52">
-                <polygon stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"
-                  points="29 13 14 29 25 29 23 39 38 23 27 23"></polygon>
-              </svg>
-            </div>
-            <h6 class="mb-2 font-semibold leading-5">
-              The first mate and his Skipper too will
-            </h6>
-            <p class="text-sm text-gray-900">
-              Those options are already baked in with this model shoot me an email clear blue water.
-            </p>
+
+          <div class="relative">
+            <dt>
+              <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                </svg>
+              </div>
+              <p class="ml-16 text-lg leading-6 font-medium text-gray-900">24/7 Availability</p>
+            </dt>
+            <dd class="mt-2 ml-16 text-base text-gray-500">
+              Get help anytime, anywhere. Our AI is always ready to assist you with your academic challenges.
+            </dd>
           </div>
-        </div>
-        <div>
-          <img class="object-cover w-full h-56 rounded shadow-lg sm:h-96"
-            src="https://images.pexels.com/photos/927022/pexels-photo-927022.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=3&amp;h=750&amp;w=1260"
-            alt="" />
-        </div>
+        </dl>
       </div>
     </div>
   </div>
@@ -89,7 +83,3 @@ export default {
   name: 'FeatureSection',
 };
 </script>
-
-<style scoped>
-/* Add any specific styles for this component here */
-</style>

@@ -1,55 +1,164 @@
-<template>    <div class="relative bg-indigo-800">
-  <div class="absolute inset-x-0 bottom-0">
-    <svg viewBox="0 0 224 12" fill="currentColor" class="w-full -mb-1 text-white" preserveAspectRatio="none">
-      <path
-        d="M0,0 C48.8902582,6.27314026 86.2235915,9.40971039 112,9.40971039 C137.776408,9.40971039 175.109742,6.27314026 224,0 L224,12.0441132 L0,12.0441132 L0,0 Z">
-      </path>
-    </svg>
-  </div>
-  <div class="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
-    <div class="relative max-w-2xl sm:mx-auto sm:max-w-xl md:max-w-2xl sm:text-center">
-      <h2 class="mb-6 font-sans text-3xl font-bold tracking-tight text-white sm:text-4xl sm:leading-none">
-        The quick, brown fox<br class="hidden md:block" />
-        jumps over a
-        <span class="relative inline-block px-2">
-          <div class="absolute inset-0 transform -skew-x-12 bg-teal-accent-400"></div>
-          <span class="relative text-teal-900">lazy dog</span>
-        </span>
-      </h2>
-      <p class="mb-6 text-base text-indigo-100 md:text-lg">
-        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem
-        aperiam, eaque ipsa quae. explicabo. Sed ut perspiciatis unde omnis.
-      </p>
-      <form class="flex flex-col items-center w-full mb-4 md:flex-row md:px-16">
-        <input placeholder="Email" required="" type="text"
-          class="flex-grow w-full h-12 px-4 mb-3 text-white transition duration-200 border-2 border-transparent rounded appearance-none md:mr-2 md:mb-0 bg-indigo-900 focus:border-teal-accent-700 focus:outline-none focus:shadow-outline" />
-        <a href="/"
-          class="inline-flex items-center justify-center w-full h-12 px-6 font-semibold tracking-wide text-teal-900 transition duration-200 rounded shadow-md md:w-auto hover:text-deep-purple-900 bg-teal-accent-400 hover:bg-teal-accent-700 focus:shadow-outline focus:outline-none">
-          Subscribe
-        </a>
-      </form>
-      <p class="max-w-md mb-10 text-xs tracking-wide text-indigo-100 sm:text-sm sm:mx-auto md:mb-16">
-        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque.
-      </p>
-      <a href="/" aria-label="Scroll down"
-        class="flex items-center justify-center w-10 h-10 mx-auto text-white duration-300 transform border border-gray-400 rounded-full hover:text-teal-accent-400 hover:border-teal-accent-400 hover:shadow hover:scale-110">
-        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-          <path
-            d="M10.293,3.293,6,7.586,1.707,3.293A1,1,0,0,0,.293,4.707l5,5a1,1,0,0,0,1.414,0l5-5a1,1,0,1,0-1.414-1.414Z">
-          </path>
-        </svg>
-      </a>
+<template>
+  <div class="relative bg-gradient-to-r from-indigo-900 to-indigo-600">
+    <div class="absolute inset-x-0 bottom-0">
+      <svg viewBox="0 0 224 12" fill="currentColor" class="w-full -mb-1 text-white" preserveAspectRatio="none">
+        <path
+          d="M0,0 C48.8902582,6.27314026 86.2235915,9.40971039 112,9.40971039 C137.776408,9.40971039 175.109742,6.27314026 224,0 L224,12.0441132 L0,12.0441132 L0,0 Z">
+        </path>
+      </svg>
+    </div>
+    <div class="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
+      <div class="relative max-w-2xl sm:mx-auto sm:max-w-xl md:max-w-2xl sm:text-center">
+        <h2 class="mb-6 font-sans text-3xl font-bold tracking-tight text-white sm:text-4xl sm:leading-none">
+          Unlock Your Academic Potential with<br class="hidden md:block" />
+          AI-Powered
+          <span class="relative inline-block px-2">
+            <div class="absolute inset-0 transform -skew-x-12 bg-teal-accent-400"></div>
+            <span class="relative text-teal-900">Homework Assistance</span>
+          </span>
+        </h2>
+        <p class="mb-6 text-base text-indigo-100 md:text-lg">
+          Our cutting-edge AI technology analyzes your assignments, provides detailed explanations, and guides you
+          through step-by-step solutions. Instantly boost your understanding and grades!
+        </p>
+
+        <!-- Question Section -->
+        <form @submit.prevent="update" class="bg-white p-6 rounded-lg shadow-lg">
+      <div class="flex mb-4">
+        <div class="w-1/2 pr-2">
+          <label for="subject" class="block text-sm font-medium text-gray-700">Subject</label>
+          <select v-model="form.subject" id="subject" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            <option value="" disabled>Auto-Detect</option>
+            <option v-for="subject in subjects" :key="subject" :value="subject">{{ subject }}</option>
+          </select>
+        </div>
+            <div class="w-1/2 pl-2">
+              <label for="level" class="block text-sm font-medium text-gray-700">Level</label>
+              <select v-model="form.level" id="level"
+                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <option value="" selected>Any Level</option>
+                <option value="1-5th grade">1-5th grade</option>
+                <option value="6-8th grade">6-8th grade</option>
+                <option value="9-12th grade">9-12th grade</option>
+                <option value="University">University</option>
+                <option value="Masters">Masters</option>
+                <option value="Expert">Expert</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="question" class="block text-sm font-medium text-gray-700">Your homework question</label>
+            <textarea v-model="form.question" id="question" rows="4"
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="Enter your homework question here..."></textarea>
+          </div>
+
+          <button type="submit"
+            class="w-full btn-indigo1 transition-colors duration-200 hover:text-indigo-500 flex items-center justify-center space-x-2">
+            <span class="question-mark">?</span>
+            <span>Ask Question</span>
+          </button>
+        </form>
+
+        <p class="mt-4 max-w-md text-xs tracking-wide text-indigo-100 sm:text-sm sm:mx-auto">
+          Experience the power of multi-model AI analysis for all your homework needs.
+        </p>
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
 export default {
   name: 'Hero',
+  props: {
+    selectedSubject: {
+      type: String,
+      default: ''
+    }
+  },
+  data() {
+    return {
+      form: {
+        title: '',
+        subject: this.selectedSubject,
+        level: '',
+        question: '',
+      },
+      subjects: ['Biology', 'Chemistry', 'Computer Science', 'Economics', 'English', 'Geography', 'History', 'Mathematics', 'Physics', 'Science']
+
+    };
+  },
+  watch: {
+    selectedSubject: {
+      immediate: true,
+      handler(newSubject) {
+        if (newSubject) {
+          this.form.subject = newSubject;
+        }
+      }
+    }
+  },
+  mounted() {
+    if (this.selectedSubject) {
+      this.form.subject = this.selectedSubject;
+    }
+  },
+  methods: {
+    update() {
+      // Handle form submission
+      console.log('Form submitted:', this.form);
+      // Add your logic here to process the form data
+    },
+  },
 };
 </script>
 
 <style scoped>
 /* Add any specific styles for this component here */
+.btn-indigo1 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.btn-indigo1:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.question-mark {
+  display: inline-block;
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+  animation: flip-spin 5s ease-in-out infinite;
+}
+
+@keyframes flip-spin {
+  0% {
+    transform: rotate(0deg) scaleY(1);
+  }
+
+  25% {
+    transform: rotate(90deg) scaleY(-1);
+  }
+
+  50% {
+    transform: rotate(180deg) scaleY(1);
+  }
+
+  75% {
+    transform: rotate(270deg) scaleY(-1);
+  }
+
+  100% {
+    transform: rotate(360deg) scaleY(1);
+  }
+}
 </style>

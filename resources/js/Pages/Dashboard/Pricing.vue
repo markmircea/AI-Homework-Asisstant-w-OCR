@@ -1,166 +1,139 @@
 <template>
+  <div class="bg-gray-100 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="lg:text-center">
+        <h2 class="text-base text-indigo-600 font-semibold tracking-wide uppercase">Pricing</h2>
+        <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+          Choose the perfect plan for you
+        </p>
+        <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+          Get access to our AI-powered homework assistance at a price that fits your needs.
+        </p>
+      </div>
 
+      <div class="mt-10">
+        <div class="space-y-12 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-x-8">
+          <div class="relative p-8 bg-white border border-gray-200 rounded-2xl shadow-sm flex flex-col">
+            <div class="flex-1">
+              <h3 class="text-xl font-semibold text-gray-900">Basic</h3>
+              <p class="mt-4 flex items-baseline text-gray-900">
+                <span class="text-5xl font-extrabold tracking-tight">$9</span>
+                <span class="ml-1 text-xl font-semibold">/month</span>
+              </p>
+              <p class="mt-6 text-gray-500">Perfect for occasional homework help.</p>
 
-
- <!-- PRICING -->
- <div class="relative w-full h-full">
-      <div class="absolute hidden w-full bg-gray-50 lg:block h-96"></div>
-      <div class="relative px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
-        <div class="max-w-xl mb-10 md:mx-auto sm:text-center lg:max-w-2xl md:mb-12">
-          <h2
-            class="max-w-lg mb-6 font-sans text-3xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto">
-            <span class="relative inline-block">
-              <svg viewBox="0 0 52 24" fill="currentColor"
-                class="absolute top-0 left-0 z-0 hidden w-32 -mt-8 -ml-20 text-gray-400 lg:w-32 lg:-ml-28 lg:-mt-10 sm:block">
-                <defs>
-                  <pattern id="2c67e949-4a23-49f7-bf27-ca140852cf21" x="0" y="0" width=".135" height=".30">
-                    <circle cx="1" cy="1" r=".7"></circle>
-                  </pattern>
-                </defs>
-                <rect fill="url(#2c67e949-4a23-49f7-bf27-ca140852cf21)" width="52" height="24"></rect>
-              </svg>
-              <span class="relative">Affordable</span>
-            </span>
-            for everyone
-          </h2>
-          <p class="text-base text-gray-700 md:text-lg">
-            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque rem aperiam, eaque
-            ipsa quae.
-          </p>
-        </div>
-        <div class="grid max-w-screen-md gap-10 md:grid-cols-2 sm:mx-auto">
-          <div>
-            <div class="p-8 bg-gray-900 rounded">
-              <div class="mb-4 text-center">
-                <p class="text-xl font-medium tracking-wide text-white">
-                  Starter Plan
-                </p>
-                <div class="flex items-center justify-center">
-                  <p class="mr-2 text-5xl font-semibold text-white lg:text-6xl">
-                    $39
-                  </p>
-                  <p class="text-lg text-gray-500">/ month</p>
-                </div>
-              </div>
-              <ul class="mb-8 space-y-2">
-                <li class="flex items-center">
-                  <div class="mr-3">
-                    <svg class="w-4 h-4 text-teal-accent-400" viewBox="0 0 24 24" stroke-linecap="round"
-                      stroke-width="2">
-                      <polyline fill="none" stroke="currentColor" points="6,12 10,16 18,8"></polyline>
-                      <circle cx="12" cy="12" fill="none" r="11" stroke="currentColor"></circle>
-                    </svg>
-                  </div>
-                  <p class="font-medium text-gray-300">10 deploys per day</p>
+              <ul role="list" class="mt-6 space-y-6">
+                <li class="flex">
+                  <svg class="flex-shrink-0 w-6 h-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="ml-3 text-gray-500">20 AI-assisted solutions per month</span>
                 </li>
-                <li class="flex items-center">
-                  <div class="mr-3">
-                    <svg class="w-4 h-4 text-teal-accent-400" viewBox="0 0 24 24" stroke-linecap="round"
-                      stroke-width="2">
-                      <polyline fill="none" stroke="currentColor" points="6,12 10,16 18,8"></polyline>
-                      <circle cx="12" cy="12" fill="none" r="11" stroke="currentColor"></circle>
-                    </svg>
-                  </div>
-                  <p class="font-medium text-gray-300">10 GB of storage</p>
+                <li class="flex">
+                  <svg class="flex-shrink-0 w-6 h-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="ml-3 text-gray-500">Basic explanations</span>
                 </li>
-                <li class="flex items-center">
-                  <div class="mr-3">
-                    <svg class="w-4 h-4 text-teal-accent-400" viewBox="0 0 24 24" stroke-linecap="round"
-                      stroke-width="2">
-                      <polyline fill="none" stroke="currentColor" points="6,12 10,16 18,8"></polyline>
-                      <circle cx="12" cy="12" fill="none" r="11" stroke="currentColor"></circle>
-                    </svg>
-                  </div>
-                  <p class="font-medium text-gray-300">3 domains</p>
-                </li>
-                <li class="flex items-center">
-                  <div class="mr-3">
-                    <svg class="w-4 h-4 text-teal-accent-400" viewBox="0 0 24 24" stroke-linecap="round"
-                      stroke-width="2">
-                      <polyline fill="none" stroke="currentColor" points="6,12 10,16 18,8"></polyline>
-                      <circle cx="12" cy="12" fill="none" r="11" stroke="currentColor"></circle>
-                    </svg>
-                  </div>
-                  <p class="font-medium text-gray-300">SSL Certificates</p>
+                <li class="flex">
+                  <svg class="flex-shrink-0 w-6 h-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="ml-3 text-gray-500">24/7 access</span>
                 </li>
               </ul>
-              <button type="submit"
-                class="inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-800 hover:bg-indigo-600 focus:shadow-outline focus:outline-none">
-                Get Now
-              </button>
             </div>
-            <div class="w-11/12 h-2 mx-auto bg-gray-900 rounded-b opacity-75"></div>
-            <div class="w-10/12 h-2 mx-auto bg-gray-900 rounded-b opacity-50"></div>
-            <div class="w-9/12 h-2 mx-auto bg-gray-900 rounded-b opacity-25"></div>
+
+            <a href="#"
+              class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Get
+              Started</a>
           </div>
-          <div>
-            <div class="p-8 bg-gray-900 rounded">
-              <div class="mb-4 text-center">
-                <p class="text-xl font-medium tracking-wide text-white">
-                  Pro Plan
-                </p>
-                <div class="flex items-center justify-center">
-                  <p class="mr-2 text-5xl font-semibold text-white lg:text-6xl">
-                    $59
-                  </p>
-                  <p class="text-lg text-gray-500">/ month</p>
-                </div>
-              </div>
-              <ul class="mb-8 space-y-2">
-                <li class="flex items-center">
-                  <div class="mr-3">
-                    <svg class="w-4 h-4 text-teal-accent-400" viewBox="0 0 24 24" stroke-linecap="round"
-                      stroke-width="2">
-                      <polyline fill="none" stroke="currentColor" points="6,12 10,16 18,8"></polyline>
-                      <circle cx="12" cy="12" fill="none" r="11" stroke="currentColor"></circle>
-                    </svg>
-                  </div>
-                  <p class="font-medium text-gray-300">100 deploys per day</p>
+
+          <div class="relative p-8 bg-white border border-gray-200 rounded-2xl shadow-sm flex flex-col">
+            <div class="flex-1">
+              <h3 class="text-xl font-semibold text-gray-900">Pro</h3>
+              <p class="mt-4 flex items-baseline text-gray-900">
+                <span class="text-5xl font-extrabold tracking-tight">$29</span>
+                <span class="ml-1 text-xl font-semibold">/month</span>
+              </p>
+              <p class="mt-6 text-gray-500">Great for regular homework assistance.</p>
+
+              <ul role="list" class="mt-6 space-y-6">
+                <li class="flex">
+                  <svg class="flex-shrink-0 w-6 h-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="ml-3 text-gray-500">Unlimited AI-assisted solutions</span>
                 </li>
-                <li class="flex items-center">
-                  <div class="mr-3">
-                    <svg class="w-4 h-4 text-teal-accent-400" viewBox="0 0 24 24" stroke-linecap="round"
-                      stroke-width="2">
-                      <polyline fill="none" stroke="currentColor" points="6,12 10,16 18,8"></polyline>
-                      <circle cx="12" cy="12" fill="none" r="11" stroke="currentColor"></circle>
-                    </svg>
-                  </div>
-                  <p class="font-medium text-gray-300">50 GB of storage</p>
+                <li class="flex">
+
+                  <svg class="flex-shrink-0 w-6 h-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="ml-3 text-gray-500">Detailed step-by-step explanations</span>
                 </li>
-                <li class="flex items-center">
-                  <div class="mr-3">
-                    <svg class="w-4 h-4 text-teal-accent-400" viewBox="0 0 24 24" stroke-linecap="round"
-                      stroke-width="2">
-                      <polyline fill="none" stroke="currentColor" points="6,12 10,16 18,8"></polyline>
-                      <circle cx="12" cy="12" fill="none" r="11" stroke="currentColor"></circle>
-                    </svg>
-                  </div>
-                  <p class="font-medium text-gray-300">Unlimited domains</p>
-                </li>
-                <li class="flex items-center">
-                  <div class="mr-3">
-                    <svg class="w-4 h-4 text-teal-accent-400" viewBox="0 0 24 24" stroke-linecap="round"
-                      stroke-width="2">
-                      <polyline fill="none" stroke="currentColor" points="6,12 10,16 18,8"></polyline>
-                      <circle cx="12" cy="12" fill="none" r="11" stroke="currentColor"></circle>
-                    </svg>
-                  </div>
-                  <p class="font-medium text-gray-300">SSL Certificates</p>
+                <li class="flex">
+                  <svg class="flex-shrink-0 w-6 h-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="ml-3 text-gray-500">Priority processing</span>
                 </li>
               </ul>
-              <button type="submit"
-                class="inline-flex items-center justify-center w-full h-12 px-6 font-semibold tracking-wide text-teal-900 transition duration-200 rounded shadow-md bg-teal-accent-400 hover:bg-teal-accent-700 focus:shadow-outline focus:outline-none">
-                Get Now
-              </button>
             </div>
-            <div class="w-11/12 h-2 mx-auto bg-gray-900 rounded-b opacity-75"></div>
-            <div class="w-10/12 h-2 mx-auto bg-gray-900 rounded-b opacity-50"></div>
-            <div class="w-9/12 h-2 mx-auto bg-gray-900 rounded-b opacity-25"></div>
+
+            <a href="#"
+              class="bg-indigo-500 text-white hover:bg-indigo-600 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Get
+              Started</a>
+          </div>
+
+          <div class="relative p-8 bg-white border border-gray-200 rounded-2xl shadow-sm flex flex-col">
+            <div class="flex-1">
+              <h3 class="text-xl font-semibold text-gray-900">Premium</h3>
+              <p class="mt-4 flex items-baseline text-gray-900">
+                <span class="text-5xl font-extrabold tracking-tight">$49</span>
+                <span class="ml-1 text-xl font-semibold">/month</span>
+              </p>
+              <p class="mt-6 text-gray-500">Best for intensive academic support.</p>
+
+              <ul role="list" class="mt-6 space-y-6">
+                <li class="flex">
+                  <svg class="flex-shrink-0 w-6 h-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="ml-3 text-gray-500">All Pro features</span>
+                </li>
+                <li class="flex">
+                  <svg class="flex-shrink-0 w-6 h-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="ml-3 text-gray-500">Advanced AI models for complex problems</span>
+                </li>
+                <li class="flex">
+                  <svg class="flex-shrink-0 w-6 h-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="ml-3 text-gray-500">Personalized learning insights</span>
+                </li>
+              </ul>
+            </div>
+
+            <a href="#"
+              class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Get
+              Started</a>
           </div>
         </div>
       </div>
     </div>
-
+  </div>
 </template>
 
 <script>

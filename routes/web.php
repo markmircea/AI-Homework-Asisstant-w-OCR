@@ -15,6 +15,8 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\AskController;
 use App\Http\Controllers\HistoryListController;
 use App\Http\Controllers\UserSessionController;
+use App\Http\Controllers\PricingController;
+
 
 
 /*
@@ -79,6 +81,9 @@ Route::get('/index', [DashboardController::class, 'index'])
 Route::get('/index-no-auth', [DashboardController::class, 'indexNoAuth'])
     ->middleware('guest')
     ->name('indexNoAuth');
+
+    Route::get('/pricing', [PricingController::class, 'index'])->name('pricing');
+
 
 // Redirect root to non-authenticated route if user is not authenticated
 Route::get('/', function () {

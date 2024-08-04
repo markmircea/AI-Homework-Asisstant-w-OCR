@@ -1,204 +1,86 @@
 <template>
+  <div class="bg-gradient-to-b from-indigo-900 to-indigo-700 min-h-screen">
+    <Nav :user="user" @subject-selected="handleSubjectSelected" />
 
-  <div>
-
-<Nav :user="user"/>
-
-
-
-<Hero/>
+    <Hero :selected-subject="localSelectedSubject" />
 
 
-<feature-section/>
-<black-bar/>
-   <steps></steps>
+    <FeatureSection />
 
-<dark-divider/>
+    <BlackBar />
 
-   <pricing/>
+    <Steps />
 
+    <DarkDivider />
 
+    <Pricing />
 
- <Footer/>
-
-
+    <ContactUs />
 
 
+    <Footer />
   </div>
 </template>
 
-
 <script>
 import { Head } from '@inertiajs/vue3'
-import Modal from '@/Shared/Modal.vue'
-import CreateAnnouncement from '@/Pages/Announcements/Create.vue'
-import EditAnnouncement from '@/Pages/Announcements/Edit.vue'
-import OCR from '@/Pages/Announcements/OCR.vue'
-
-import { VueDraggableNext } from 'vue-draggable-next'
-import Icon from '@/Shared/Icon.vue' // Import the Icon component
-
-import FeatureSection from './FeatureSection.vue'; // Adjust the path as necessary
-import BlackBar from './BlackBar.vue'
 import Nav from './Nav.vue'
 import Hero from './Hero.vue'
+import FeatureSection from './FeatureSection.vue'
+import BlackBar from './BlackBar.vue'
 import Steps from './Steps.vue'
 import DarkDivider from './DarkDivider.vue'
 import Pricing from './Pricing.vue'
 import Footer from './Footer.vue'
-
-
-
+import ContactUs from './ContactUs.vue'
+import PricingPage from './PricingPage.vue'
 
 export default {
   props: {
-    coins: Number,
     user: Object,
-    announcements: Array,
-  },
+    selectedSubject: String,
 
-  data() {
-    return {
-      isCreateModalVisible: false,
-      isEditModalVisible: false,
-      OCRModalVisible: false,
-      selectedAnnouncement: null,
-      localAnnouncements: [...this.announcements].map(announcement => ({
-        ...announcement,
-        collapsed: true,
-        expanded: false // Initialize expanded state for each announcement
-      })),
-      currentPage: 1, // Track the current page
-      itemsPerPage: 12, // Number of items per page
-      user: this.$page.props.user
-    }
   },
-
-  mounted () {
-    console.log(this.user.id)       // gets undefined
-  },
-
   components: {
     Head,
-    Modal,
-    CreateAnnouncement,
-    EditAnnouncement,
-    OCR,
-    draggable: VueDraggableNext,
-    Icon,
-    FeatureSection,
-    BlackBar,
     Nav,
     Hero,
+    FeatureSection,
+    BlackBar,
     Steps,
     DarkDivider,
     Pricing,
-    Footer
+    Footer,
+    ContactUs,
+    PricingPage
   },
-
-  computed: {
-    paginatedAnnouncements() {
-      const start = (this.currentPage - 1) * this.itemsPerPage;
-      const end = start + this.itemsPerPage;
-      return this.localAnnouncements.slice(start, end);
-    },
-    totalPages() {
-      return Math.ceil(this.localAnnouncements.length / this.itemsPerPage);
-    },
-    pageNumbers() {
-      const total = this.totalPages;
-      const numbers = [];
-      let start = Math.max(1, this.currentPage - 4);
-      let end = Math.min(total, this.currentPage + 4);
-
-      if (start > 1) {
-        numbers.push(1);
-        if (start > 2) numbers.push('...');
-      }
-
-      for (let i = start; i <= end; i++) {
-        numbers.push(i);
-      }
-
-      if (end < total) {
-        if (end < total - 1) numbers.push('...');
-        numbers.push(total);
-      }
-
-      return numbers;
+  data() {
+    return {
+      localSelectedSubject: this.selectedSubject || '',
     }
   },
-
-
-  methods: {
-    toggleCollapse(announcement) {
-      announcement.collapsed = !announcement.collapsed;
-    },
-    showCreateModal() {
-      this.isCreateModalVisible = true;
-    },
-    hideCreateModal() {
-      this.isCreateModalVisible = false;
-    },
-    toggleOCRModal() {
-      this.OCRModalVisible = !this.OCRModalVisible;
-    },
-    showEditModal(announcement) {
-      this.selectedAnnouncement = announcement;
-      this.isEditModalVisible = true;
-    },
-    hideEditModal() {
-      this.isEditModalVisible = false;
-      this.selectedAnnouncement = null;
-    },
-    destroy(id) {
-      if (confirm('Are you sure you want to delete this announcement?')) {
-        this.$inertia.delete(`/announcements/${id}`)
-      }
-    },
-    updateOrder() {
-      this.$inertia.post('/announcements/update-order', {
-        announcements: this.localAnnouncements.map((announcement, index) => ({
-          id: announcement.id,
-          order: index
-        }))
-      });
-    },
-    expandImage(announcement) {
-      announcement.expanded = !announcement.expanded; // Toggle expanded state
-    },
-    expandedImageUrl(announcement) {
-      // Check if announcement is expanded and modify URL accordingly
-      if (announcement.expanded) {
-        return announcement.photo.replace(/&?w=400&h=400&fit=crop$/, '');
-      } else {
-        return announcement.photo;
-      }
-    },
-    formatDate(date) {
-      return new Date(date).toLocaleString();
-    },
-    goToPage(page) {
-      if (page >= 1 && page <= this.totalPages) {
-        this.currentPage = page;
-      }
-    }
-  },
-
   watch: {
-    announcements: {
-      handler(newAnnouncements) {
-        this.localAnnouncements = newAnnouncements.map(announcement => ({
-          ...announcement,
-          collapsed: true,
-          expanded: false // Reset expanded state when announcements change
-        }));
-      },
-      deep: true,
+    selectedSubject(newSubject) {
+      this.localSelectedSubject = newSubject;
+    }
+  },
+  methods: {
+    handleSubjectSelected(subject) {
+      this.localSelectedSubject = subject;
     }
   }
 }
 </script>
 
-<style scoped>
+<style>
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Custom styles */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
 </style>

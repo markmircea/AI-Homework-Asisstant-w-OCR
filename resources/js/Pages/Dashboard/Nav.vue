@@ -1,6 +1,9 @@
 <template>
 
-  <nav class="bg-gray-800">
+<nav :user="user" :class="[
+    'transition-all duration-300 ease-in-out',
+    scrolled ? 'bg-gray-800 sticky top-0' : 'bg-transparent'
+  ]" style="z-index: 1000;">
     <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
       <div class="relative flex h-16 items-center justify-between">
         <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -31,14 +34,30 @@
           <div class="hidden sm:ml-6 sm:block">
             <div class="flex space-x-4">
               <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-              <a href="#" class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
-                aria-current="page">Dashboard</a>
-              <a href="#"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Team</a>
-              <a href="#"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Projects</a>
-              <a href="#"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Calendar</a>
+              <Link href="/" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Dashboard</Link>
+
+    <!-- Subjects Dropdown -->
+    <div class="relative group">
+      <button class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+        Subjects
+        <svg class="w-4 h-4 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+      <div class="absolute left-0 w-48 mt-2 origin-top-left bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 scale-95 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:scale-100" style="z-index: 1001;">
+        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+          <a v-for="subject in subjects" :key="subject"
+             @click.prevent="selectSubject(subject)"
+             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+             role="menuitem">
+            {{ subject }}
+          </a>
+        </div>
+      </div>
+    </div>
+
+          <Link href="/pricing" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Pricing</Link>
+              <Link href="/pricing#contact-us" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Contact Us</Link>
             </div>
           </div>
         </div>
@@ -95,23 +114,32 @@
     <!-- Mobile menu -->
     <div class="sm:hidden" id="mobile-menu">
       <div class="space-y-1 px-2 pb-3 pt-2">
-        <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-        <a href="#" class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white"
-          aria-current="page">Dashboard</a>
-        <a href="#"
-          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Team</a>
-        <a href="#"
-          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Projects</a>
-        <a href="#"
-          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Calendar</a>
+        <Link href="/" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Dashboard</Link>
+        <Link href="/subjects" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Subjects</Link>
+        <Link href="/pricing" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Pricing</Link>
+        <Link href="/pricing#contact-us" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Contact Us</Link>
       </div>
     </div>
   </nav>
 </template>
 
 <script>
+import { Link } from '@inertiajs/vue3'
+
+
 export default {
   name: 'Nav',
+  components: {
+    Link
+  },
+
+  data() {
+    return {
+      scrolled: false,
+      subjects: ['Biology', 'Chemistry', 'Computer Science', 'Economics', 'English', 'Geography', 'History', 'Mathematics', 'Physics', 'Science']
+
+    }
+  },
 
   props: {
     user: {
@@ -119,15 +147,35 @@ export default {
       required: true,
     },
   },
+  mounted() {
+    window.addEventListener('scroll', this.handleScroll);
+  },
+
+  beforeUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
+  },
 
   methods: {
+
+    selectSubject(subject) {
+      this.$inertia.get('/index', { subject: subject }, {
+        preserveState: true,
+        preserveScroll: true,
+        only: ['selectedSubject']
+      });
+    },
+
+
+    handleScroll() {
+      this.scrolled = window.scrollY > 0;
+    },
     goToProfile() {
-      console.log(this.user.id);
       // Construct the URL using the user ID
       const userId = this.user.id;
       // Use Inertia to navigate
       this.$inertia.visit(`/users/${userId}/edit`);
     },
+
     logout() {
       Inertia.delete('/logout', {
         onFinish: () => {
@@ -138,7 +186,51 @@ export default {
   }
 };
 </script>
-
 <style scoped>
-/* Add any specific styles for this component here */
+nav {
+  z-index: 1000;
+}
+
+.group:hover .absolute {
+  display: block;
+}
+
+.absolute {
+  display: none;
+}
+
+/* Add this new rule */
+.group:hover::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 20px;
+}
+
+/* Styles for different background states */
+nav.bg-transparent .text-gray-300 {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+nav.bg-transparent .text-gray-400 {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+nav.bg-transparent .text-white {
+  color: white;
+}
+
+nav.bg-gray-800 .text-gray-300 {
+  color: #d1d5db;
+}
+
+nav.bg-gray-800 .text-gray-400 {
+  color: #9ca3af;
+}
+
+nav.bg-gray-800 .text-white {
+  color: white;
+}
 </style>

@@ -292,13 +292,6 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import { initFlowbite } from 'flowbite'
-
-// initialize components based on data attribute selectors
-onMounted(() => {
-  initFlowbite();
-});
 
 const placeholderAnswer = 'Ask away!';
 const placeholderExplain = 'You can enable explanations in "Advanced Options" under the question box'
@@ -400,7 +393,7 @@ export default {
         onSuccess: () => this.form.reset(''),
         onSuccess: this.clicked.answer = false,
         onSuccess: this.clicked.explanation = false,
-        onsuccess: this.clicked.steps = false
+        onSuccess: this.clicked.steps = false
       })
     },
 

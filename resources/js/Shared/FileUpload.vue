@@ -21,8 +21,16 @@
         </p>
       </div>
     </div>
-    <div v-if="selectedFile" class="mt-2 text-sm text-gray-600">
-      Selected file: {{ selectedFile.name }} ({{ formattedFileSize }})
+    <div v-if="selectedFile" class="mt-2 flex items-center justify-between">
+      <span class="text-sm text-gray-600">
+        Selected file: {{ selectedFile.name }} ({{ formattedFileSize }})
+      </span>
+      <button
+        @click="removeFile"
+        class="ml-2 inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+      >
+        Remove
+      </button>
     </div>
     <div v-if="error" class="mt-2 text-sm text-red-600">
       {{ error }}
@@ -87,12 +95,21 @@ export default {
       }
     };
 
+    const removeFile = () => {
+      selectedFile.value = null;
+      emit('update:modelValue', null);
+      // Reset the file input
+      const fileInput = document.getElementById(inputId.value);
+      if (fileInput) fileInput.value = '';
+    };
+
     return {
       selectedFile,
       inputId,
       acceptedFileTypes,
       handleFileChange,
-      formattedFileSize
+      formattedFileSize,
+      removeFile
     };
   }
 };
