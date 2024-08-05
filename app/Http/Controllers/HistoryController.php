@@ -42,7 +42,7 @@ class HistoryController extends Controller
                 'created_at' => $announcement->created_at,
                 'updated_at' => $announcement->updated_at,
                 'deleted_at' => $announcement->deleted_at,
-                'photo' => $announcement->photo_path ? URL::route('image', ['path' => $announcement->photo_path, 'w' => 400, 'h' => 400, 'fit' => 'crop']) : null,
+                'photo' => $announcement->photo_path ? asset('storage/uploads/' . basename($announcement->photo_path)) : null,
             ];
         });
 

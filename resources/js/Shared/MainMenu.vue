@@ -38,8 +38,8 @@
   <!-- Reports Link with Collapsible Submenu -->
   <div class="mb-4">
       <button @click="toggleSubmenu" class="group flex items-center py-3 w-full text-left focus:outline-none">
-        <icon name="users" class="mr-2 w-4 h-4" :class="isUrl('users') ? 'fill-white' : 'fill-indigo-400'" />
-        <div :class="isUrl(`users/${auth.user.id}/edit`) ? 'text-white' : 'text-indigo-300  group-hover:text-white'">Account</div>
+        <icon name="users" class="mr-2 w-4 h-4" :class="isUrl('profile') ? 'fill-white' : 'fill-indigo-400'" />
+        <div :class="isUrl(`profile/${auth.user.id}`) ? 'text-white' : 'text-indigo-300  group-hover:text-white'">Account</div>
         <icon name="cheveron-down" class="ml-auto w-4 h-4 transition-transform duration-200" :class="submenuOpen ? 'transform rotate-180' : 'transform rotate-0'"/>
       </button>
       <transition
@@ -49,8 +49,8 @@
         @leave="leave"
       >
         <div v-show="submenuOpen" class="pl-4 mt-2">
-          <Link class="group flex items-center text-sm py-2" :class="isUrl(`user/${auth.user.id}/edit`) ? 'text-white' : 'text-indigo-300  hover:text-white'" :href="`/user/${auth.user.id}/edit`">
-            <icon name="profile" class="mr-2 w-4 h-4" :class="isUrl(`user/${auth.user.id}/edit`) ? 'text-white' : 'text-white'" />
+          <Link class="group flex items-center text-sm py-2" :class="isUrl(`profile/${auth.user.id}`) ? 'text-white' : 'text-indigo-300  hover:text-white'" :href="`/profile/${auth.user.id}`">
+            <icon name="profile" class="mr-2 w-4 h-4" :class="isUrl(`profile/${auth.user.id}`) ? 'text-white' : 'text-white'" />
             <div>Profile</div>
           </Link>          <Link class="group flex items-center text-sm py-2 text-indigo-300  hover:text-white" href="/logout">
         <icon name="billing" class="mr-2 w-4 h-4 text-red-500" />

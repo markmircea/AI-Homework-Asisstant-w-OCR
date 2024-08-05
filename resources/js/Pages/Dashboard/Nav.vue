@@ -193,7 +193,7 @@ export default {
       // Construct the URL using the user ID
       const userId = this.user.id;
       // Use Inertia to navigate
-      this.$inertia.visit(`/users/${userId}/edit`);
+      this.$inertia.visit(`/profile/${userId}`);
     },
 
     logout() {

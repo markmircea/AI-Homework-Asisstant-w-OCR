@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use App\Http\Middleware\CheckOwner;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,8 +36,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+        Route::aliasMiddleware('owner', CheckOwner::class);
 
         $this->bootRoute();
+
     }
 
     public function bootRoute(): void

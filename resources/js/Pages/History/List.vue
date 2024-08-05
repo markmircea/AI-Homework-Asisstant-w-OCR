@@ -1,4 +1,5 @@
 <template>
+  <div class="min-h-screen overflow-x-hidden">
   <div class="container mx-auto px-4 sm:px-6 lg:px-8">
     <Head title="Contacts" />
     <h1 class="mb-8 text-3xl font-bold text-gray-900">History List</h1>
@@ -54,6 +55,8 @@
     </div>
     <pagination class="mt-6" :links="announcements.links" />
   </div>
+
+</div>
 </template>
 
 <script>
@@ -112,4 +115,6 @@ export default {
   -webkit-line-clamp: 3; /* Reduced to 2 lines for a more compact look */
   line-clamp: 3;
 }
+
+
 </style>
