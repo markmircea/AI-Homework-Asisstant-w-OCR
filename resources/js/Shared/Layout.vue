@@ -29,10 +29,12 @@
                   <span class="hidden md:inline">Tokens: {{ auth.user.coins }}&nbsp;&nbsp;</span>
                     <span>&nbsp;&nbsp;{{ auth.user.first_name }}</span>
                     <span class="hidden md:inline">&nbsp;{{ auth.user.last_name }}&nbsp;&nbsp;</span>
-                    <img v-if="auth.user.photo" class="inline-block ml-4 w-8 h-8 rounded-full" :src="auth.user.photo" />
-
-
-
+                    <div v-if="auth.user.photo" class="inline-block ml-4 w-8 h-8">
+        <img class="w-full h-full rounded-full" :src="auth.user.photo" :alt="auth.user.first_name + ' ' + auth.user.last_name" />
+      </div>
+      <div v-else class="inline-flex ml-4 w-8 h-8 items-center justify-center rounded-full bg-indigo-500 text-white font-semibold text-sm">
+        {{ getInitials(auth.user.first_name, auth.user.last_name) }}
+      </div>
 
                   </div>
                   <icon class="w-5 h-5 fill-gray-700 group-hover:fill-indigo-600 focus:fill-indigo-600" name="cheveron-down" />
@@ -88,6 +90,12 @@ export default {
   props: {
     auth: Object,
 
+  },
+
+  methods: {
+    getInitials(firstName, lastName) {
+      return (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+    },
   },
 
 

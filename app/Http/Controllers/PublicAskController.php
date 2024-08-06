@@ -14,42 +14,38 @@ use App\Models\Announcement;
 use Carbon\Carbon;
 use App\Models\DailyQuestionCount;
 use Illuminate\Support\Facades\DB;
+use App\Models\PublicQuestionCount;
+use Illuminate\Support\Facades\Session;
 
 
 
-class AskController extends Controller
+class PublicAskController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $user = Auth::user();
-        $coins = $user->coins;
-        $announcements = $this->getTransformedAnnouncements($user);
-        $userTransformed = $this->transformUser($user);
-        $limit = $user->getQuestionLimit();
-        $remainingQuestions = $limit - $user->getDailyQuestionCount();
+        $remainingQuestions = $this->getRemainingPublicQuestions();
 
-        Inertia::share('coins', $coins);
-
-        return Inertia::render('Ask/Index', [
-            'coins' => $coins,
-            'user' => $userTransformed,
-            'announcements' => $announcements,
+        return Inertia::render('Dashboard/PublicAsk', [
             'remainingQuestions' => $remainingQuestions,
+            'selectedSubject' => $request->query('subject', ''),
 
         ]);
     }
 
     public function store(Request $request)
     {
-        $user = Auth::user();
-        $now = now();
+        //if (Auth::check()) {
+          //  return redirect()->route('ask')->with('error', 'This page is for public users only.');
+        //}
 
-        $dailyCount = $this->getDailyQuestionCount($user, $now);
-        $limit = $user->getQuestionLimit();
+        $remainingQuestions = $this->getRemainingPublicQuestions();
 
-        if ($dailyCount['count'] >= $limit) {
-            return redirect()->route('ask')->with('error', 'You have reached your daily question limit.');
+
+        if ($remainingQuestions <= 0) {
+            return redirect()->route('public.ask')->with('error', 'You have reached your daily question limit.');
         }
+
+
         DB::beginTransaction();
 
 
@@ -74,7 +70,7 @@ class AskController extends Controller
                 } elseif (in_array($extension, ['doc', 'docx']) || in_array($mimeType, ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])) {
                     $extractedText = $this->extractTextFromWord($filePath);
                 } else {
-                    return redirect()->route('ask')->with('error', 'Unsupported file type.');
+                    return redirect()->route('public.ask')->with('error', 'Unsupported file type.');
                 }
             }
 
@@ -89,14 +85,12 @@ class AskController extends Controller
             );
 
             if ($chatGPTResponse === null) {
-                return redirect()->route('ask')->with('error', 'Nothing Submitted.');
+                return redirect()->route('public.ask')->with('error', 'Nothing Submitted.');
             }
 
             $processedResponse = $this->processChatGPTResponse($chatGPTResponse, $request);
 
-            $this->createAnnouncement($processedResponse, $extractedText, $file ? $file->hashName() : null);
-
-            $this->updateDailyQuestionCount($user, $now, $request->ip(), $dailyCount);
+            $this->incrementPublicQuestionCount();
 
             DB::commit();
 
@@ -105,52 +99,55 @@ class AskController extends Controller
             DB::rollBack();
 
             // Redirect back with an error message
-            return redirect()->route('ask')->with('error', $e->getMessage());
+            return redirect()->route('public.ask')->with('error', $e->getMessage());
         }
     }
 
-    private function getTransformedAnnouncements($user)
+    private function getPublicQuestionCount()
     {
-        return $user->announcements()->orderBy('order')->get()->transform(function ($announcement) {
-            return $this->transformAnnouncement($announcement);
-        });
-    }
+        $ipAddress = request()->ip();
+        $sessionId = Session::getId();
+        $today = Carbon::today();
 
-    private function getDailyQuestionCount($user, $now)
-{
-    $latestCount = $user->dailyQuestionCounts()
-        ->latest('created_at')
+        return PublicQuestionCount::where(function ($query) use ($ipAddress, $sessionId, $today) {
+            $query->where('ip_address', $ipAddress)
+                  ->orWhere('session_id', $sessionId);
+        })
+        ->where('date', $today)
         ->first();
-
-    if (!$latestCount || $latestCount->created_at->addHours(24)->isPast()) {
-        // If no previous count or it's been more than 24 hours, return a new count
-        return ['count' => 0, 'record' => null];
     }
 
-    return ['count' => $latestCount->count, 'record' => $latestCount];
-}
+    private function incrementPublicQuestionCount()
+    {
+        $ipAddress = request()->ip();
+        $sessionId = Session::getId();
+        $today = Carbon::today();
 
-private function updateDailyQuestionCount($user, $now, $ip, $dailyCount)
-{
-    if ($dailyCount['record']) {
-        // Update existing record
-        $record = $dailyCount['record'];
-        $record->count += 1;
-        $ips = explode(',', $record->ip);
-        if (!in_array($ip, $ips)) {
-            $ips[] = $ip;
-            $record->ip = implode(',', $ips);
+        $existingCount = $this->getPublicQuestionCount();
+
+        if ($existingCount) {
+            $existingCount->increment('count');
+            $existingCount->ip_address = $ipAddress;
+            $existingCount->session_id = $sessionId;
+            $existingCount->save();
+        } else {
+            PublicQuestionCount::create([
+                'ip_address' => $ipAddress,
+                'session_id' => $sessionId,
+                'date' => $today,
+                'count' => 1
+            ]);
         }
-        $record->save();
-    } else {
-        // Create new record
-        $user->dailyQuestionCounts()->create([
-            'date' => $now->toDateString(),  // Add this line
-            'count' => 1,
-            'ip' => $ip,
-        ]);
     }
+
+    private function getRemainingPublicQuestions()
+{
+    $count = $this->getPublicQuestionCount();
+    return 3 - ($count ? $count->count : 0);
 }
+
+
+
 
     private function extractTextFromWord($filePath)
     {
@@ -181,36 +178,9 @@ private function updateDailyQuestionCount($user, $now, $ip, $dailyCount)
         }
     }
 
-    private function transformAnnouncement($announcement)
-    {
-        return [
-            'title' => $announcement->title,
-            'content' => $announcement->content,
-            'user_id' => $announcement->user_id,
-            'id' => $announcement->id,
-            'aiquery' => $announcement->aiquery,
-            'subject' => $announcement->subject,
-            'extracted_text' => $announcement->extracted_text,
-            'instructions' => $announcement->instructions,
-            'created_at' => $announcement->created_at,
-            'updated_at' => $announcement->updated_at,
-            'deleted_at' => $announcement->deleted_at,
-            'photo' => $announcement->photo_path ? URL::route('image', ['path' => $announcement->photo_path, 'w' => 400, 'h' => 400, 'fit' => 'crop']) : null,
-        ];
-    }
 
-    private function transformUser($user)
-    {
-        return [
-            'id' => $user->id,
-            'first_name' => $user->first_name,
-            'last_name' => $user->last_name,
-            'email' => $user->email,
-            'owner' => $user->owner,
-            'photo' => $user->photo_path ? URL::route('image', ['path' => $user->photo_path, 'w' => 60, 'h' => 60, 'fit' => 'crop']) : null,
-            'deleted_at' => $user->deleted_at,
-        ];
-    }
+
+
 
     private function validateRequest(Request $request)
     {
@@ -432,32 +402,13 @@ private function updateDailyQuestionCount($user, $now, $ip, $dailyCount)
         return $requestTitle ? "$requestTitle  |  $titleFormatted" : $titleFormatted;
     }
 
-    private function createAnnouncement($processedResponse, $extractedText, $filePath)
-    {
-        Auth::user()->announcements()->create([
-            'extracted_text' => $extractedText,
-            'title' => $processedResponse['title'],
-            'content' => $processedResponse['responseBody'],
-            'aiquery' => request('question'),
-            'subject' => $processedResponse['subject'],
-            'instructions' => $processedResponse['explainText'] . " " . $processedResponse['stepsText'],
-            'photo_path' => $filePath,
-            'created_at' => $processedResponse['createdAt'],
-        ]);
-    }
+
 
     private function renderResponse($processedResponse)
     {
-        $user = Auth::user();
-        $userTransformed = $this->transformUser($user);
+        $remainingQuestions = $this->getRemainingPublicQuestions();
 
-        $limit = $user->getQuestionLimit();
-        $remainingQuestions = $limit - $user->getDailyQuestionCount();
-
-
-        return Inertia::render('Ask/Index', [
-            'coins' => $user->coins,
-            'user' => $userTransformed,
+        return Inertia::render('Dashboard/PublicAsk', [
             'response' => $processedResponse['responseBody'],
             'stepsResponse' => $processedResponse['stepsText'],
             'explainResponse' => $processedResponse['explainText'],

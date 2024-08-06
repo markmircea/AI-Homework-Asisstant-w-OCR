@@ -17,6 +17,8 @@ use App\Http\Controllers\HistoryListController;
 use App\Http\Controllers\UserSessionController;
 use App\Http\Controllers\PricingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicAskController;
+
 
 
 
@@ -83,6 +85,11 @@ Route::get('/index', [DashboardController::class, 'index'])
 Route::get('/index-no-auth', [DashboardController::class, 'indexNoAuth'])
     ->middleware('guest')
     ->name('indexNoAuth');
+
+
+    Route::get('/public-ask', [PublicAskController::class, 'index'])->name('public.ask');
+Route::post('/public-ask', [PublicAskController::class, 'store'])->name('public.ask.store');
+
 
     Route::get('/pricing', [PricingController::class, 'index'])->name('pricing');
 
@@ -159,6 +166,8 @@ Route::put('users/{user}/restore', [UsersController::class, 'restore'])
     ->middleware('owner');
 
     // Ask
+
+
 
 Route::get('ask', [AskController::class, 'index'])
 ->name('ask')

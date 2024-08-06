@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DailyQuestionCount extends Model
 {
-    protected $fillable = ['user_id', 'date', 'count'];
+    protected $fillable = ['user_id', 'date', 'count', 'ip'];
 
     public function user()
     {

@@ -14,6 +14,8 @@ return new class extends Migration
             $table->date('date');
             $table->integer('count')->default(0);
             $table->timestamps();
+            $table->string('ip')->nullable();
+
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unique(['user_id', 'date']);

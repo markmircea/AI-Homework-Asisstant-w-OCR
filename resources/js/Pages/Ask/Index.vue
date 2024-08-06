@@ -83,25 +83,23 @@
 
               <!-- Text Area for Homework Question -->
               <div class="relative w-full pb-8 pr-6">
-                <label for="homework_question" class="block text-sm font-medium text-gray-700">Your homework question
-                  <!-- SVG and Badge -->
-                  <figure class="absolute top-0 right-0 text-nowrap">
-                    <svg class="absolute ms-4 mt-4" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-                      viewBox="0 0 99.3 57" width="48">
-                      <path fill="none" stroke="#bdc5d1" stroke-width="4" stroke-linecap="round" stroke-miterlimit="10"
-                        d="M2,39.5l7.7,14.8c0.4,0.7,1.3,0.9,2,0.4L27.9,42"></path>
-                      <path fill="none" stroke="#bdc5d1" stroke-width="4" stroke-linecap="round" stroke-miterlimit="10"
-                        d="M11,54.3c0,0,10.3-65.2,86.3-50"></path>
-                    </svg>
-                    <span class="badge text-gray-600 badge-pill ms-7 fa-beat-fade"
-                      style="--fa-beat-fade-opacity: 0.90; --fa-beat-fade-scale: 1.075; --fa-animation-duration: 2s;">Type
-                      your question here!</span>
-                  </figure>
-                </label>
-                <textarea v-model="form.question" id="question" rows="4"
-                  class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  placeholder="Enter your homework question here..."></textarea>
-              </div>
+                  <div class="flex items-center justify-between mb-2">
+                    <label for="homework_question" class="block text-sm font-medium text-gray-700">Your homework
+                      question</label>
+                    <button type="button" @click="toggleUploadSection"
+                      class=" flex items-center px-3 py-2 text-sm font-medium text-white bg-indigo-400 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="upload-button w-5 h-5 ">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                      </svg>
+                    </button>
+                  </div>
+                  <textarea v-model="form.question" id="question" rows="4"
+                    class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    placeholder="Enter your homework question here..."></textarea>
+                </div>
+
 
               <!-- Accordion for Upload and Advanced Options -->
               <div class="w-full pb-8 pr-6">
@@ -386,7 +384,7 @@ export default {
       });
     },
     copyButtonClass(type) {
-      return this.clicked[type] ? 'bg-gray-500 text-white text-xs px-3 py-1 rounded-lg cursor-not-allowed opacity-50' : 'bg-indigo-500 text-white text-xs px-3 py-1 rounded-lg';
+      return this.clicked[type] ? 'bg-gray-500 text-white text-xs px-3 py-1 rounded-lg cursor-not-allowed opacity-50' : 'bg-indigo-400 text-white text-xs px-3 py-1 rounded-lg';
     },
 
 

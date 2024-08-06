@@ -29,7 +29,7 @@
         <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
           <div class="flex flex-shrink-0 items-center">
 
-              <icon name="logo" class="h-8 w-auto fill-gray-300" />
+            <icon name="logo" class="h-8 w-auto fill-gray-300" />
 
           </div>
           <div class="hidden sm:ml-6 sm:block">
@@ -39,27 +39,35 @@
                 class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
               Dashboard</Link>
               <!-- Subjects Dropdown -->
-              <div class="relative group">
-                <button
-                  class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
-                  Subjects
-                  <svg class="w-4 h-4 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                  </svg>
-                </button>
-                <div
-                  class="absolute left-0 w-48 mt-2 origin-top-left bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 scale-95 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:scale-100"
-                  style="z-index: 1001;">
-                  <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                    <a v-for="subject in subjects" :key="subject" @click.prevent="selectSubject(subject)"
-                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-                      role="menuitem">
-                      {{ subject }}
-                    </a>
-                  </div>
-                </div>
-              </div>
+              <div class="relative" @mouseenter="showSubjects = true" @mouseleave="showSubjects = false">
+  <button
+    class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+    Subjects
+    <svg class="w-4 h-4 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+    </svg>
+  </button>
+  <transition
+    enter-active-class="transition ease-out duration-100"
+    enter-from-class="transform opacity-0 scale-95"
+    enter-to-class="transform opacity-100 scale-100"
+    leave-active-class="transition ease-in duration-75"
+    leave-from-class="transform opacity-100 scale-100"
+    leave-to-class="transform opacity-0 scale-95">
+    <div v-if="showSubjects"
+      class="absolute left-0 w-48 mt-2 origin-top-left bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
+      style="z-index: 1001;">
+      <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+        <a v-for="subject in subjects" :key="subject" @click.prevent="selectSubject(subject)"
+          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+          role="menuitem">
+          {{ subject }}
+        </a>
+      </div>
+    </div>
+  </transition>
+</div>
 
 
 
@@ -69,6 +77,8 @@
               <Link href="/pricing#contact-us"
                 class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
               Contact Us</Link>
+
+
             </div>
           </div>
 
@@ -99,7 +109,8 @@
                 <span class="sr-only">Open user menu</span>
                 <img v-if="user.photo" class="h-8 w-8 rounded-full" :src="user.photo" alt="User photo" />
                 <div v-else class="h-8 w-8 rounded-full bg-gray-500 flex items-center justify-center text-white">
-                  {{ user.name ? user.name.charAt(0).toUpperCase() : 'U' }}
+                  {{ user.first_name ? user.first_name.charAt(0).toUpperCase() + user.last_name.charAt(0).toUpperCase()
+                  : 'U' }}
                 </div>
               </button>
             </div>
@@ -156,7 +167,8 @@ export default {
   data() {
     return {
       scrolled: false,
-      subjects: ['Biology', 'Chemistry', 'Computer Science', 'Economics', 'English', 'Geography', 'History', 'Mathematics', 'Physics', 'Science']
+      subjects: ['Biology', 'Chemistry', 'Computer Science', 'Economics', 'English', 'Geography', 'History', 'Mathematics', 'Physics', 'Science'],
+      showSubjects: false
 
     }
   },
@@ -179,7 +191,7 @@ export default {
 
     selectSubject(subject) {
       this.$inertia.get('/index', { subject: subject }, {
-        preserveState: true,
+        preserveState: false,
         preserveScroll: false,
         only: ['selectedSubject']
       });
@@ -197,7 +209,7 @@ export default {
     },
 
     logout() {
-      Inertia.delete('/logout', {
+      this.$inertia.get('/log-out', {
         onFinish: () => {
           window.location.href = '/'; // Redirect to home or login page
         }
@@ -211,22 +223,8 @@ nav {
   z-index: 1000;
 }
 
-.group:hover .absolute {
-  display: block;
-}
 
-.absolute {
-  display: none;
-}
 
-.group:hover::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 100%;
-  height: 20px;
-}
 
 /* Styles for different background states */
 nav.bg-transparent .text-gray-300 {

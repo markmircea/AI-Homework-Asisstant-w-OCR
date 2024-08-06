@@ -67,10 +67,16 @@ class User extends Authenticatable
 
     public function getDailyQuestionCount()
     {
-        return $this->dailyQuestionCounts()
-            ->where('date', now()->toDateString())
-            ->first()
-            ->count ?? 0;
+        $now = now();
+    $latestCount = $this->dailyQuestionCounts()
+        ->latest('created_at')
+        ->first();
+
+    if (!$latestCount || $latestCount->created_at->addHours(24)->isPast()) {
+        return 0;
+    }
+
+    return $latestCount->count;
     }
 
     public function getQuestionLimit()

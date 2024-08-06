@@ -93,16 +93,25 @@ export default {
     selectedSubject: {
       type: String,
       default: ''
+    },
+    isAuthenticated: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      form: {
+      form: this.$inertia.form({
+        _method: 'post',
         title: '',
         subject: this.selectedSubject,
         level: '',
         question: '',
-      },
+        tokensCost: 1000,
+        temperature: 0.7,
+        model: "gpt-4o-mini",
+        photo: null,
+      }),
       subjects: ['Biology', 'Chemistry', 'Computer Science', 'Economics', 'English', 'Geography', 'History', 'Mathematics', 'Physics', 'Science']
 
     };
@@ -124,9 +133,23 @@ export default {
   },
   methods: {
     update() {
-      // Handle form submission
-      console.log('Form submitted:', this.form);
-      // Add your logic here to process the form data
+      const endpoint = this.isAuthenticated ? '/ask' : '/public-ask';
+      this.form.post(endpoint, {
+        onSuccess: () => {
+          if (this.isAuthenticated) {
+            // Handle authenticated user response
+            // Maybe redirect to a dashboard
+           // this.$inertia.visit('/ask');
+          } else {
+            // Handle public user response
+            // Maybe show the result on the same page
+         //   this.showResult(response.data);
+          }
+        },
+        onError: () => {
+          // Handle errors
+        }
+      });
     },
   },
 };
