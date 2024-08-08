@@ -265,7 +265,7 @@ class PublicAskController extends Controller
             $steps,
             $explain,
             $level,
-            $request->input('tokensCost', 1000),
+            $request->input('tokensCost', 1500),
             $request->input('temperature', 0.6),
             $request->input('model', 'gpt-4o-mini')
         );

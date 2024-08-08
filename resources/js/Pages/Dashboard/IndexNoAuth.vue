@@ -1,12 +1,12 @@
 <template>
 
-<div class="bg-gradient-to-b from-indigo-900 to-indigo-700 min-h-screen">
+  <div class="bg-gradient-to-b from-indigo-900 to-indigo-700 min-h-screen">
 
-<Nav/>
+    <Nav />
 
 
 
-<Hero  :isAuthenticated="$page.props.auth.user !== null" />
+    <Hero :isAuthenticated="$page.props.auth.user !== null" />
 
 
     <feature-section />

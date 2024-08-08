@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
-
+use App\Models\DailyQuestionCount;
+use Carbon\Carbon;
 
 class ProfileController extends Controller
 {
@@ -24,6 +25,9 @@ class ProfileController extends Controller
 
         }
 
+        $limit = $user->getQuestionLimit();
+        $remainingQuestions = $limit - $user->getDailyQuestionCount();
+
         return Inertia::render('Profile/Account', [
             'user' => [
                 'id' => $user->id,
@@ -33,6 +37,9 @@ class ProfileController extends Controller
                 'owner' => $user->owner,
                 'photo' => $user->photo_path ? URL::route('image', ['path' => $user->photo_path, 'w' => 60, 'h' => 60, 'fit' => 'crop']) : null,
                 'deleted_at' => $user->deleted_at,
+                'subscription_type' => $user->subscription_type,
+                'daily_question_limit' => $limit,
+                'questions_left' => $remainingQuestions,
             ],
         ]);
     }
@@ -68,12 +75,27 @@ class ProfileController extends Controller
         return Redirect::back()->with('success', 'User updated.');
     }
 
+    public function upgradeSubscription(User $user): RedirectResponse
+    {
+        if (Auth::id() !== $user->id && !Auth::user()->owner) {
+            return redirect()->route('accountIndex', Auth::id())->with('error', 'You can only update your own subscription.');
+        }
+
+        Request::validate([
+            'subscription_type' => ['required', 'integer', 'min:1', 'max:3'],
+        ]);
+
+        $user->update(['subscription_type' => Request::input('subscription_type')]);
+
+        return Redirect::back()->with('success', 'Subscription updated.');
+    }
+
     public function destroy(User $user): RedirectResponse
     {
 
         $user->delete();
 
-        return Redirect::back()->with('success', 'User deleted.');
+        return Redirect::back()->with('success', 'Account deleted.');
     }
 
     public function restore(User $user): RedirectResponse

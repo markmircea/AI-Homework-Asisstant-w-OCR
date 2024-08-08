@@ -1,20 +1,23 @@
 <template>
-  <div class="bg-gradient-to-b from-indigo-900 to-indigo-700 min-h-screen">
+  <div class=" bg-gradient-to-r from-indigo-500 to-indigo-600 min-h-screen">
 
     <Nav />
+
 
     <div>
 
       <Head title="Public Ask" />
       <div class="flex justify-start mb-8 max-w-3xl">
 
+
       </div>
 
       <div class="container mx-auto mt-20">
+
         <div class="flex flex-col lg:flex-row gap-4">
           <!-- Question Section -->
           <div class="flex-1 bg-white shadow-lg rounded-lg overflow-hidden">
-            <div class="px-8 py-4 bg-gradient-to-r from-indigo-700 to-indigo-500 text-white">
+            <div class="px-8 py-4 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white">
               <h2 class="text-xl font-semibold">Question</h2>
             </div>
             <form @submit.prevent="update">
@@ -178,7 +181,7 @@
           <!-- Response Settings Section -->
           <div class="flex-1 bg-white shadow-lg rounded-lg overflow-hidden ">
             <div class=" h-full">
-              <div class="px-8 py-4 bg-gradient-to-r from-indigo-700 to-indigo-500 text-white">
+              <div class="px-8 py-4 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white">
                 <h2 class="text-xl font-semibold">Response</h2>
               </div>
 
@@ -257,13 +260,20 @@
                   </div>
                 </div>
               </div>
+              <div class="px-4 py-8 md:flex-1 md:p-12 md:overflow-y-auto" scroll-region>
+            <flash-messages ref="FlashMessages"/>
+
+            <slot />
+    </div>
             </div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
-  <Footer />
+<contact-us-vue/>
+<Footer />
 </template>
 
 <script>
@@ -274,11 +284,16 @@ import LoadingButton from '@/Shared/LoadingButton.vue'
 import FileUpload from '../../Shared/FileUpload.vue'
 import Nav from './PublicNav.vue'
 import Footer from './Footer.vue'
+import FlashMessages from '@/Shared/FlashMessages.vue'
+import ContactUsVue from './ContactUs.vue'
+
 
 export default {
   components: {
     Head,
     LoadingButton,
+    FlashMessages,
+    ContactUsVue,
     SelectInput,
     TextInput,
     FileUpload,

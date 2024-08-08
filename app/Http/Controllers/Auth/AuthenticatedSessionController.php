@@ -13,6 +13,7 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Models\User; // Adjust the namespace as per your User model
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Notifications\RegistrationConfirmation;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -32,6 +33,8 @@ class AuthenticatedSessionController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
+
+        $user->notify(new RegistrationConfirmation($user));
 
         auth()->login($user);
 
