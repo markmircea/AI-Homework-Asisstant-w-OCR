@@ -15,8 +15,8 @@
     </trashed-message>
     <div class="max-w-3xl bg-white rounded-md shadow overflow-hidden ">
       <!-- Profile Heading and Horizontal Line -->
-      <div class="px-8 py-4 bg-white border-b border-gray-200">
-        <h2 class="text-xl font-semibold">Profile</h2>
+      <div class="px-8 py-4 bg-gradient-to-r from-indigo-400 to-indigo-600 text-white border-gray-200">
+        <h2 class="text-s font-medium text-white uppercase tracking-wider font-semibold">Profile</h2>
 
       </div>
       <form @submit.prevent="update">
@@ -46,60 +46,53 @@
 
 
 
-      <div class="mt-20 flex-1">
-            <ActiveSessions />
-          </div>
 
-          <div class="container mt-20">
-    <div class="flex flex-col lg:flex-row gap-4">
-      <!-- Daily Questions and Billing Section -->
-      <div class="flex-1 bg-white rounded-md shadow overflow-hidden">
-        <!-- Daily Questions -->
-        <div class="px-8 py-6 bg-gradient-to-r from-indigo-400 to-indigo-600 text-white">
-          <h2 class="text-2xl font-semibold mb-2">Daily Questions</h2>
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-4xl font-bold">{{ user.questions_left }}</p>
-              <p class="text-sm opacity-75">Questions left today</p>
-            </div>
-            <div class="text-right">
-              <p class="text-lg">{{ user.daily_question_limit }} total</p>
-              <p class="text-sm opacity-75">Daily limit</p>
+    <div class=" mt-20">
+      <div class="flex flex-col lg:flex-row gap-4">
+        <!-- Daily Questions and Billing Section -->
+        <div class="flex-1 bg-white rounded-md shadow overflow-hidden">
+          <!-- Daily Questions -->
+          <div class="px-8 py-6 bg-gradient-to-r from-indigo-400 to-indigo-600 text-white">
+            <h2 class="text-xl font-medium text-white uppercase tracking-wider font-semibold mb-2">Daily Questions</h2>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-4xl font-bold">{{ user.questions_left }}</p>
+                <p class="text-sm opacity-75">Questions left today</p>
+              </div>
+              <div class="text-right">
+                <p class="text-lg">{{ user.daily_question_limit }} total</p>
+                <p class="text-sm opacity-75">Daily limit</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Subscription Information -->
-        <div class="px-8 py-6">
-          <h2 class="text-xl font-semibold mb-4">Current Subscription</h2>
-          <p class="text-lg mb-4">
-            Your current plan:
-            <span class="font-bold text-indigo-600">{{ subscriptionTypeText }}</span>
-          </p>
-          <h3 class="text-lg font-semibold mb-4">Upgrade Subscription</h3>
-          <form @submit.prevent="upgradeSubscription">
-            <select-input
-              v-model="form.subscription_type"
-              :error="form.errors.subscription_type"
-              class="mb-4 w-full"
-              label="Select Subscription Type"
-            >
-              <option :value="1">Free</option>
-              <option :value="2">Tier 2</option>
-              <option :value="3">Tier 3</option>
-            </select-input>
-            <loading-button :loading="form.processing" class="btn-indigo w-full" type="submit">
-              Upgrade Subscription
-            </loading-button>
-          </form>
+          <!-- Subscription Information -->
+          <div class="px-8 py-6">
+            <h2 class="text-xl font-semibold mb-4">Current Subscription</h2>
+            <p class="text-lg mb-4">
+              Your current plan:
+              <span class="font-bold text-indigo-600">{{ subscriptionTypeText }}</span>
+            </p>
+            <h3 class="text-lg font-semibold mb-4">Upgrade Subscription</h3>
+            <form @submit.prevent="upgradeSubscription">
+              <select-input v-model="form.subscription_type" :error="form.errors.subscription_type" class="mb-4 w-full"
+                label="Select Subscription Type">
+                <option :value="1">Free</option>
+                <option :value="2">Tier 2</option>
+                <option :value="3">Tier 3</option>
+              </select-input>
+              <loading-button :loading="form.processing" class="btn-indigo w-full" type="submit">
+                Upgrade Subscription
+              </loading-button>
+            </form>
+          </div>
         </div>
-      </div>
 
         <!-- Advanced Settings Section -->
         <div class="flex-1 bg-white rounded-md shadow overflow-hidden">
           <!-- Advanced Settings Heading and Horizontal Line -->
-          <div class="px-8 py-4 bg-white border-b border-gray-200">
-            <h2 class="text-xl font-semibold">Advanced Settings</h2>
+          <div class="px-8 py-4 bg-gradient-to-r from-indigo-400 to-indigo-600 text-white">
+            <h2 class="text-md font-medium text-white uppercase tracking-wider font-semibold">Advanced Settings</h2>
           </div>
           <form @submit.prevent="update">
             <div class="flex flex-wrap -mb-8 -mr-6 p-8">
@@ -131,6 +124,10 @@
         </div>
       </div>
     </div>
+
+    <div class="mt-20 flex-1">
+            <ActiveSessions />
+          </div>
 
 
 
@@ -176,7 +173,7 @@ export default {
         last_name: this.user.last_name,
         email: this.user.email,
         password: '',
-       photo: null,
+        photo: null,
         id: this.user.id,
       }),
     }

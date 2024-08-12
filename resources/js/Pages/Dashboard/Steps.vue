@@ -76,8 +76,9 @@
         </div>
       </div>
       <div class="relative">
-        <img class="inset-0 object-cover object-bottom w-full rounded shadow-lg h-96 lg:absolute lg:h-full" src="https://images.pexels.com/photos/3184287/pexels-photo-3184287.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=750&amp;w=1260" alt="Students studying" />
-      </div>
+        <div class="h-64 rounded-2xl bg-cover bg-center lg:h-full"
+             style="background-image: url('/storage/img/studentest.jpeg'); background-size: cover; background-position: center;">
+        </div>      </div>
     </div>
   </div>
 </template>

@@ -2,7 +2,7 @@
   <section class="bg-gray-100  lg:py-12 lg:flex lg:justify-center">
     <div class="overflow-hidden bg-white  lg:mx-8 lg:flex lg:max-w-6xl lg:w-full lg:shadow-md lg:rounded-xl">
       <div class="lg:w-1/2">
-        <div class="h-64 bg-cover lg:h-full" style="background-image:url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80')">
+        <div class="h-64 bg-cover lg:h-full" style="background-image:url('/storage/img/boostpre.jpeg')">
         </div>
       </div>
 

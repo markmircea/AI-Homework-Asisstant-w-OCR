@@ -1,8 +1,7 @@
 <template>
   <div class="min-h-screen overflow-x-hidden">
   <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-    <Head title="Contacts" />
-    <h1 class="mb-8 text-3xl font-bold text-gray-900">History List</h1>
+    <Head title="History List" />
     <div class="flex flex-col sm:flex-row items-center justify-between mb-6 space-y-4 sm:space-y-0">
       <search-filter v-model="form.search" class="w-full sm:w-64 lg:w-96" @reset="reset">
         <label class="block text-sm font-medium text-gray-700">Trashed:</label>
@@ -16,11 +15,11 @@
     <div class="bg-white shadow-md rounded-lg overflow-hidden">
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
-  <thead class="bg-gray-50">
+  <thead class="bg-gradient-to-r from-indigo-400 to-indigo-600 text-white">
     <tr>
-      <th scope="col" class="w-1/8 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-      <th scope="col" class="w-1/4 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Question</th>
-      <th scope="col" class="w-7/12 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Answer</th>
+      <th scope="col" class="w-1/8 px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Title</th>
+      <th scope="col" class="w-1/4 px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Question</th>
+      <th scope="col" class="w-7/12 px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Answer</th>
       <th scope="col" class="w-1/12 relative px-6 py-3">
         <span class="sr-only">Edit</span>
       </th>
@@ -35,7 +34,7 @@
         </Link>
       </td>
       <td class="w-1/4 px-6 py-4">
-        <div class="text-sm text-gray-900 truncate-lines truncate-lines-2">{{ announcement.aiquery }}</div>
+        <div class="text-sm text-gray-900 truncate-lines truncate-lines-2">{{ announcement.aiquery }} {{ announcement.extracted_text }}</div>
       </td>
       <td class="w-7/12 px-6 py-4">
         <div class="text-sm text-gray-900 truncate-lines truncate-lines-3">{{ announcement.content }}</div>

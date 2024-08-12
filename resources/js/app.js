@@ -9,7 +9,7 @@ createInertiaApp({
     const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
     return pages[`./Pages/${name}.vue`]
   },
-  title: title => title ? `${title} - HR CRM` : 'HR CRM',
+  title: title => title ? `${title} - Easy Ace` : 'Easy Ace AI',
   setup({ el, App, props, plugin }) {
     const app = createApp({ render: () => h(App, props) });
 

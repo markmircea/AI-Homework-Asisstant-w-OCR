@@ -205,7 +205,7 @@ Route::post('/history/{id}/send-email', [HistoryController::class, 'sendEmail'])
     ->name('history-list.edit')
     ->middleware('auth');
 
-    Route::put('history/{announcement}', [HistoryListController::class, 'update'])
+    Route::put('history-list/{announcement}', [HistoryListController::class, 'update'])
     ->name('history-list.update')
     ->middleware('auth');
 

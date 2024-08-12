@@ -1,74 +1,113 @@
 <template>
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="max-w-7xl mx-auto">
-      <Head title="History" />
-      <div>
-        <h1 class="mb-8 text-3xl font-bold">History</h1>
-        <h2 class="p-4 border rounded-lg text-sm sm:text-base">Hi {{ user.first_name }}! Welcome to your dashboard, here are some of your historic.</h2>
-        <div class="flex flex-col sm:flex-row justify-between items-center mb-4 p-4">
-          <button @click="toggleOCRModal" class="btn-indigo w-full sm:w-auto mb-2 sm:mb-0">Analyze</button>
-        </div>
-
-        <draggable :list="paginatedAnnouncements" @update="updateOrder" class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          <div v-for="announcement in paginatedAnnouncements" :key="announcement.id"
-            :class="['announcement', { 'announcement-expanded': !announcement.collapsed }]"
-            class="p-4 border rounded-lg shadow cursor-move" @dblclick="showEditModal(announcement)">
-            <div class="flex flex-col h-full">
-              <div class="flex-1">
-                <p class="announcement-title text-sm sm:text-base">{{ announcement.title }}</p>
-                <p class="text-gray-500 text-xs sm:text-sm">Created at: {{ formatDate(announcement.created_at) }}</p>
-
-                <div v-if="!announcement.collapsed" class="mt-4">
-                  <img v-if="announcement.photo" class="rounded-lg shadow w-full sm:w-48 h-auto cursor-pointer"
-                    :src="expandedImageUrl(announcement)"
-                    @click="expandImage(announcement)" :class="{ 'expanded': announcement.expanded }" />
-
-                  <p class="mt-4 text-sm sm:text-base">{{ announcement.title }}</p>
-                  <h3 class="font-bold text-lg sm:text-xl mt-2">{{ announcement.content }}</h3>
-                  <p class="text-gray-500 text-xs sm:text-sm mt-2">Subject: {{ announcement.subject }}</p>
-                  <p class="text-gray-500 text-xs sm:text-sm mt-2">Extracted Text: {{ announcement.extracted_text }}</p>
-                </div>
-              </div>
-
-              <div class="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-2 mt-4">
-                <button @click="showEditModal(announcement)" class="btn-indigo w-full sm:w-auto">Edit</button>
-                <button @click="destroy(announcement.id)" class="btn-red w-full sm:w-auto">Delete</button>
-              </div>
-              <Icon class="center-icon mt-2" name="drag-drop"/>
-
-              <Icon @click="toggleCollapse(announcement)"
-                :class="['btn-arrow small-icon mt-2', { 'icon-collapsed': announcement.collapsed, 'icon-expanded': !announcement.collapsed }]"
-                :name="announcement.collapsed ? 'cheveron-down' : 'cheveron-up'" />
-            </div>
-          </div>
-        </draggable>
-
-        <!-- Pagination Controls -->
-        <div class="pagination-controls mt-8 flex flex-wrap justify-center items-center space-x-2 space-y-2">
-          <button @click="goToPage(currentPage - 1)" :disabled="currentPage <= 1" class="w-full sm:w-auto">Previous</button>
-          <div class="page-numbers flex flex-wrap justify-center space-x-1 space-y-1">
-            <button v-for="number in pageNumbers" :key="number" @click="goToPage(number)"
-              :class="{ 'active': number === currentPage }" class="w-8 h-8 sm:w-10 sm:h-10">
-              {{ number }}
-            </button>
-          </div>
-          <button @click="goToPage(currentPage + 1)" :disabled="currentPage >= totalPages" class="w-full sm:w-auto">Next</button>
-        </div>
-
-        <p class="mt-4 text-center">You have {{ coins }} coins.</p>
+  <div class="bg-white rounded-md shadow overflow-hidden">
+    <div class="px-4 sm:px-6 py-4 bg-gradient-to-r from-indigo-400 to-indigo-600 text-white border-gray-200">
+      <h1 class="text-xs font-medium text-white uppercase tracking-wider font-semibold">History</h1>
+    </div>
+    <div class="p-4 sm:p-6">
+      <div class="bg-gray-50 border border-gray-200 rounded-md p-4 mb-6">
+        <p class="text-sm sm:text-base">Hi {{ user.first_name }}! Welcome to your dashboard, here are some of your historic items.</p>
       </div>
 
-      <!-- Modals -->
-      <Modal :visible="OCRModalVisible" @close="toggleOCRModal">
-        <OCR @submitted="toggleOCRModal" />
-      </Modal>
-      <Modal :visible="isEditModalVisible" @close="hideEditModal">
-        <EditAnnouncement :announcement="selectedAnnouncement" @submitted="hideEditModal" />
-      </Modal>
+
+
+      <draggable :list="paginatedAnnouncements" @update="updateOrder" class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <div v-for="announcement in paginatedAnnouncements" :key="announcement.id"
+          class="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden"
+          :class="{ 'col-span-1 sm:col-span-2 lg:col-span-3': !announcement.collapsed }"
+          @dblclick="showEditModal(announcement)">
+          <div class="p-4">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="text-sm font-medium text-gray-900">{{ announcement.title }}</h3>
+              <p class="text-xs text-gray-500">{{ formatDate(announcement.created_at) }}</p>
+            </div>
+
+            <p class="text-xs text-gray-600 mb-2">Subject: {{ announcement.subject }}</p>
+
+            <div class="text-sm text-gray-700 mb-2">
+              <p class="font-medium">Question:</p>
+              <p class="line-clamp-2">{{ announcement.aiquery }}{{ announcement.extracted_text }}</p>
+            </div>
+
+            <div class="text-sm text-gray-700 mb-2">
+              <p class="font-medium">Answer:</p>
+              <p class="line-clamp-2">{{ announcement.content }}</p>
+            </div>
+
+            <div v-if="!announcement.collapsed" class="mt-4">
+              <template v-if="announcement.file_type === 'image'">
+                <img v-if="announcement.photo"
+                  class="w-full sm:w-48 h-auto rounded-md cursor-pointer mb-4"
+                  :src="announcement.photo"
+                  @click="expandImage(announcement)" />
+              </template>
+              <template v-else-if="announcement.file_type">
+                <div class="mb-4">
+                  <a :href="announcement.file_url" download :class="'px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors inline-flex items-center'">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    Download {{ announcement.file_name }} ({{ announcement.file_type }})
+                  </a>
+                </div>
+              </template>
+
+              <p class="text-sm text-gray-700 mb-2 mt-10">{{ announcement.content }}</p>
+              <p class="text-sm text-gray-700 mt-10">{{ announcement.aiquery }}{{ announcement.extracted_text }}</p>
+            </div>
+
+            <div class="flex justify-end mt-4 space-x-2">
+              <button @click="showEditModal(announcement)" class="px-3 py-1 bg-indigo-600 text-white text-xs rounded-md hover:bg-indigo-700 transition-colors">Edit</button>
+              <button @click="destroy(announcement.id)" class="px-3 py-1 bg-red-600 text-white text-xs rounded-md hover:bg-red-700 transition-colors">Delete</button>
+            </div>
+          </div>
+
+          <button @click="toggleCollapse(announcement)" class="w-full px-4 py-2 text-sm text-gray-700 bg-gray-50 hover:bg-gray-100 transition-colors">
+            {{ announcement.collapsed ? 'Expand' : 'Collapse' }}
+          </button>
+        </div>
+      </draggable>
+
+      <!-- Pagination Controls -->
+      <div class="mt-6 flex flex-wrap justify-center items-center space-x-1 space-y-1">
+        <button @click="goToPage(currentPage - 1)" :disabled="currentPage <= 1" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md text-sm hover:bg-gray-300 transition-colors disabled:opacity-50">Previous</button>
+        <button v-for="number in pageNumbers" :key="number" @click="goToPage(number)"
+          :class="{ 'bg-indigo-600 text-white': number === currentPage, 'bg-gray-200 text-gray-700': number !== currentPage }"
+          class="px-3 py-1 rounded-md text-sm hover:bg-indigo-700 transition-colors">
+          {{ number }}
+        </button>
+        <button @click="goToPage(currentPage + 1)" :disabled="currentPage >= totalPages" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md text-sm hover:bg-gray-300 transition-colors disabled:opacity-50">Next</button>
+      </div>
+
+      <p class="mt-4 text-center text-sm text-gray-700">You have {{ coins }} coins.</p>
     </div>
+
+    <!-- Modals -->
+    <Modal :visible="OCRModalVisible" @close="toggleOCRModal">
+      <OCR @submitted="toggleOCRModal" />
+    </Modal>
+    <Modal :visible="isEditModalVisible" @close="hideEditModal">
+      <EditAnnouncement :announcement="selectedAnnouncement" @submitted="hideEditModal" />
+    </Modal>
+
+    <!-- Enlarged Image Modal using Teleport -->
+    <teleport to="body">
+      <div v-if="enlargedImage"
+           class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+           @click="closeEnlargedImage">
+        <img :src="enlargedImage"
+             class="max-w-full max-h-full object-contain"
+             @click.stop />
+        <button
+          @click="closeEnlargedImage"
+          class="absolute top-4 right-4 text-white text-4xl"
+          aria-label="Close enlarged image"
+        >
+          &times;
+        </button>
+      </div>
+    </teleport>
   </div>
 </template>
-
 
 <script>
 import { Head } from '@inertiajs/vue3'
@@ -76,11 +115,7 @@ import Layout from '@/Shared/Layout.vue'
 import Modal from '@/Shared/Modal.vue'
 import EditAnnouncement from '@/Pages/History/Edit.vue'
 import OCR from '@/Pages/History/OCR.vue'
-
 import { VueDraggableNext } from 'vue-draggable-next'
-import Icon from '@/Shared/Icon.vue' // Import the Icon component
-
-
 
 export default {
   props: {
@@ -97,10 +132,13 @@ export default {
       localAnnouncements: [...this.announcements].map(announcement => ({
         ...announcement,
         collapsed: true,
-        expanded: false // Initialize expanded state for each announcement
+        file_type: this.getFileType(announcement),
+        file_name: this.getFileName(announcement),
+        file_url: announcement.photo, // Assuming the file URL is stored in the 'photo' field
       })),
-      currentPage: 1, // Track the current page
-      itemsPerPage: 12 // Number of items per page
+      currentPage: 1,
+      itemsPerPage: 12,
+      enlargedImage: null
     }
   },
 
@@ -110,7 +148,6 @@ export default {
     EditAnnouncement,
     OCR,
     draggable: VueDraggableNext,
-    Icon
   },
 
   computed: {
@@ -152,12 +189,6 @@ export default {
     toggleCollapse(announcement) {
       announcement.collapsed = !announcement.collapsed;
     },
-    showCreateModal() {
-      this.isCreateModalVisible = true;
-    },
-    hideCreateModal() {
-      this.isCreateModalVisible = false;
-    },
     toggleOCRModal() {
       this.OCRModalVisible = !this.OCRModalVisible;
     },
@@ -183,15 +214,12 @@ export default {
       });
     },
     expandImage(announcement) {
-      announcement.expanded = !announcement.expanded; // Toggle expanded state
+      this.enlargedImage = announcement.photo;
+      document.body.style.overflow = 'hidden'; // Prevent scrolling when image is enlarged
     },
-    expandedImageUrl(announcement) {
-      // Check if announcement is expanded and modify URL accordingly
-      if (announcement.expanded) {
-        return announcement.photo.replace(/&?w=400&h=400&fit=crop$/, '');
-      } else {
-        return announcement.photo;
-      }
+    closeEnlargedImage() {
+      this.enlargedImage = null;
+      document.body.style.overflow = ''; // Restore scrolling
     },
     formatDate(date) {
       return new Date(date).toLocaleString();
@@ -200,7 +228,23 @@ export default {
       if (page >= 1 && page <= this.totalPages) {
         this.currentPage = page;
       }
-    }
+    },
+    getFileType(announcement) {
+      if (announcement.photo) {
+        const extension = announcement.photo.split('.').pop().toLowerCase();
+        if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(extension)) {
+          return 'image';
+        }
+        return extension;
+      }
+      return null;
+    },
+    getFileName(announcement) {
+      if (announcement.photo) {
+        return announcement.photo.split('/').pop();
+      }
+      return 'file';
+    },
   },
 
   watch: {
@@ -209,7 +253,9 @@ export default {
         this.localAnnouncements = newAnnouncements.map(announcement => ({
           ...announcement,
           collapsed: true,
-          expanded: false // Reset expanded state when announcements change
+          file_type: this.getFileType(announcement),
+          file_name: this.getFileName(announcement),
+          file_url: announcement.photo,
         }));
       },
       deep: true,
@@ -217,151 +263,7 @@ export default {
   }
 }
 </script>
+
 <style scoped>
-/* Tailwind CSS classes are used inline in the HTML */
-
-/* Custom CSS */
-.container {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  @apply p-8 rounded-2xl;
-}
-
-.announcement, .border {
-  background-color: rgba(255, 255, 255, 0.95);
-  @apply rounded-2xl shadow-lg transition-all duration-300 ease-in-out;
-}
-
-.announcement:hover, .border:hover {
-  @apply transform -translate-y-1 shadow-xl;
-}
-
-.btn-indigo, .btn-red, .pagination-controls button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  @apply border-none rounded-lg text-white font-semibold py-3 px-6 transition-all duration-300 ease-in-out;
-}
-
-.btn-indigo:hover, .btn-red:hover, .pagination-controls button:hover:not(:disabled) {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-  @apply transform -translate-y-0.5 shadow-md;
-}
-
-.btn-red {
-  background: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
-}
-
-.btn-red:hover {
-  background: linear-gradient(135deg, #dc2626 0%, #f87171 100%);
-}
-
-.announcement-title {
-  @apply font-semibold text-gray-700 line-clamp-2;
-}
-
-.pagination-controls button:disabled {
-  @apply bg-gray-300 cursor-not-allowed;
-}
-
-.page-numbers button {
-  @apply bg-white text-indigo-500 border border-indigo-500 py-2 px-4 rounded-lg;
-}
-
-.page-numbers button.active {
-  @apply bg-indigo-500 text-white;
-}
-
-.btn-arrow {
-  @apply text-gray-600 transition-all duration-300 ease-in-out;
-}
-
-.btn-arrow:hover {
-  @apply text-indigo-500;
-}
-
-.small-icon {
-  @apply w-6 h-6;
-}
-
-img {
-  @apply rounded-lg transition-all duration-300 ease-in-out;
-}
-
-.expanded {
-  @apply shadow-2xl;
-  width: 90vw;
-  max-width: 600px;
-  height: auto;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 999;
-  cursor: zoom-out;
-}
-
-.center-icon {
-  @apply flex justify-center mt-4;
-}
-
-.announcement-grid {
-  @apply grid gap-4;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-}
-
-.announcement {
-  @apply mb-4 p-4 border border-gray-200 rounded-lg shadow-sm;
-}
-
-.cursor-move {
-  cursor: move;
-}
-
-.icon-collapsed {
-  @apply mr-0;
-}
-
-.icon-expanded {
-  @apply mr-4;
-}
-
-.move-right {
-  @apply ml-auto;
-}
-
-/* Responsive styles */
-@screen sm {
-  .announcement-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@screen lg {
-  .announcement-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .announcement-expanded {
-    grid-column: span 1;
-  }
-}
-
-@media (min-width: 641px) and (max-width: 1024px) {
-  .announcement-expanded {
-    grid-column: span 2;
-  }
-}
-
-@media (min-width: 1025px) {
-  .announcement-expanded {
-    grid-column: span 3;
-  }
-}
-
-/* Ensure sharp text */
-* {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
+/* No additional styles needed */
 </style>

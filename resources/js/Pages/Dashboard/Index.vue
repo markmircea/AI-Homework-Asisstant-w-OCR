@@ -7,7 +7,6 @@
 
     <FeatureSection />
 
-    <BlackBar />
 
     <Steps />
 

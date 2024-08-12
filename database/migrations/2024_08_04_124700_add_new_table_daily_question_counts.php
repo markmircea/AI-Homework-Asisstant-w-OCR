@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('daily_question_counts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('user_id');
             $table->date('date');
             $table->integer('count')->default(0);
             $table->timestamps();

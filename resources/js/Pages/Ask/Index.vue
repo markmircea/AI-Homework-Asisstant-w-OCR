@@ -15,8 +15,8 @@
       <div class="flex flex-col lg:flex-row gap-4">
         <!-- Question Section -->
         <div class="flex-1 bg-white shadow-lg rounded-lg overflow-hidden">
-          <div class="px-8 py-4 bg-white border-b border-gray-200">
-            <h2 class="text-xl font-semibold">Question</h2>
+          <div class="px-8 py-4 bg-gradient-to-r from-indigo-400 to-indigo-600 text-white border-gray-200">
+            <h2 class="text-s font-medium text-white uppercase tracking-wider font-semibold">Question</h2>
           </div>
           <form @submit.prevent="update">
             <div class="flex flex-wrap -mb-8 -mr-6 p-8">
@@ -199,8 +199,8 @@
         <!-- Response Settings Section -->
         <div class="flex-1 bg-white shadow-lg rounded-lg overflow-hidden ">
           <div class=" h-full">
-            <div class="px-8 py-4 bg-white border-b border-gray-200">
-              <h2 class="text-xl font-semibold">Response</h2>
+            <div class="px-8 py-4 bg-gradient-to-r from-indigo-500 to-indigo-700 text-white border-gray-200">
+              <h2 class="text-s font-medium text-white uppercase tracking-wider font-semibold">Response</h2>
             </div>
 
 
@@ -390,7 +390,6 @@ export default {
 
 
     update() {
-      console.log('Form data:', this.form)
 
       this.form.post(`/ask`, {
         onSuccess: () => this.form.reset(''),

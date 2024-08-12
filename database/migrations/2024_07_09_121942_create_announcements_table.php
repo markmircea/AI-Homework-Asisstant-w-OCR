@@ -11,7 +11,7 @@ class CreateAnnouncementsTable extends Migration
     {
         Schema::create('announcements', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id'); // Add this line
             $table->text('title')->nullable();
             $table->text('content')->nullable();
             $table->text('extracted_text')->nullable();

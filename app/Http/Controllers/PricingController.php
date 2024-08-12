@@ -11,7 +11,7 @@ class PricingController extends Controller
 
     public function index()
     {
-
+        if (Auth::user()) {
         $user = Auth::user();
         // Transform the user object directly
         $userTransformed = [
@@ -26,5 +26,11 @@ class PricingController extends Controller
         return Inertia::render('Dashboard/PricingPage', [
             'user' => $userTransformed
         ]);
+
+    } else {
+        return Inertia::render('Dashboard/PricingPage', [
+        ]);
     }
+}
+
 }

@@ -6,7 +6,7 @@
           Contact Us
         </h2>
         <p class="mt-4 text-xl text-gray-600">
-          Have questions? We're here to help!
+          Have questions? We're here to help with lightning fast replies!
         </p>
       </div>
 

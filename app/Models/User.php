@@ -15,6 +15,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
+
     const SUBSCRIPTION_FREE = 1;
     const SUBSCRIPTION_PAID = 2;
 

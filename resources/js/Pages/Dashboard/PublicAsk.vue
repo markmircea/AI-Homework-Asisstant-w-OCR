@@ -179,7 +179,7 @@
             </form>
           </div>
           <!-- Response Settings Section -->
-          <div class="flex-1 bg-white shadow-lg rounded-lg overflow-hidden ">
+          <div id="result-section" class="flex-1 bg-white shadow-lg rounded-lg overflow-hidden ">
             <div class=" h-full">
               <div class="px-8 py-4 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white">
                 <h2 class="text-xl font-semibold">Response</h2>
@@ -261,10 +261,10 @@
                 </div>
               </div>
               <div class="px-4 py-8 md:flex-1 md:p-12 md:overflow-y-auto" scroll-region>
-            <flash-messages ref="FlashMessages"/>
+                <flash-messages ref="FlashMessages" />
 
-            <slot />
-    </div>
+                <slot />
+              </div>
             </div>
           </div>
         </div>
@@ -272,8 +272,8 @@
 
     </div>
   </div>
-<contact-us-vue/>
-<Footer />
+  <contact-us-vue id="contact-us"></contact-us-vue>
+  <Footer />
 </template>
 
 <script>
@@ -306,12 +306,20 @@ export default {
     explainResponse: String,
     stepsResponse: String,
     remainingQuestions: Number,
+    shouldScrollToResult: Boolean,
+
     selectedSubject: {
       type: String,
       default: ''
     }
   },
-
+  mounted() {
+    this.$nextTick(() => {
+      if (this.shouldScrollToResult && this.response) {
+        this.handleScroll();
+      }
+    });
+  },
   data() {
     return {
       form: this.$inertia.form({
@@ -328,6 +336,7 @@ export default {
         photo: null,
       }),
       subjects: ['Biology', 'Chemistry', 'Computer Science', 'Economics', 'English', 'Geography', 'History', 'Mathematics', 'Physics', 'Science'],
+      isScrolled: false,
 
       showTooltip: false,
       showUploadSection: false,
@@ -343,8 +352,15 @@ export default {
     }
   },
   watch: {
-    selectedSubject(newValue) {
-      this.form.subject = newValue;
+    shouldScrollToResult(newValue) {
+      if (newValue && !this.isScrolled) {
+        this.handleScroll();
+      }
+    },
+    response(newValue) {
+      if (newValue && !this.isScrolled) {
+        this.handleScroll();
+      }
     }
   },
 
@@ -368,9 +384,24 @@ export default {
         this.$forceUpdate();
       });
     },
+
+    handleScroll() {
+      if (this.isMobile()) {
+        const resultSection = document.getElementById('result-section');
+        resultSection.scrollIntoView({ behavior: 'smooth' });
+        this.isScrolled = true;
+      }
+    },
+
+    isMobile() {
+      const isMobile = window.innerWidth <= 1000;
+      return isMobile;
+    },
+
     copyButtonClass(type) {
       return this.clicked[type] ? 'bg-gray-500 text-white text-xs px-3 py-1 rounded-lg cursor-not-allowed opacity-50' : 'bg-indigo-400 text-white text-xs px-3 py-1 rounded-lg';
     },
+
     update() {
       this.form.post(`/public-ask`, {
         onSuccess: () => {

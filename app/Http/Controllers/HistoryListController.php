@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\URL;
 
 class HistoryListController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $user = Auth::user();
         if (!$user) {
@@ -25,10 +25,10 @@ class HistoryListController extends Controller
         $coins = $user->coins;
         $announcementsQuery = $user->announcements()->orderBy('created_at', 'desc');
 
-     // Apply filters
-      $announcementsQuery->filter(Request::only('search', 'trashed'));
+        // Apply filters
+        $announcementsQuery->filter($request->only('search', 'trashed'));
 
-    $announcements = $announcementsQuery->paginate(10)->withQueryString();
+        $announcements = $announcementsQuery->paginate(10)->withQueryString();
 
         $announcements->transform(function ($announcement) {
             return [
@@ -47,18 +47,13 @@ class HistoryListController extends Controller
             ];
         });
 
-
         return Inertia::render('History/List', [
-            'filters' => Request::all('search', 'trashed'),
+            'filters' => $request->all('search', 'trashed'),
             'coins' => $coins,
             'user' => $user,
             'announcements' => $announcements,
-
         ]);
-
-
     }
-
     public function create(): Response
     {
         return Inertia::render('Contacts/Create', [
@@ -71,7 +66,7 @@ class HistoryListController extends Controller
         ]);
     }
 
-    public function store(): RedirectResponse
+    public function store()
     {
         Auth::user()->account->contacts()->create(
             Request::validate([
@@ -120,24 +115,19 @@ class HistoryListController extends Controller
 
     public function update(Request $request, Announcement $announcement)
     {
-        Log::info('Update request data:', $request->all());
-        Log::info('Current User ID: ' . Auth::id());
-
-
         if ($announcement->user_id !== Auth::id()) {
             abort(403);
         }
 
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
         ]);
 
-        $announcement->update($request->all());
+        $announcement->update($validated);
 
         return redirect()->route('history-list')->with('success', 'Announcement updated.');
     }
-
 
     public function destroy(Announcement $announcement)
     {

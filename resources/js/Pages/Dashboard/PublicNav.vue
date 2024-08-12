@@ -34,8 +34,7 @@
               <a href="index-no-auth"
                 class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                 aria-current="page">Dashboard</a>
-              <a href="#"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Team</a>
+
               <!-- Subjects Dropdown -->
               <div class="relative"
      @mouseenter="showSubjects = true"
@@ -68,8 +67,13 @@
     </div>
   </transition>
 </div>
-              <a href="#"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Calendar</a>
+<Link href="/pricing"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+              Pricing</Link>
+              <Link href="/public-ask#contact-us"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+              Contact Us</Link>
+
 
               <Link href="/public-ask"
                 class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
