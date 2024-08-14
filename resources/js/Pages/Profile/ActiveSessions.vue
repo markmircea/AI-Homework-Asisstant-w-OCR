@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-white rounded-md shadow overflow-hidden">
-    <div class="px-4 sm:px-6 py-4 bg-gradient-to-r from-indigo-400 to-indigo-600 text-white border-gray-200">
+        <div class="bg-white rounded-none shadow-lg overflow-hidden sm:rounded-lg">
+          <div class="px-4 sm:px-6 py-4 bg-gradient-to-r from-indigo-400 to-indigo-600 text-white border-gray-200">
       <h2 class="text-s font-medium text-white uppercase tracking-wider font-semibold">Active Sessions</h2>
     </div>
     <div class="p-4 sm:p-6">

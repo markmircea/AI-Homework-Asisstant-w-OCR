@@ -251,6 +251,25 @@
               </tr>
 
               <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-300">Searchable History</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-400">
+                  <svg class="w-5 h-5 text-red-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-400">
+                  <svg class="w-5 h-5 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-400">
+                  <svg class="w-5 h-5 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </td>
+              </tr>
+
+              <tr>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-300">Advanced AI Models<br> <br> MythoMax 13B | Anthropic: Claude 3.5 Sonnet | OpenAI: GPT-4 | Meta: Llama 3.1 70B Instruct | WizardLM-2 8x22B <br> Mistral: Mistral 7B Instruct | Google: Gemma 2 9B</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-400">
                   <svg class="w-5 h-5 text-red-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

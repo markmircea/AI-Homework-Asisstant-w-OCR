@@ -31,7 +31,9 @@
             {{ modelValue.name }}
           </span>
           <span class="ml-2 flex-shrink-0 text-xs text-gray-400">
-            {{ filesize(modelValue.size) }}
+            <span class="ml-2 flex-1 w-0 truncate text-sm text-gray-700">
+            {{ modelValue.name }}
+          </span>   {{ filesize(modelValue.size) }}
           </span>
         </div>
         <button type="button" class="ml-4 px-3 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline" @click="remove">

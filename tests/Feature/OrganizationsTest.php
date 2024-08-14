@@ -17,7 +17,7 @@ class OrganizationsTest extends TestCase
         parent::setUp();
 
         $this->user = User::factory()->create([
-            'account_id' => Account::create(['name' => 'Acme Corporation'])->id,
+            'account_id' => Account::create(['name' => 'Easy Ace AI'])->id,
             'first_name' => 'John',
             'last_name' => 'Doe',
             'email' => 'johndoe@example.com',

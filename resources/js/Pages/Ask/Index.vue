@@ -2,17 +2,15 @@
   <div>
 <full-page-loader/>
     <Head :title="`${user.first_name} ${user.last_name}`" />
-    <div class="flex justify-start mb-8 max-w-3xl">
-      <h1 class="text-3xl font-bold">
-        <span class="mb-8 text-3xl font-bold">Hi {{ user.first_name }}, let's get started! <br><br>
-          Remaining questions today: {{ remainingQuestions }}
 
-        </span>
-      </h1>
-    </div>
-
-    <div class="container mt-20">
+    <div class="container bg-gray-100 min-h-screen py-12 px-0 sm:px-6 lg:px-8">
+      <div class="hidden lg:block text-center mb-12">
+          <h1 class="text-xl font-extrabold text-gray-900 sm:text-2xl md:text-3xl">
+            <span class="hidden lg:block">Hi {{ user.first_name }}, let's get started!</span>
+          </h1>
+        </div>
       <div class="flex flex-col lg:flex-row gap-4">
+
         <!-- Question Section -->
         <div class="flex-1 bg-white shadow-lg rounded-lg overflow-hidden">
           <div class="px-8 py-4 bg-gradient-to-r from-indigo-400 to-indigo-600 text-white border-gray-200">
@@ -258,7 +256,7 @@
                   </div>
                 </div>
 
-                <div class="mt-5">
+                <div class="mt-5 pb-5">
                   <h5 class="text-lg font-semibold mb-2">Steps</h5>
                   <div>
                     <label class="flex justify-between items-end mb-2">
@@ -356,6 +354,8 @@ export default {
       showAdvancedOptions: false,
       clicked: {
         answer: false,
+        explanation: false,
+        steps: false
 
       },
     }

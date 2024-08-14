@@ -9,7 +9,7 @@
    <div class="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
       <div class="max-w-7xl mx-auto">
         <div class="text-center mb-16">
-          <h1 class="text-5xl font-extrabold sm:text-6xl md:text-7xl bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-blue-500">
+          <h1 class="text-5xl font-extrabold sm:text-6xl md:text-7xl bg-clip-text text-transparent bg-gradient-to-r from-white to-white">
               Ask
           </h1>
           <p class="mt-6 text-xl text-gray-300 max-w-2xl mx-auto">
@@ -19,20 +19,18 @@
 
         <div class="flex flex-col lg:flex-row gap-8">
           <!-- Question Section -->
-          <div class="flex-1 bg-gray-800 shadow-xl rounded-2xl overflow-hidden">
-            <div class="px-8 py-4 bg-gradient-to-r from-teal-400 to-blue-500">
+          <div class="flex-1 bg-gray-800 bg-opacity-50 shadow-xl rounded-2xl overflow-hidden backdrop-filter backdrop-blur-lg">
+            <div class="px-8 py-4 bg-gradient-to-r from-indigo-400 to-indigo-500">
               <h2 class="text-2xl font-semibold text-white">Question</h2>
             </div>
             <form @submit.prevent="update" class="p-8">
               <div class="space-y-6">
-
-
                 <!-- Subject and Level Selection -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label for="subject" class="block text-sm font-medium text-gray-300">Subject</label>
                     <select v-model="form.subject" id="subject"
-                      class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm text-white">
+                      class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white">
                       <option value="" selected>Auto-Detect</option>
                       <option v-for="subject in subjects" :key="subject" :value="subject">{{ subject }}</option>
                     </select>
@@ -40,7 +38,7 @@
                   <div>
                     <label for="level" class="block text-sm font-medium text-gray-300">Level</label>
                     <select v-model="form.level" id="level"
-                      class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm text-white">
+                      class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white">
                       <option value="" selected>Any Level</option>
                       <option value="1-5th grade">1-5th grade</option>
                       <option value="6-8th grade">6-8th grade</option>
@@ -57,7 +55,7 @@
                   <div class="flex items-center justify-between mb-2">
                     <label for="homework_question" class="block text-sm font-medium text-gray-300">Your homework question</label>
                     <button type="button" @click="toggleUploadSection"
-                      class="flex items-center px-3 py-2 text-sm font-medium text-white bg-teal-500 rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-150 ease-in-out">
+                      class="flex items-center px-3 py-2 text-sm font-medium text-white bg-indigo-500 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-5 h-5 mr-2">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -67,7 +65,7 @@
                     </button>
                   </div>
                   <textarea v-model="form.question" id="question" rows="4"
-                    class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm text-white"
+                    class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white"
                     placeholder="Enter your homework question here..."></textarea>
                 </div>
 
@@ -76,7 +74,7 @@
                   <!-- Upload Section -->
                   <div class="border border-gray-600 rounded-md">
                     <button type="button" @click.prevent="toggleUploadSection"
-                      class="w-full px-4 py-2 text-left font-semibold text-teal-400 hover:bg-gray-700 focus:outline-none flex justify-between items-center">
+                      class="w-full px-4 py-2 text-left font-semibold text-indigo-400 hover:bg-gray-700 focus:outline-none flex justify-between items-center">
                       <span>{{ showUploadSection ? 'Hide Upload' : 'Add Upload' }}</span>
                       <svg class="w-5 h-5 transform transition-transform duration-200"
                         :class="{ 'rotate-180': showUploadSection }" xmlns="http://www.w3.org/2000/svg"
@@ -86,7 +84,7 @@
                           clip-rule="evenodd" />
                       </svg>
                     </button>
-                    <div v-show="showUploadSection" class="px-4 py-2 bg-gray-700">
+                    <div v-show="showUploadSection" class="px-4 py-2 bg-gray-200">
                       <FileUpload v-model="form.photo" :error="form.errors.photo" name="photo"
                         label="Upload File or Image" required />
                     </div>
@@ -95,7 +93,7 @@
                   <!-- Advanced Options Section -->
                   <div class="border border-gray-600 rounded-md">
                     <button @click.prevent="toggleAdvancedOptions"
-                      class="w-full px-4 py-2 text-left font-semibold text-teal-400 hover:bg-gray-700 focus:outline-none flex justify-between items-center">
+                      class="w-full px-4 py-2 text-left font-semibold text-indigo-400 hover:bg-gray-700 focus:outline-none flex justify-between items-center">
                       <span>{{ showAdvancedOptions ? 'Hide Advanced Options' : 'Show Advanced Options' }}</span>
                       <svg class="w-5 h-5 transform transition-transform duration-200"
                         :class="{ 'rotate-180': showAdvancedOptions }" xmlns="http://www.w3.org/2000/svg"
@@ -105,19 +103,19 @@
                           clip-rule="evenodd" />
                       </svg>
                     </button>
-                    <div v-show="showAdvancedOptions" class="px-4 py-2 bg-gray-700 space-y-4">
+                    <div v-show="showAdvancedOptions" class="px-4 py-2 bg-gray-200 space-y-4">
                       <div class="flex items-center">
-                        <input v-model="form.explain" id="explanation" type="checkbox" class="mr-2 text-teal-500 focus:ring-teal-500" />
-                        <label for="explain" class="text-sm font-medium text-gray-300">Explain why the answer is correct</label>
+                        <input v-model="form.explain" id="explanation" type="checkbox" class="mr-2 text-indigo-500 focus:ring-indigo-500" />
+                        <label for="explain" class="text-sm font-medium text-gray-600">Explain why the answer is correct</label>
                       </div>
                       <div class="flex items-center">
-                        <input v-model="form.steps" id="steps" type="checkbox" class="mr-2 text-teal-500 focus:ring-teal-500" />
-                        <label for="steps" class="text-sm font-medium text-gray-300">Show the work done to get to the answer</label>
+                        <input v-model="form.steps" id="steps" type="checkbox" class="mr-2 text-indigo-500 focus:ring-indigo-500" />
+                        <label for="steps" class="text-sm font-medium text-gray-600">Show the work done to get to the answer</label>
                       </div>
                       <div>
-                        <label for="temperature" class="block text-sm font-medium text-gray-300">Creativity (Higher = More Creative, Lower = Logical)</label>
+                        <label for="temperature" class="block text-sm font-medium text-gray-600">Creativity (Higher = More Creative, Lower = Logical)</label>
                         <select v-model="form.temperature" id="temperature"
-                          class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm text-white">
+                          class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white">
                           <option value="0.6" selected>0.6</option>
                           <option value="0.0">0.0</option>
                           <option value="0.2">0.2</option>
@@ -127,25 +125,24 @@
                         </select>
                       </div>
                       <div>
-                        <label for="model" class="block text-sm font-medium text-gray-300">AI Model
-
+                        <label for="model" class="block text-sm font-medium text-gray-600">AI Model
                           <div class="relative inline-block ml-2">
-                      <button type="button" @mouseover="showTooltip = true" @mouseleave="showTooltip = false"
-                        class="text-gray-400 transition-colors duration-200 hover:text-teal-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                          stroke="currentColor" class="w-5 h-5">
-                          <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
-                        </svg>
-                      </button>
-                      <p v-if="showTooltip"
-                        class="absolute z-10 w-48 p-2 text-sm text-gray-700 bg-gray-300 rounded-lg shadow-lg left-10 -top-6">
-                        Hyper-advanced models available to Subscribers
-                      </p>
-                    </div>
+                            <button type="button" @mouseover="showTooltip = true" @mouseleave="showTooltip = false"
+                              class="text-gray-600 transition-colors duration-200 hover:text-indigo-400">
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+                              </svg>
+                            </button>
+                            <p v-if="showTooltip"
+                              class="absolute z-10 w-48 p-2 text-sm text-gray-700 bg-gray-300 rounded-lg shadow-lg left-10 -top-6">
+                              Hyper-advanced models available to Subscribers
+                            </p>
+                          </div>
                         </label>
                         <select v-model="form.model" id="model"
-                          class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm text-white">
+                          class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white">
                           <option value="gpt-4o-mini" selected>GPT-4o Mini</option>
                           <option value="gpt-4-turbo">GPT-4 Turbo</option>
                           <option value="gpt-4o">GPT-4o</option>
@@ -157,7 +154,7 @@
               </div>
               <div class="mt-8">
                 <loading-button :loading="form.processing"
-                  class="w-full btn-indigo transition-colors duration-200 bg-gradient-to-r from-teal-400 to-blue-500 hover:from-teal-500 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-full flex items-center justify-center space-x-2">
+                  class="w-full btn-indigo transition-colors duration-200 bg-gradient-to-r from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold py-3 px-6 rounded-full flex items-center justify-center space-x-2">
                   <span class="question-mark">?</span>
                   <span>Ask Question</span>
                 </loading-button>
@@ -166,9 +163,9 @@
           </div>
 
           <!-- Response Section -->
-          <div id="result-section" class="flex-1 bg-gray-800 shadow-xl rounded-2xl overflow-hidden">
+          <div id="result-section" class="flex-1 bg-gray-800 bg-opacity-50 shadow-xl rounded-2xl overflow-hidden backdrop-filter backdrop-blur-lg">
             <div class="h-full">
-              <div class="px-8 py-4 bg-gradient-to-r from-teal-400 to-blue-500">
+              <div class="px-8 py-4 bg-gradient-to-r from-indigo-400 to-indigo-500">
                 <h2 class="text-2xl font-semibold text-white">Response</h2>
               </div>
 
@@ -186,7 +183,7 @@
 
                 <!-- Result Section -->
                 <div id="result-card" v-else>
-                  <h5 class="text-xl font-semibold mb-4 text-teal-400" id="result-scroll-point">Answer</h5>
+                  <h5 class="text-xl font-semibold mb-4 text-indigo-400" id="result-scroll-point">Answer</h5>
                   <div class="space-y-4">
                     <div>
                       <label class="flex justify-between items-end mb-2">
@@ -200,13 +197,12 @@
                         </a>
                       </label>
                       <div class="bg-gray-700 border border-gray-600 rounded-md p-4 text-gray-300">
-
                         {{ response || placeholderAnswer }}
                       </div>
                     </div>
 
                     <div>
-                      <h5 class="text-xl font-semibold mb-4 text-teal-400">Explanation</h5>
+                      <h5 class="text-xl font-semibold mb-4 text-indigo-400">Explanation</h5>
                       <div>
                         <label class="flex justify-between items-end mb-2">
                           <span class="text-gray-300">
@@ -225,7 +221,7 @@
                     </div>
 
                     <div>
-                      <h5 class="text-xl font-semibold mb-4 text-teal-400">Steps</h5>
+                      <h5 class="text-xl font-semibold mb-4 text-indigo-400">Steps</h5>
                       <div>
                         <label class="flex justify-between items-end mb-2">
                           <span class="text-gray-300">
@@ -407,7 +403,7 @@ export default {
 
 
 <style scoped>
-/* Add these styles to match the pricing page aesthetics */
+/* Update styles to match the new indigo theme */
 .bg-gradient-to-br {
   background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
 }
@@ -430,13 +426,13 @@ export default {
   background-clip: text;
 }
 
-.from-teal-400 {
-  --tw-gradient-from: #2dd4bf;
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(45, 212, 191, 0));
+.from-indigo-400 {
+  --tw-gradient-from: #818cf8;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(129, 140, 248, 0));
 }
 
-.to-blue-500 {
-  --tw-gradient-to: #3b82f6;
+.to-indigo-500 {
+  --tw-gradient-to: #6366f1;
 }
 
 .btn-indigo {
@@ -444,9 +440,9 @@ export default {
 }
 
 .btn-indigo:hover {
-  --tw-gradient-from: #14b8a6;
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(20, 184, 166, 0));
-  --tw-gradient-to: #2563eb;
+  --tw-gradient-from: #6366f1;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(99, 102, 241, 0));
+  --tw-gradient-to: #4f46e5;
 }
 
 .question-mark {
@@ -486,7 +482,7 @@ export default {
     radial-gradient(at 80% 40%, #0000, #0008),
     radial-gradient(circle 5px, #fff 94%, #0000),
     radial-gradient(circle 10px, #000 94%, #0000),
-    linear-gradient(#2dd4bf 0 0) top /100% calc(50% - 5px),
+    linear-gradient(#818cf8 0 0) top /100% calc(50% - 5px),
     linear-gradient(#fff 0 0) bottom/100% calc(50% - 5px) #000;
   background-repeat: no-repeat;
   animation: l20 1s infinite cubic-bezier(0.5, 120, 0.5, -120);
@@ -504,3 +500,5 @@ export default {
   50% { transform: rotate(-0.2deg) }
 }
 </style>
+
+Version 2 of 2

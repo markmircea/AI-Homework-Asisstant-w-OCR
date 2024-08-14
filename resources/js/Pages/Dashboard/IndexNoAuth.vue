@@ -2,23 +2,20 @@
 
   <div class="bg-gradient-to-b from-indigo-900 to-indigo-700 min-h-screen">
 
-    <Nav />
-    <main class="pt-16">
 
 
     <Hero :isAuthenticated="$page.props.auth.user !== null" />
+    <Nav />
 
 
     <feature-section />
     <black-bar />
     <steps></steps>
 
-    <dark-divider />
 
     <pricing />
 
 
-</main>
     <Footer />
 
 

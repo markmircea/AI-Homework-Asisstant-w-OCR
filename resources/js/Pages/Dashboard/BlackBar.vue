@@ -10,7 +10,7 @@
               <span class="block mt-1 text-indigo-400">Start your free trial today.</span>
             </h2>
             <p class="mt-4 max-w-3xl text-lg text-gray-300">
-              Sign up for our 14-day free trial and experience the power of multi-model AI-assisted learning.
+              Sign up for our 7-day free trial and experience the power of multi-model AI-assisted learning.
             </p>
           </div>
           <div class="mt-8 lg:mt-0 lg:ml-8">

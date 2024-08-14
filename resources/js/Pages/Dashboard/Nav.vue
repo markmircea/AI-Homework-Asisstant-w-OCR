@@ -1,7 +1,7 @@
 <template>
-  <nav :user="user" :class="[
+   <nav :class="[
     'transition-all duration-300 ease-in-out fixed top-0 left-0 right-0 w-full',
-    scrolled ? 'bg-gray-900' : 'bg-indigo-950/70 backdrop-blur-lg'
+    {'bg-gray-900': scrolled, 'bg-transparent': !scrolled}
   ]" style="z-index: 1000;">
     <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
       <div class="relative flex h-16 items-center justify-between">
@@ -23,9 +23,13 @@
           </button>
         </div>
         <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-          <div class="flex flex-shrink-0 items-center">
-            <icon name="logo" class="h-8 w-auto fill-gray-300" />
-          </div>
+          <Link href="/" class="flex flex-shrink-0 items-center group">
+          <icon name="logo"
+            class="h-8 w-auto fill-gray-300 group-hover:fill-indigo-300 transition-colors duration-300" />
+          <span
+            class="ml-2 text-xl font-bold text-white group-hover:text-indigo-300 transition-colors duration-300">Easy
+            Ace</span>
+          </Link>
           <div class="hidden sm:ml-6 sm:block">
             <div class="flex space-x-4">
               <Link href="/ask"
@@ -248,7 +252,9 @@ export default {
       })
     },
     handleScroll() {
-      this.scrolled = window.scrollY > 0
+      // Adjust this value based on your hero's height
+      const heroHeight = 200; // Example height, adjust as needed
+      this.scrolled = window.scrollY > heroHeight;
     },
     toggleProfileDropdown(event) {
       event.stopPropagation()
@@ -276,33 +282,52 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped>.glow-container {
+  position: relative;
+}
+
+.glow-container::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: 50%;
+  background-color: rgba(79, 70, 229, 0.4);
+  filter: blur(10px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.group:hover .glow-container::after {
+  opacity: 1;
+}
+
+.glow-text {
+  position: relative;
+}
+
+.glow-text::after {
+  content: 'Easy Ace';
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #818cf8;
+  filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.group:hover .glow-text::after {
+  opacity: 1;
+}
+
 nav {
   z-index: 1000;
 }
 
-/* Styles for different background states */
-nav.bg-transparent .text-gray-300 {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-nav.bg-transparent .text-gray-400 {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-nav.bg-transparent .text-white {
-  color: white;
-}
-
-nav.bg-gray-800 .text-gray-300 {
-  color: #d1d5db;
-}
-
-nav.bg-gray-800 .text-gray-400 {
-  color: #9ca3af;
-}
-
-nav.bg-gray-800 .text-white {
-  color: white;
+.absolute {
+  z-index: 1001;
 }
 </style>

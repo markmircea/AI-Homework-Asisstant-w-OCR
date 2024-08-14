@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->integer('subscription_type')->default(1);
+            $table->timestamp('subscription_started_at')->nullable();
+            $table->timestamp('subscription_ended_at')->nullable();
+
+
 
         });
     }

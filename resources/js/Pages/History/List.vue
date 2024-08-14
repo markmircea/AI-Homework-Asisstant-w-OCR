@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen overflow-x-hidden">
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="bg-white rounded-md shadow overflow-hidden">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
     <Head title="History List" />
     <div class="flex flex-col sm:flex-row items-center justify-between mb-6 space-y-4 sm:space-y-0">
       <search-filter v-model="form.search" class="w-full sm:w-64 lg:w-96" @reset="reset">

@@ -3,8 +3,8 @@
     <div id="dropdown" />
     <div class="md:flex md:flex-col">
       <div class="md:flex md:flex-col md:h-screen">
-        <div class="md:flex md:shrink-0">
-          <div class="flex items-center justify-between px-6 py-4 bg-indigo-900 md:shrink-0 md:justify-center md:w-56">
+        <div class="md:flex md:flex-shrink-0">
+          <div class="flex items-center justify-between px-6 py-4 bg-indigo-900 md:flex-shrink-0 md:justify-center md:w-56">
             <Link class="mt-1" href="/">
               <logo class="fill-white" width="120" height="28" />
             </Link>
@@ -14,8 +14,8 @@
               </svg>
             </button>
           </div>
-          <div class="md:text-md flex items-center justify-between p-4 w-full text-sm bg-gray-50 border-b md:px-12 md:py-0">
-            <div class="mr-4 mt-1">{{ auth.user.account.name }}</div>
+          <div class="md:text-md flex items-center justify-between p-4 w-full text-sm  border-b md:px-12 md:py-0">
+            <div class="mr-4 mt-1">Easy Ace AI</div>
             <dropdown class="mt-1" placement="bottom-end">
               <template #default>
                 <div class="group flex items-center cursor-pointer select-none">
@@ -33,7 +33,7 @@
               </template>
               <template #dropdown>
                 <div class="mt-2 py-2 text-sm bg-white rounded shadow-xl">
-                  <Link class="block px-6 py-2 hover:text-white hover:bg-indigo-500" :href="`/users/${auth.user.id}/edit`">My Profile</Link>
+                  <Link class="block px-6 py-2 hover:text-white hover:bg-indigo-500" :href="`/profile/${auth.user.id}`">My Profile</Link>
                   <Link v-if="auth.user.owner" class="block px-6 py-2 hover:text-white hover:bg-indigo-500" href="/users">Manage Users</Link>
                   <Link class="block px-6 py-2 w-full text-left hover:text-white hover:bg-indigo-500" href="/logout" method="delete" as="button">Logout</Link>
                 </div>
@@ -41,9 +41,9 @@
             </dropdown>
           </div>
         </div>
-        <div class="md:flex md:grow md:overflow-hidden">
+        <div class="md:flex md:flex-grow md:overflow-hidden">
           <!-- Desktop menu -->
-          <main-menu :auth="auth" class="hidden shrink-0 p-12 w-56 bg-indigo-800 overflow-y-auto md:block" />
+          <main-menu :auth="auth" class="hidden flex-shrink-0 p-12 w-56 bg-indigo-800 overflow-y-auto md:block" />
 
           <!-- Mobile menu overlay -->
           <transition
@@ -83,7 +83,7 @@
             </div>
           </transition>
 
-          <div class="px-4 py-8 md:flex-1 md:p-12 md:overflow-y-auto" scroll-region>
+          <div class="md:flex-1 md:p-12 md:overflow-y-auto" scroll-region>
             <flash-messages ref="FlashMessages"/>
             <slot />
           </div>

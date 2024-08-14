@@ -2,23 +2,22 @@
   <div>
     <!-- Dashboard Link -->
     <div class="mb-4">
-      <Link class="group flex items-center py-3" href="/">
+      <Link class="group flex items-center py-3" href="/" @click="$emit('linkClicked')">
         <icon name="dashboard" class="mr-2 w-4 h-4" :class="isUrl('') ? 'fill-white' : 'fill-indigo-400'" />
-        <div :class="isUrl('') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Dashboard</div>
+        <div :class="isUrl('') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Main</div>
       </Link>
     </div>
 
     <!-- Organizations Link -->
     <div class="mb-4">
-      <Link class="group flex items-center py-3" href="/ask">
+      <Link class="group flex items-center py-3" href="/ask" @click="$emit('linkClicked')">
         <icon name="question" class="mr-2 w-4 h-4" :class="isUrl('ask') ? 'fill-white' : 'fill-indigo-400'" />
         <div :class="isUrl('ask') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Ask</div>
       </Link>
     </div>
 
     <!-- History Link with Collapsible Submenu -->
-     <!-- History Link with Collapsible Submenu -->
-     <div class="mb-4">
+    <div class="mb-4">
       <button @click="toggleHistorySubmenu" class="group flex items-center py-3 w-full text-left focus:outline-none">
         <icon name="history" class="mr-2 w-4 h-4" :class="isHistoryActive ? 'fill-white' : 'fill-indigo-400'" />
         <div :class="isHistoryActive ? 'text-white' : 'text-indigo-300 group-hover:text-white'">History</div>
@@ -31,17 +30,18 @@
         @leave="leave"
       >
         <div v-show="historySubmenuOpen" class="pl-4 mt-2">
-          <Link class="group flex items-center text-sm py-2" :class="isExactUrl('history-list') ? 'text-white' : 'text-indigo-300 hover:text-white'" href="/history-list">
+          <Link class="group flex items-center text-sm py-2" :class="isExactUrl('history-list') ? 'text-white' : 'text-indigo-300 hover:text-white'" href="/history-list" @click="$emit('linkClicked')">
             <icon name="list" class="mr-2 w-4 h-4" :class="isExactUrl('history-list') ? 'fill-white' : 'fill-indigo-400'" />
             <div>List</div>
           </Link>
-          <Link class="group flex items-center text-sm py-2" :class="isExactUrl('history') ? 'text-white' : 'text-indigo-300 hover:text-white'" href="/history">
+          <Link class="group flex items-center text-sm py-2" :class="isExactUrl('history') ? 'text-white' : 'text-indigo-300 hover:text-white'" href="/history" @click="$emit('linkClicked')">
             <icon name="card" class="mr-2 w-4 h-4" :class="isExactUrl('history') ? 'fill-white' : 'fill-indigo-400'" />
             <div>Cards</div>
           </Link>
         </div>
       </transition>
     </div>
+
     <!-- Account Link with Collapsible Submenu -->
     <div class="mb-4">
       <button @click="toggleAccountSubmenu" class="group flex items-center py-3 w-full text-left focus:outline-none">
@@ -56,19 +56,19 @@
         @leave="leave"
       >
         <div v-show="accountSubmenuOpen" class="pl-4 mt-2">
-          <Link class="group flex items-center text-sm py-2" :class="isUrl(`profile`) ? 'text-white' : 'text-indigo-300 hover:text-white'" :href="`/profile/${auth.user.id}`">
+          <Link class="group flex items-center text-sm py-2" :class="isUrl(`profile`) ? 'text-white' : 'text-indigo-300 hover:text-white'" :href="`/profile/${auth.user.id}`" @click="$emit('linkClicked')">
             <icon name="profile" class="mr-2 w-4 h-4" :class="isUrl(`profile`) ? 'text-white' : 'text-white'" />
             <div>Profile</div>
           </Link>
-          <Link class="group flex items-center text-sm py-2 text-indigo-300 hover:text-white" href="/billing">
+          <Link class="group flex items-center text-sm py-2 text-indigo-300 hover:text-white" href="/billing" @click="$emit('linkClicked')">
             <icon name="billing" class="mr-2 w-4 h-4 text-white" />
             <div>Billing</div>
           </Link>
-          <Link class="group flex items-center text-sm py-2 text-indigo-300 hover:text-white" href="/active-sessions">
+          <Link class="group flex items-center text-sm py-2 text-indigo-300 hover:text-white" href="/active-sessions" @click="$emit('linkClicked')">
             <icon name="active" class="mr-2 w-4 h-4 text-white" />
             <div>Active Sessions</div>
           </Link>
-          <Link class="group flex items-center text-sm py-2 text-indigo-300 hover:text-red-500" href="/log-out">
+          <Link class="group flex items-center text-sm py-2 text-indigo-300 hover:text-red-500" href="/log-out" @click="$emit('linkClicked')">
             <icon name="signout" class="mr-2 w-4 h-4 text-red-500" />
             <div>Sign Out</div>
           </Link>
@@ -91,6 +91,7 @@ export default {
     coins: Number,
     auth: Object,
   },
+  emits: ['linkClicked'],
   data() {
     return {
       historySubmenuOpen: false,

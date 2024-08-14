@@ -1,143 +1,121 @@
 <template>
-  <div>
+  <div class="container bg-gray-100 min-h-screen py-12 px-0 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto ">
 
-    <Head :title="`${form.first_name} ${form.last_name}`" />
-    <div class="flex justify-start mb-8 max-w-3xl">
-      <h1 class="text-3xl font-bold">
-        <!--  <Link class="text-indigo-400 hover:text-indigo-600" href="/users">Users</Link>  -->
-        <span class="mb-8 text-3xl font-bold">
-          <img v-if="user.photo" class="inline-block ml-4 w-8 h-8 rounded-full" :src="user.photo" />
+      <Head :title="`${form.first_name} ${form.last_name}`" />
 
-          {{ form.first_name }} {{ form.last_name }}</span>
-      </h1>
-    </div>
-    <trashed-message v-if="user.deleted_at" class="mb-6" @restore="restore"> This account has been deleted.
-    </trashed-message>
-    <div class="max-w-3xl bg-white rounded-md shadow overflow-hidden ">
-      <!-- Profile Heading and Horizontal Line -->
-      <div class="px-8 py-4 bg-gradient-to-r from-indigo-400 to-indigo-600 text-white border-gray-200">
-        <h2 class="text-s font-medium text-white uppercase tracking-wider font-semibold">Profile</h2>
-
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">
+          <img v-if="user.photo" class="inline-block mr-4 w-12 h-12 rounded-full" :src="user.photo" />
+          {{ form.first_name }} {{ form.last_name }}
+        </h1>
       </div>
-      <form @submit.prevent="update">
-        <div class="flex flex-wrap -mb-8 -mr-6 p-8">
-          <text-input v-model="form.first_name" :error="form.errors.first_name" class="pb-8 pr-6 w-full lg:w-1/2"
-            label="First name" />
-          <text-input v-model="form.last_name" :error="form.errors.last_name" class="pb-8 pr-6 w-full lg:w-1/2"
-            label="Last name" />
 
-          <text-input v-model="form.email" :error="form.errors.email" class="pb-8 pr-6 w-full lg:w-1/2" label="Email" />
-          <text-input v-model="form.password" :error="form.errors.password" class="pb-8 pr-6 w-full lg:w-1/2"
-            type="password" autocomplete="new-password" label="Password" />
-
-          <file-input v-model="form.photo" :error="form.errors.photo" class="pb-8 pr-6 w-full lg:w-1/2" type="file"
-            accept="image/*" label="Photo" />
+      <trashed-message v-if="user.deleted_at" class="mb-6" @restore="restore">
+        This account has been deleted.
+      </trashed-message>
+      <div class="bg-white rounded-md shadow overflow-hidden">
+        <div class="px-4 sm:px-6 py-4 bg-gradient-to-r from-indigo-400 to-indigo-600 text-white border-gray-200">
+          <h2 class="text-s font-medium text-white uppercase tracking-wider font-semibold">Profile Information</h2>
         </div>
-        <div class="flex items-center px-8 py-4 bg-gray-50 border-t border-gray-100">
-          <button v-if="!user.deleted_at" class="text-red-600 hover:underline" tabindex="-1" type="button"
-            @click="destroy">Delete Account</button>
-          <loading-button :loading="form.processing" class="btn-indigo ml-auto" type="submit">Update
-            User</loading-button>
-        </div>
-      </form>
-    </div>
+        <form @submit.prevent="validateAndSubmit">
+          <div class="px-4 py-5 sm:p-6">
+            <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2 ">
+              <text-input  v-model="form.first_name" :error="form.errors.first_name" label="First name" />
+              <text-input v-model="form.last_name" :error="form.errors.last_name" label="Last name" />
+              <text-input v-model="form.email" :error="form.errors.email" label="Email" />
+              <text-input v-model="form.password" :error="passwordError" type="password" autocomplete="new-password"
+                label="Password" />
+              <text-input v-model="form.password_confirmation" :error="passwordConfirmationError" type="password"
+                autocomplete="new-password" label="Confirm Password" />
+              <file-input v-model="form.photo" :error="form.errors.photo" type="file" accept="image/*" label="Photo" />
+            </div>
+          </div>
+          <div class="px-4 py-3 bg-gray-50 text-right sm:px-6 flex justify-between items-center">
+            <button v-if="!user.deleted_at" class="text-red-600 hover:underline" tabindex="-1" type="button"
+              @click="destroy">Delete Account</button>
+            <loading-button :loading="form.processing"
+              class="w-full sm:w-auto px-6 py-3 bg-indigo-400 text-white text-sm font-bold rounded-lg shadow hover:bg-indigo-200 focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+              type="submit">Update Profile</loading-button>
+          </div>
+        </form>
+      </div>
 
 
 
 
-
-
-    <div class=" mt-20">
-      <div class="flex flex-col lg:flex-row gap-4">
-        <!-- Daily Questions and Billing Section -->
-        <div class="flex-1 bg-white rounded-md shadow overflow-hidden">
-          <!-- Daily Questions -->
-          <div class="px-8 py-6 bg-gradient-to-r from-indigo-400 to-indigo-600 text-white">
+      <!-- Daily Questions Section -->
+      <div class="mt-20">
+        <div class="bg-white rounded-none shadow-lg overflow-hidden sm:rounded-lg">
+          <div class="px-6 py-8 bg-gradient-to-r from-indigo-400 to-indigo-600">
             <h2 class="text-xl font-medium text-white uppercase tracking-wider font-semibold mb-2">Daily Questions</h2>
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-4xl font-bold">{{ user.questions_left }}</p>
-                <p class="text-sm opacity-75">Questions left today</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div class="bg-white bg-opacity-20 p-4 rounded-lg">
+                <p class="text-5xl font-bold text-white">{{ user.questions_left }}</p>
+                <p class="text-sm text-indigo-100">Questions left today</p>
               </div>
-              <div class="text-right">
-                <p class="text-lg">{{ user.daily_question_limit }} total</p>
-                <p class="text-sm opacity-75">Daily limit</p>
+              <div class="bg-white bg-opacity-20 p-4 rounded-lg">
+                <p class="text-3xl font-semibold text-white">{{ user.daily_question_limit }}</p>
+                <p class="text-sm text-indigo-100">Daily limit</p>
+              </div>
+              <div class="bg-white bg-opacity-20 p-4 rounded-lg">
+                <p class="text-xl font-semibold text-white">Current Plan</p>
+                <p class="text-2xl text-indigo-100">{{ subscriptionTypeText }}</p>
+              </div>
+              <div
+                class="bg-white bg-opacity-20 p-4 rounded-lg flex items-center justify-center hover:bg-indigo-200 transition duration-300">
+                <button @click="goToPricingPage" class="px-4 py-2  text-white rounded-full font-semibold ">
+                  Upgrade Plan
+                </button>
               </div>
             </div>
           </div>
 
-          <!-- Subscription Information -->
-          <div class="px-8 py-6">
-            <h2 class="text-xl font-semibold mb-4">Current Subscription</h2>
-            <p class="text-lg mb-4">
-              Your current plan:
-              <span class="font-bold text-indigo-600">{{ subscriptionTypeText }}</span>
-            </p>
-            <h3 class="text-lg font-semibold mb-4">Upgrade Subscription</h3>
-            <form @submit.prevent="goToPricingPage">
-              <select-input v-model="form.subscription_type" :error="form.errors.subscription_type" class="mb-4 w-1/2"
-                label="Select Subscription Type">
-                <option :value="1">Free</option>
-                <option :value="2">Pro</option>
-                <option :value="3">Premirum</option>
-              </select-input>
+          <div class="px-6 py-6">
+            <div class="bg-indigo-50 border-l-4 border-indigo-400 p-4 mb-6">
+              <p class="text-sm text-indigo-700">
+                <span class="font-bold">Upgrade to Pro or Premium</span> to remove ads and get more daily questions!
+              </p>
+            </div>
 
-              <loading-button :loading="form.processing" :disabled="!canUpgrade" class="btn-indigo w-1/2" type="submit">
-  Upgrade Subscription
-</loading-button>
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Upgrade Subscription</h3>
+            <form @submit.prevent="goToPricingPage" class="space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between">
+                <select-input v-model="form.subscription_type" :error="form.errors.subscription_type"
+                  class="w-full sm:w-2/3 mb-4 sm:mb-0" label="Select Subscription Type">
+                  <option :value="1">Free</option>
+                  <option :value="2">Pro</option>
+                  <option :value="3">Premium</option>
+                </select-input>
+
+                <loading-button :loading="form.processing" :disabled="!canUpgrade"
+                  class="w-full sm:w-auto px-6 py-3 bg-indigo-400 text-white text-sm font-bold rounded-lg shadow hover:bg-indigo-200 focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                  type="submit">
+                  Upgrade Subscription
+                </loading-button>
+              </div>
             </form>
           </div>
         </div>
+      </div>
 
-        <!-- Advanced Settings Section -->
-        <div class="flex-1 bg-white rounded-md shadow overflow-hidden">
-          <!-- Advanced Settings Heading and Horizontal Line -->
+      <!-- Advanced Settings Section -->
+      <div class="mt-20">
+        <div class="bg-white rounded-none shadow-lg overflow-hidden sm:rounded-lg">
           <div class="px-8 py-4 bg-gradient-to-r from-indigo-400 to-indigo-600 text-white">
-            <h2 class="text-md font-medium text-white uppercase tracking-wider font-semibold">Advanced Settings</h2>
+            <h2 class="text-xl font-medium text-white uppercase tracking-wider font-semibold">Advanced Settings</h2>
           </div>
-          <form @submit.prevent="update">
-            <div class="flex flex-wrap -mb-8 -mr-6 p-8">
-              <text-input v-model="form.first_name" :error="form.errors.first_name" class="pb-8 pr-6 w-full lg:w-1/2"
-                label="First name" />
-              <text-input v-model="form.last_name" :error="form.errors.last_name" class="pb-8 pr-6 w-full lg:w-1/2"
-                label="Last name" />
-              <text-input v-model="form.id" :error="form.errors.id" class="pb-8 pr-6 w-full lg:w-1/2" label="ID #"
-                disabled />
-              <text-input v-model="form.email" :error="form.errors.email" class="pb-8 pr-6 w-full lg:w-1/2"
-                label="Email" />
-              <text-input v-model="form.password" :error="form.errors.password" class="pb-8 pr-6 w-full lg:w-1/2"
-                type="password" autocomplete="new-password" label="Password" />
-              <select-input v-model="form.owner" :error="form.errors.owner" class="pb-8 pr-6 w-full lg:w-1/2"
-                label="Owner">
-                <option :value="true">Yes</option>
-                <option :value="false">No</option>
-              </select-input>
-              <file-input v-model="form.photo" :error="form.errors.photo" class="pb-8 pr-6 w-full lg:w-1/2" type="file"
-                accept="image/*" label="Photo" />
-            </div>
-            <div class="flex items-center px-8 py-4 bg-gray-50 border-t border-gray-100">
-              <button v-if="!user.deleted_at" class="text-red-600 hover:underline" tabindex="-1" type="button"
-                @click="destroy">Delete User</button>
-              <loading-button :loading="form.processing" class="btn-indigo ml-auto" type="submit">Update
-                User</loading-button>
-            </div>
-          </form>
+          <!-- Add your advanced settings content here -->
         </div>
       </div>
+
+      <!-- Active Sessions Section -->
+      <div class="mt-20">
+        <ActiveSessions />
+      </div>
     </div>
-
-    <div class="mt-20 flex-1">
-            <ActiveSessions />
-          </div>
-
-
-
-
   </div>
-
-
 </template>
-
 <script>
 import { Head, Link } from '@inertiajs/vue3'
 import Layout from '@/Shared/Layout.vue'
@@ -174,9 +152,12 @@ export default {
         last_name: this.user.last_name,
         email: this.user.email,
         password: '',
+        password_confirmation: '',
         photo: null,
         id: this.user.id,
       }),
+      passwordError: '',
+      passwordConfirmationError: ''
     }
   },
   computed: {
@@ -186,18 +167,47 @@ export default {
         case '1': return 'Free'
         case '2': return 'Pro'
         case '3': return 'Premium'
+        case 1: return 'Free'
+        case 2: return 'Pro'
+        case 3: return 'Premium'
         default: return 'Unknown'
       }
     },
     canUpgrade() {
-    return this.form.subscription_type !== this.user.subscription_type;
-  }
+      return this.form.subscription_type !== this.user.subscription_type;
+    }
   },
 
   methods: {
+    validateAndSubmit() {
+      this.passwordError = '';
+      this.passwordConfirmationError = '';
+
+      let isValid = true;
+
+      if (this.form.password || this.form.password_confirmation) {
+        if (this.form.password.length < 8) {
+          this.passwordError = 'Password must be at least 8 characters long.';
+          isValid = false;
+        }
+        if (this.form.password !== this.form.password_confirmation) {
+          this.passwordConfirmationError = 'Passwords do not match.';
+          isValid = false;
+        }
+      }
+
+      if (isValid) {
+        this.update();
+      }
+    },
     update() {
       this.form.post(`/profile/${this.user.id}`, {
-        onSuccess: () => this.form.reset('password', 'photo'),
+        preserveScroll: true,
+        onSuccess: () => {
+          this.form.reset('password', 'password_confirmation', 'photo');
+          this.passwordError = '';
+          this.passwordConfirmationError = '';
+        },
       })
     },
     destroy() {
@@ -206,10 +216,10 @@ export default {
       }
     },
     goToPricingPage() {
-  this.$inertia.visit('/pricing', {
-    data: { selectedType: this.form.subscription_type }
-  });
-},
+      this.$inertia.visit('/pricing', {
+        data: { selectedType: this.form.subscription_type }
+      });
+    },
 
   },
 }

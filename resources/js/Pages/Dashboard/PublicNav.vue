@@ -1,7 +1,7 @@
 <template>
   <nav :class="[
     'transition-all duration-300 ease-in-out fixed top-0 left-0 right-0 w-full',
-    scrolled ? 'bg-gray-900' : 'bg-indigo-950/70 backdrop-blur-lg'
+    scrolled ? 'bg-gray-900' : 'bg-transparent'
   ]" style="z-index: 1000;">
     <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
       <div class="relative flex h-16 items-center justify-between">
@@ -23,15 +23,17 @@
           </button>
         </div>
         <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-          <div class="flex flex-shrink-0 items-center">
-            <icon name="logo" class="h-8 w-auto fill-gray-300" />
-          </div>
+          <Link href="/" class="flex flex-shrink-0 items-center group">
+            <icon name="logo" class="h-8 w-auto fill-gray-300 group-hover:fill-indigo-300 transition-colors duration-300" />
+            <span class="ml-2 text-xl font-bold text-white group-hover:text-indigo-300 transition-colors duration-300">Easy Ace</span>
+          </Link>
           <div class="hidden sm:ml-6 sm:block">
             <div class="flex space-x-4">
-              <a href="index-no-auth"
+              <Link href="/public-ask"
                 class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-indigo-700 hover:text-white"
-                aria-current="page">Dashboard</a>
-
+              >
+                Ask
+              </Link>
               <!-- Subjects Dropdown -->
               <div class="relative" @mouseenter="showSubjects = true" @mouseleave="showSubjects = false">
                 <button
@@ -70,11 +72,7 @@
               >
                 Contact Us
               </Link>
-              <Link href="/public-ask"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-indigo-700 hover:text-white"
-              >
-                Ask
-              </Link>
+
             </div>
           </div>
         </div>
@@ -114,10 +112,13 @@
     >
       <div v-show="mobileMenuOpen" class="sm:hidden fixed inset-x-0 top-16 z-50 bg-gray-900 shadow-lg" @click.stop>
         <div class="px-2 pt-2 pb-3 space-y-1">
-          <a href="/index-no-auth" @click="closeMobileMenu" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">Dashboard</a>
 
-          <!-- Mobile Subjects Dropdown -->
-          <div class="relative">
+          <Link href="/public-ask" @click="closeMobileMenu" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">Ask</Link>
+
+          <Link href="/pricing" @click="closeMobileMenu" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">Pricing</Link>
+          <Link href="/public-ask#contact-us" @click="closeMobileMenu" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">Contact Us</Link>
+            <!-- Mobile Subjects Dropdown -->
+           <div class="relative">
             <button @click="toggleMobileSubjects" class="w-full text-left block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">
               Subjects
               <svg class="w-4 h-4 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -130,16 +131,11 @@
               </a>
             </div>
           </div>
-
-          <Link href="/pricing" @click="closeMobileMenu" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">Pricing</Link>
-          <Link href="/public-ask#contact-us" @click="closeMobileMenu" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">Contact Us</Link>
-          <Link href="/public-ask" @click="closeMobileMenu" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">Ask</Link>
         </div>
       </div>
     </transition>
   </nav>
 </template>
-
 <script>
 import { ref } from 'vue'
 import { Link } from '@inertiajs/vue3'
@@ -200,6 +196,47 @@ export default {
 </script>
 
 <style scoped>
+.glow-container {
+  position: relative;
+}
+
+.glow-container::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: 50%;
+  background-color: rgba(79, 70, 229, 0.4);
+  filter: blur(10px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.group:hover .glow-container::after {
+  opacity: 1;
+}
+
+.glow-text {
+  position: relative;
+}
+
+.glow-text::after {
+  content: 'Easy Ace';
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #818cf8;
+  filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.group:hover .glow-text::after {
+  opacity: 1;
+}
+
 nav {
   z-index: 1000;
 }
