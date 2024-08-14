@@ -74,16 +74,17 @@
               <span class="font-bold text-indigo-600">{{ subscriptionTypeText }}</span>
             </p>
             <h3 class="text-lg font-semibold mb-4">Upgrade Subscription</h3>
-            <form @submit.prevent="upgradeSubscription">
-              <select-input v-model="form.subscription_type" :error="form.errors.subscription_type" class="mb-4 w-full"
+            <form @submit.prevent="goToPricingPage">
+              <select-input v-model="form.subscription_type" :error="form.errors.subscription_type" class="mb-4 w-1/2"
                 label="Select Subscription Type">
                 <option :value="1">Free</option>
-                <option :value="2">Tier 2</option>
-                <option :value="3">Tier 3</option>
+                <option :value="2">Pro</option>
+                <option :value="3">Premirum</option>
               </select-input>
-              <loading-button :loading="form.processing" class="btn-indigo w-full" type="submit">
-                Upgrade Subscription
-              </loading-button>
+
+              <loading-button :loading="form.processing" :disabled="!canUpgrade" class="btn-indigo w-1/2" type="submit">
+  Upgrade Subscription
+</loading-button>
             </form>
           </div>
         </div>
@@ -180,13 +181,17 @@ export default {
   },
   computed: {
     subscriptionTypeText() {
+      console.log(this.user.subscription_type)
       switch (this.user.subscription_type) {
-        case 1: return 'Free'
-        case 2: return 'Tier 2'
-        case 3: return 'Tier 3'
+        case '1': return 'Free'
+        case '2': return 'Pro'
+        case '3': return 'Premium'
         default: return 'Unknown'
       }
     },
+    canUpgrade() {
+    return this.form.subscription_type !== this.user.subscription_type;
+  }
   },
 
   methods: {
@@ -200,6 +205,11 @@ export default {
         this.$inertia.delete(`/profile/${this.user.id}`)
       }
     },
+    goToPricingPage() {
+  this.$inertia.visit('/pricing', {
+    data: { selectedType: this.form.subscription_type }
+  });
+},
 
   },
 }

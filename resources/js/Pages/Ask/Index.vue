@@ -1,6 +1,6 @@
 <template>
   <div>
-
+<full-page-loader/>
     <Head :title="`${user.first_name} ${user.last_name}`" />
     <div class="flex justify-start mb-8 max-w-3xl">
       <h1 class="text-3xl font-bold">
@@ -306,6 +306,7 @@ import TextInput from '@/Shared/TextInput.vue'
 import SelectInput from '@/Shared/SelectInput.vue'
 import LoadingButton from '@/Shared/LoadingButton.vue'
 import FileUpload from '../../Shared/FileUpload.vue'
+import FullPageLoader from '../../Shared/FullPageLoader.vue'
 
 export default {
   components: {
@@ -314,7 +315,8 @@ export default {
     LoadingButton,
     SelectInput,
     TextInput,
-    FileUpload
+    FileUpload,
+    FullPageLoader
   },
   layout: Layout,
 

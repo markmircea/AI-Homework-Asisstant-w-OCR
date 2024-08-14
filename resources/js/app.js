@@ -4,6 +4,8 @@ import { createInertiaApp } from '@inertiajs/vue3'
 import resizable from './directives/resizable'; // Import the directive
 
 
+
+
 createInertiaApp({
   resolve: name => {
     const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
@@ -17,4 +19,5 @@ createInertiaApp({
 
     app.use(plugin).mount(el);
   },
+
 })

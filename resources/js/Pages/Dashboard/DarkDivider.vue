@@ -2,7 +2,7 @@
   <section class="bg-gray-100  lg:py-12 lg:flex lg:justify-center">
     <div class="overflow-hidden bg-white  lg:mx-8 lg:flex lg:max-w-6xl lg:w-full lg:shadow-md lg:rounded-xl">
       <div class="lg:w-1/2">
-        <div class="h-64 bg-cover lg:h-full" style="background-image:url('/storage/img/boostpre.jpeg')">
+        <div class="h-64 bg-cover lg:h-full" style="background-image:url('/img/boostpre.jpeg')">
         </div>
       </div>
 

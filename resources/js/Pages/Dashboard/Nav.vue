@@ -1,11 +1,11 @@
 <template>
 
   <nav :user="user" :class="[
-    'transition-all duration-300 ease-in-out',
-    scrolled ? 'bg-gray-800 sticky top-0' : 'bg-transparent'
+     'transition-all duration-300 ease-in-out fixed top-0 left-0 right-0 w-full',
+    scrolled ? 'bg-gray-900' : 'bg-indigo-950/70 backdrop-blur-lg'
   ]" style="z-index: 1000;">
     <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-      <div class="relative flex h-16 items-center justify-between">
+     <div class="relative flex h-16 items-center justify-between">
         <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
           <!-- Mobile menu button-->
           <button type="button"
@@ -36,46 +36,47 @@
             <div class="flex space-x-4">
               <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
               <Link href="/ask"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+              class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-indigo-700 hover:text-white"
+              >
               Dashboard</Link>
               <!-- Subjects Dropdown -->
               <div class="relative" @mouseenter="showSubjects = true" @mouseleave="showSubjects = false">
-  <button
-    class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
-    Subjects
-    <svg class="w-4 h-4 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-    </svg>
-  </button>
-  <transition
-    enter-active-class="transition ease-out duration-100"
-    enter-from-class="transform opacity-0 scale-95"
-    enter-to-class="transform opacity-100 scale-100"
-    leave-active-class="transition ease-in duration-75"
-    leave-from-class="transform opacity-100 scale-100"
-    leave-to-class="transform opacity-0 scale-95">
-    <div v-if="showSubjects"
-      class="absolute left-0 w-48 mt-2 origin-top-left bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
-      style="z-index: 1001;">
-      <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-        <a v-for="subject in subjects" :key="subject" @click.prevent="selectSubject(subject)"
-          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-          role="menuitem">
-          {{ subject }}
-        </a>
-      </div>
-    </div>
-  </transition>
-</div>
+                <button
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-indigo-700 hover:text-white"
+                >
+                  Subjects
+                  <svg class="w-4 h-4 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+                <transition enter-active-class="transition ease-out duration-100"
+                  enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100"
+                  leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100"
+                  leave-to-class="transform opacity-0 scale-95">
+                  <div v-if="showSubjects"
+                    class="absolute left-0 w-48 mt-2 origin-top-left bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
+                    style="z-index: 1001;">
+                    <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                      <a v-for="subject in subjects" :key="subject" @click.prevent="selectSubject(subject)"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300 hover:text-gray-900 cursor-pointer"
+                        role="menuitem">
+                        {{ subject }}
+                      </a>
+                    </div>
+                  </div>
+                </transition>
+              </div>
 
 
 
               <Link href="/pricing"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+              class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-indigo-700 hover:text-white"
+              >
               Pricing</Link>
               <Link href="/pricing#contact-us"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+              class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-indigo-700 hover:text-white"
+              >
               Contact Us</Link>
 
 
@@ -97,14 +98,12 @@
           </button>
 
 
-
-
-
           <!-- Profile dropdown -->
-          <div class="relative ml-3 group">
+          <div class="relative ml-3" @mouseenter="showProfile = true" @mouseleave="showProfile = false">
             <div>
-              <button type="button"
-                class="relative flex rounded-full bg-indigo-800 text-sm focus:outline-none hover:ring-2 hover:ring-white hover:ring-offset-2 hover:ring-offset-gray-800">
+              <button @click="toggleProfileDropdown" type="button"
+                class="relative flex rounded-full bg-indigo-800 text-sm focus:outline-none hover:ring-2 hover:ring-white hover:ring-offset-2 hover:ring-offset-gray-800"
+                id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                 <span class="absolute -inset-1.5"></span>
                 <span class="sr-only">Open user menu</span>
                 <img v-if="user.photo" class="h-8 w-8 rounded-full" :src="user.photo" alt="User photo" />
@@ -116,15 +115,21 @@
             </div>
 
             <!-- Dropdown menu -->
-            <div
-              class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 scale-95 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:scale-100">
-              <a @click="goToProfile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1"
-                id="user-menu-item-1">Settings</a>
-              <a @click="logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
-            </div>
+            <transition enter-active-class="transition ease-out duration-100"
+              enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100"
+              leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100"
+              leave-to-class="transform opacity-0 scale-95">
+              <div v-if="showProfile" ref="profileDropdown"
+                class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                <a @click="goToProfile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300 cursor-pointer"
+                  role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300" role="menuitem"
+                  tabindex="-1" id="user-menu-item-1">Settings</a>
+                <a @click="logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300 cursor-pointer"
+                  role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
+              </div>
+            </transition>
           </div>
 
 
@@ -168,7 +173,8 @@ export default {
     return {
       scrolled: false,
       subjects: ['Biology', 'Chemistry', 'Computer Science', 'Economics', 'English', 'Geography', 'History', 'Mathematics', 'Physics', 'Science'],
-      showSubjects: false
+      showSubjects: false,
+      showProfile: false,
 
     }
   },
@@ -181,10 +187,14 @@ export default {
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll);
+    document.addEventListener('click', this.closeProfileDropdown);
+
   },
 
   beforeUnmount() {
     window.removeEventListener('scroll', this.handleScroll);
+    document.removeEventListener('click', this.closeProfileDropdown);
+
   },
 
   methods: {
@@ -201,20 +211,31 @@ export default {
     handleScroll() {
       this.scrolled = window.scrollY > 0;
     },
+    toggleProfileDropdown(event) {
+      event.stopPropagation();
+      this.showProfile = !this.showProfile;
+    },
+
+    closeProfileDropdown(event) {
+      if (this.$refs.profileDropdown && !this.$refs.profileDropdown.contains(event.target)) {
+        this.showProfile = false;
+      }
+    },
+
     goToProfile() {
-      // Construct the URL using the user ID
+      this.showProfile = false;
       const userId = this.user.id;
-      // Use Inertia to navigate
       this.$inertia.visit(`/profile/${userId}`);
     },
 
     logout() {
+      this.showProfile = false;
       this.$inertia.get('/log-out', {
         onFinish: () => {
-          window.location.href = '/'; // Redirect to home or login page
+          window.location.href = '/';
         }
-      })
-    }
+      });
+    },
   }
 };
 </script>

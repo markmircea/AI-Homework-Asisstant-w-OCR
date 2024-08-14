@@ -66,7 +66,7 @@
                 <h3 class="ml-3 text-lg font-medium text-gray-900">Email Us</h3>
               </div>
               <p class="mt-4 text-base text-gray-500">
-                support@aihomeworkassistant.com
+                support@easyace.ai
               </p>
             </div>
           </div>
@@ -81,7 +81,7 @@
                 <h3 class="ml-3 text-lg font-medium text-gray-900">Call Us</h3>
               </div>
               <p class="mt-4 text-base text-gray-500">
-                +1 (555) 123-4567
+                +1 (313) 987-9399
               </p>
             </div>
           </div>

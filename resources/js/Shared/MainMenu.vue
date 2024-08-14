@@ -16,31 +16,13 @@
       </Link>
     </div>
 
-    <!-- History List Link -->
-    <div class="mb-4">
-      <Link class="group flex items-center py-3" href="/history-list">
-        <icon name="users" class="mr-2 w-4 h-4" :class="isUrl('history-list') ? 'fill-white' : 'fill-indigo-400'" />
-        <div :class="isUrl('history-list') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">History List</div>
-      </Link>
-    </div>
-
-
-
-    <!-- History Link -->
-    <div class="mb-4">
-      <Link class="group flex items-center py-3" href="/history">
-        <icon name="history" class="mr-2 w-4 h-4" :class="isUrl('history') ? 'fill-white' : 'fill-indigo-400'" />
-        <div :class="isUrl('history') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">History</div>
-      </Link>
-    </div>
-
-
-  <!-- Reports Link with Collapsible Submenu -->
-  <div class="mb-4">
-      <button @click="toggleSubmenu" class="group flex items-center py-3 w-full text-left focus:outline-none">
-        <icon name="users" class="mr-2 w-4 h-4" :class="isUrl('profile') ? 'fill-white' : 'fill-indigo-400'" />
-        <div :class="isUrl(`profile/${auth.user.id}`) ? 'text-white' : 'text-indigo-300  group-hover:text-white'">Account</div>
-        <icon name="cheveron-down" class="ml-auto w-4 h-4 transition-transform duration-200" :class="submenuOpen ? 'transform rotate-180' : 'transform rotate-0'"/>
+    <!-- History Link with Collapsible Submenu -->
+     <!-- History Link with Collapsible Submenu -->
+     <div class="mb-4">
+      <button @click="toggleHistorySubmenu" class="group flex items-center py-3 w-full text-left focus:outline-none">
+        <icon name="history" class="mr-2 w-4 h-4" :class="isHistoryActive ? 'fill-white' : 'fill-indigo-400'" />
+        <div :class="isHistoryActive ? 'text-white' : 'text-indigo-300 group-hover:text-white'">History</div>
+        <icon name="cheveron-down" class="ml-auto w-4 h-4 transition-transform duration-200" :class="historySubmenuOpen ? 'transform rotate-180' : 'transform rotate-0'"/>
       </button>
       <transition
         name="fade-slide"
@@ -48,34 +30,52 @@
         @enter="enter"
         @leave="leave"
       >
-        <div v-show="submenuOpen" class="pl-4 mt-2">
-          <Link class="group flex items-center text-sm py-2" :class="isUrl(`profile/${auth.user.id}`) ? 'text-white' : 'text-indigo-300  hover:text-white'" :href="`/profile/${auth.user.id}`">
-            <icon name="profile" class="mr-2 w-4 h-4" :class="isUrl(`profile/${auth.user.id}`) ? 'text-white' : 'text-white'" />
-            <div>Profile</div>
-          </Link>          <Link class="group flex items-center text-sm py-2 text-indigo-300  hover:text-white" href="/logout">
-        <icon name="billing" class="mr-2 w-4 h-4 text-red-500" />
-        <div>Billing</div>
-      </Link>
-             <Link class="group flex items-center text-sm py-2 text-indigo-300  hover:text-white" href="/logout">
-        <icon name="active" class="mr-2 w-4 h-4 text-red-500" />
-        <div>Active Sessions</div>
-      </Link>
-          <Link class="group flex items-center text-sm py-2 text-indigo-300  hover:text-red-500" href="/log-out">
-        <icon name="signout" class="mr-2 w-4 h-4 text-red-500" />
-        <div>Sign Out</div>
-      </Link>
-
+        <div v-show="historySubmenuOpen" class="pl-4 mt-2">
+          <Link class="group flex items-center text-sm py-2" :class="isExactUrl('history-list') ? 'text-white' : 'text-indigo-300 hover:text-white'" href="/history-list">
+            <icon name="list" class="mr-2 w-4 h-4" :class="isExactUrl('history-list') ? 'fill-white' : 'fill-indigo-400'" />
+            <div>List</div>
+          </Link>
+          <Link class="group flex items-center text-sm py-2" :class="isExactUrl('history') ? 'text-white' : 'text-indigo-300 hover:text-white'" href="/history">
+            <icon name="card" class="mr-2 w-4 h-4" :class="isExactUrl('history') ? 'fill-white' : 'fill-indigo-400'" />
+            <div>Cards</div>
+          </Link>
         </div>
       </transition>
     </div>
-
-
-
-
+    <!-- Account Link with Collapsible Submenu -->
+    <div class="mb-4">
+      <button @click="toggleAccountSubmenu" class="group flex items-center py-3 w-full text-left focus:outline-none">
+        <icon name="users" class="mr-2 w-4 h-4" :class="isUrl('profile') ? 'fill-white' : 'fill-indigo-400'" />
+        <div :class="isUrl(`profile`) ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Account</div>
+        <icon name="cheveron-down" class="ml-auto w-4 h-4 transition-transform duration-200" :class="accountSubmenuOpen ? 'transform rotate-180' : 'transform rotate-0'"/>
+      </button>
+      <transition
+        name="fade-slide"
+        @before-enter="beforeEnter"
+        @enter="enter"
+        @leave="leave"
+      >
+        <div v-show="accountSubmenuOpen" class="pl-4 mt-2">
+          <Link class="group flex items-center text-sm py-2" :class="isUrl(`profile`) ? 'text-white' : 'text-indigo-300 hover:text-white'" :href="`/profile/${auth.user.id}`">
+            <icon name="profile" class="mr-2 w-4 h-4" :class="isUrl(`profile`) ? 'text-white' : 'text-white'" />
+            <div>Profile</div>
+          </Link>
+          <Link class="group flex items-center text-sm py-2 text-indigo-300 hover:text-white" href="/billing">
+            <icon name="billing" class="mr-2 w-4 h-4 text-white" />
+            <div>Billing</div>
+          </Link>
+          <Link class="group flex items-center text-sm py-2 text-indigo-300 hover:text-white" href="/active-sessions">
+            <icon name="active" class="mr-2 w-4 h-4 text-white" />
+            <div>Active Sessions</div>
+          </Link>
+          <Link class="group flex items-center text-sm py-2 text-indigo-300 hover:text-red-500" href="/log-out">
+            <icon name="signout" class="mr-2 w-4 h-4 text-red-500" />
+            <div>Sign Out</div>
+          </Link>
+        </div>
+      </transition>
+    </div>
   </div>
-
-
-
 </template>
 
 <script>
@@ -93,35 +93,47 @@ export default {
   },
   data() {
     return {
-      submenuOpen: false,
+      historySubmenuOpen: false,
+      accountSubmenuOpen: false,
+    }
+  },
+  computed: {
+    isHistoryActive() {
+      return this.isUrl('history') || this.isUrl('history-list');
     }
   },
   methods: {
     isUrl(url) {
-    // Get the current path from the URL
-    const currentUrl = this.$page.url.replace(/^\/|\/$/g, ''); // Normalize URL by removing leading/trailing slashes
-    // Check if the current URL matches exactly or starts with the given URL
-    return currentUrl === url || currentUrl.startsWith(`${url}/`);
-  },
-    toggleSubmenu() {
-      this.submenuOpen = !this.submenuOpen
+      const currentUrl = this.$page.url.split('?')[0]; // Remove query parameters
+      if (url === '') return currentUrl === '/';
+      return currentUrl.startsWith('/' + url);
+    },
+    isExactUrl(url) {
+      const currentUrl = this.$page.url.split('?')[0]; // Remove query parameters
+      return currentUrl === '/' + url;
+    },
+    toggleHistorySubmenu() {
+      this.historySubmenuOpen = !this.historySubmenuOpen;
+    },
+    toggleAccountSubmenu() {
+      this.accountSubmenuOpen = !this.accountSubmenuOpen;
     },
     beforeEnter(el) {
-      el.style.opacity = 0
-      el.style.transform = 'translateY(-10px)'
+      el.style.opacity = 0;
+      el.style.transform = 'translateY(-10px)';
     },
     enter(el, done) {
-      el.offsetHeight // trigger reflow
-      el.style.transition = 'opacity 0.5s ease, transform 0.5s ease'
-      el.style.opacity = 1
-      el.style.transform = 'translateY(0)'
-      done()
+      el.offsetHeight;
+      el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      el.style.opacity = 1;
+      el.style.transform = 'translateY(0)';
+      done();
     },
     leave(el, done) {
-      el.style.transition = 'opacity 0.5s ease, transform 0.5s ease'
-      el.style.opacity = 0
-      el.style.transform = 'translateY(-10px)'
-      done()
+      el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      el.style.opacity = 0;
+      el.style.transform = 'translateY(-10px)';
+      done();
     }
   }
 }

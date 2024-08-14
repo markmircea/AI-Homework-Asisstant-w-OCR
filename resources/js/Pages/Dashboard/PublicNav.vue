@@ -1,7 +1,7 @@
 <template>
   <nav :class="[
-    'transition-all duration-300 ease-in-out',
-    scrolled ? 'bg-gray-800 sticky top-0' : 'bg-transparent'
+    'transition-all duration-300 ease-in-out fixed top-0 left-0 right-0 w-full',
+    scrolled ? 'bg-gray-900' : 'bg-indigo-950/70 backdrop-blur-lg'
   ]" style="z-index: 1000;">
     <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
       <div class="relative flex h-16 items-center justify-between">
@@ -32,52 +32,51 @@
           <div class="hidden sm:ml-6 sm:block">
             <div class="flex space-x-4">
               <a href="index-no-auth"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+              class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-indigo-700 hover:text-white"
                 aria-current="page">Dashboard</a>
 
               <!-- Subjects Dropdown -->
-              <div class="relative"
-     @mouseenter="showSubjects = true"
-     @mouseleave="showSubjects = false">
-  <button
-    class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
-    Subjects
-    <svg class="w-4 h-4 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-    </svg>
-  </button>
-  <transition
-    enter-active-class="transition ease-out duration-100"
-    enter-from-class="transform opacity-0 scale-95"
-    enter-to-class="transform opacity-100 scale-100"
-    leave-active-class="transition ease-in duration-75"
-    leave-from-class="transform opacity-100 scale-100"
-    leave-to-class="transform opacity-0 scale-95">
-    <div v-if="showSubjects"
-      class="absolute left-0 w-48 mt-2 origin-top-left bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
-      style="z-index: 1001;">
-      <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-        <a v-for="subject in subjects" :key="subject" @click.prevent="selectSubject(subject)"
-          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-          role="menuitem">
-          {{ subject }}
-        </a>
-      </div>
-    </div>
-  </transition>
-</div>
-<Link href="/pricing"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+              <div class="relative" @mouseenter="showSubjects = true" @mouseleave="showSubjects = false">
+                <button
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-indigo-700 hover:text-white"
+                >
+                  Subjects
+                  <svg class="w-4 h-4 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+                <transition enter-active-class="transition ease-out duration-100"
+                  enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100"
+                  leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100"
+                  leave-to-class="transform opacity-0 scale-95">
+                  <div v-if="showSubjects"
+                    class="absolute left-0 w-48 mt-2 origin-top-left bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
+                    style="z-index: 1001;">
+                    <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                      <a v-for="subject in subjects" :key="subject" @click.prevent="selectSubject(subject)"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+                        role="menuitem">
+                        {{ subject }}
+                      </a>
+                    </div>
+                  </div>
+                </transition>
+              </div>
+              <Link href="/pricing"
+              class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-indigo-700 hover:text-white"
+              >
               Pricing</Link>
               <Link href="/public-ask#contact-us"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+              class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-indigo-700 hover:text-white"
+              >
               Contact Us</Link>
 
 
               <Link href="/public-ask"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
-              Public Ask
+              class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-indigo-700 hover:text-white"
+              >
+              Ask
               </Link>
             </div>
           </div>
@@ -85,13 +84,13 @@
         <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
           <!-- Conditional rendering based on authentication -->
           <a href="/login" type="button"
-            class="rounded-md mr-1 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700">
-            Sign In
+          class="rounded-md mr-2 px-3 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-300">
+          Sign In
           </a>
           <!-- Conditional rendering based on authentication -->
           <a href="/register" type="button"
-            class="rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700">
-            Sign Up
+          class="rounded-md px-3 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-300">
+          Sign Up
           </a>
 
 
@@ -185,3 +184,16 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+nav {
+  z-index: 1000;
+}
+
+/* Ensure dropdowns are above the nav */
+.absolute {
+  z-index: 1001;
+}
+
+/* ... other styles ... */
+</style>

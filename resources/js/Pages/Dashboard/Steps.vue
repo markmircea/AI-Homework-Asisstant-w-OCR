@@ -77,7 +77,7 @@
       </div>
       <div class="relative">
         <div class="h-64 rounded-2xl bg-cover bg-center lg:h-full"
-             style="background-image: url('/storage/img/studentest.jpeg'); background-size: cover; background-position: center;">
+             style="background-image: url('/img/studentest.jpeg'); background-size: cover; background-position: center;">
         </div>      </div>
     </div>
   </div>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="fixed bottom-4 right-4 z-50 max-w-md">
     <transition
       enter-active-class="transition ease-out duration-300"
       enter-from-class="transform opacity-0 scale-95"
@@ -8,14 +8,14 @@
       leave-from-class="transform opacity-100 scale-100"
       leave-to-class="transform opacity-0 scale-95"
     >
-      <div v-if="$page.props.flash.success && show" class="flex items-center justify-between mb-8 max-w-3xl bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow-md">
+      <div v-if="$page.props.flash.success && show" class="flex items-center justify-between mb-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow-md">
         <div class="flex items-center">
           <svg class="shrink-0 mr-2 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
           </svg>
           <div class="text-sm font-medium">{{ $page.props.flash.success }}</div>
         </div>
-        <button type="button" class="text-green-700 hover:text-green-900" @click="show = false">
+        <button type="button" class="text-green-700 hover:text-green-900" @click="hideMessage">
           <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
           </svg>
@@ -31,7 +31,7 @@
       leave-from-class="transform opacity-100 scale-100"
       leave-to-class="transform opacity-0 scale-95"
     >
-      <div v-if="($page.props.flash.error || Object.keys($page.props.errors).length > 0) && show" class="flex items-center justify-between mb-8 max-w-3xl bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg shadow-md">
+      <div v-if="($page.props.flash.error || Object.keys($page.props.errors).length > 0) && show" class="flex items-center justify-between mb-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg shadow-md">
         <div class="flex items-center">
           <svg class="shrink-0 mr-2 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
@@ -42,7 +42,7 @@
             <span v-else>There are {{ Object.keys($page.props.errors).length }} form errors.</span>
           </div>
         </div>
-        <button type="button" class="text-red-700 hover:text-red-900" @click="show = false">
+        <button type="button" class="text-red-700 hover:text-red-900" @click="hideMessage">
           <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
           </svg>
@@ -56,16 +56,46 @@
 export default {
   data() {
     return {
-      show: true,
+      show: false,
+      timeout: null,
     }
   },
   watch: {
     '$page.props.flash': {
       handler() {
-        this.show = true
+        this.showMessage();
       },
       deep: true,
     },
+  },
+  methods: {
+    showMessage() {
+      this.show = true;
+      this.setAutoHideTimer();
+    },
+    hideMessage() {
+      this.show = false;
+      this.clearAutoHideTimer();
+    },
+    setAutoHideTimer() {
+      this.clearAutoHideTimer();
+      this.timeout = setTimeout(() => {
+        this.hideMessage();
+      }, 5000); // Hide message after 5 seconds (adjust as needed)
+    },
+    clearAutoHideTimer() {
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+      }
+    },
+  },
+  mounted() {
+    if (this.$page.props.flash.success || this.$page.props.flash.error || Object.keys(this.$page.props.errors).length > 0) {
+      this.showMessage();
+    }
+  },
+  beforeUnmount() {
+    this.clearAutoHideTimer();
   },
 }
 </script>

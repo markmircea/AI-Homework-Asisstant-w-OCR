@@ -1,6 +1,7 @@
 <template>
   <div class="bg-gradient-to-b from-indigo-900 to-indigo-700 min-h-screen">
     <Nav :user="user" @subject-selected="handleSubjectSelected" />
+    <main class="pt-16">
 
     <Hero :selected-subject="localSelectedSubject" :isAuthenticated="$page.props.auth.user !== null" />
 
@@ -15,7 +16,7 @@
     <Pricing />
 
     <ContactUs />
-
+</main>
 
     <Footer />
   </div>

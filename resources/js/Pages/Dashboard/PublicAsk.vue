@@ -1,18 +1,24 @@
 <template>
   <div class=" bg-gradient-to-r from-indigo-500 to-indigo-600 min-h-screen">
+    <FullPageLoader />
 
     <Nav />
 
 
     <div>
+      <div class="px-4 py-8 md:flex-1 md:p-12 md:overflow-y-auto" scroll-region>
+                <flash-messages ref="FlashMessages" />
+
+                <slot />
+              </div>
 
       <Head title="Public Ask" />
-      <div class="flex justify-start mb-8 max-w-3xl">
+      <div class="flex justify-start  max-w-3xl">
 
 
       </div>
 
-      <div class="container mx-auto mt-20">
+      <div class="container mx-auto">
 
         <div class="flex flex-col lg:flex-row gap-4">
           <!-- Question Section -->
@@ -260,11 +266,7 @@
                   </div>
                 </div>
               </div>
-              <div class="px-4 py-8 md:flex-1 md:p-12 md:overflow-y-auto" scroll-region>
-                <flash-messages ref="FlashMessages" />
 
-                <slot />
-              </div>
             </div>
           </div>
         </div>
@@ -286,6 +288,7 @@ import Nav from './PublicNav.vue'
 import Footer from './Footer.vue'
 import FlashMessages from '@/Shared/FlashMessages.vue'
 import ContactUsVue from './ContactUs.vue'
+import FullPageLoader from '../../Shared/FullPageLoader.vue'
 
 
 export default {
@@ -298,7 +301,8 @@ export default {
     TextInput,
     FileUpload,
     Nav,
-    Footer
+    Footer,
+    FullPageLoader
   },
 
   props: {
@@ -425,6 +429,7 @@ export default {
 
 
 <style>
+
 @keyframes pulse {
 
   0%,
@@ -451,7 +456,6 @@ export default {
 /* Card styling */
 .bg-white {
   background-color: rgba(255, 255, 255, 0.95);
-  /* Increased opacity */
   border-radius: 1rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;

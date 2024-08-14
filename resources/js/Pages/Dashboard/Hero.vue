@@ -1,20 +1,22 @@
 <template>
-  <div class="relative bg-gradient-to-r from-indigo-900 to-indigo-600">
-    <div class="absolute inset-x-0 bottom-0">
-      <svg viewBox="0 0 224 12" fill="currentColor" class="w-full -mb-1 text-white" preserveAspectRatio="none">
+  <div class="relative overflow-hidden min-h-screen" style="z-index: 1;">
+    <div class="absolute inset-0 bg-gradient-animation" style="z-index: -1;"></div>
+    <div class="absolute inset-0 bg-grid-white/[0.05] bg-[size:40px_40px]" style="z-index: -1;"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-indigo-900/50 to-transparent" style="z-index: -1;"></div>
+     <div class="absolute inset-x-0 bottom-0">
+      <svg viewBox="0 0 224 12" fill="white" class="w-full -mb-1 text-white/20" preserveAspectRatio="none">
         <path
           d="M0,0 C48.8902582,6.27314026 86.2235915,9.40971039 112,9.40971039 C137.776408,9.40971039 175.109742,6.27314026 224,0 L224,12.0441132 L0,12.0441132 L0,0 Z">
         </path>
       </svg>
     </div>
-    <div class="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
+      <div class="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20 relative z-10">
       <div class="relative max-w-2xl sm:mx-auto sm:max-w-xl md:max-w-2xl sm:text-center">
-        <h2 class="mb-6 font-sans text-3xl font-bold tracking-tight text-white sm:text-4xl sm:leading-none">
-          Unlock Your Academic Potential with<br class="hidden md:block" />
-          AI-Powered
-          <span class="relative inline-block px-2">
-            <div class="absolute inset-0 transform -skew-x-12 bg-teal-accent-400"></div>
-            <span class="relative text-teal-900">Homework Assistance</span>
+        <h2 class="mb-6 font-sans text-4xl font-bold tracking-tight text-white sm:text-5xl sm:leading-none">
+          Unlock Your Academic Potential with
+          <span class="relative inline-block px-2 py-1 mt-2">
+            <div class="absolute inset-0 transform -skew-x-12 bg-gradient-to-r from-teal-400 to-blue-500 opacity-80"></div>
+            <span class="relative text-indigo-900 font-extrabold">AI-Powered Assistance</span>
           </span>
         </h2>
         <p class="mb-6 text-base text-indigo-100 md:text-lg">
@@ -23,19 +25,18 @@
         </p>
 
         <!-- Question Section -->
-        <form @submit.prevent="update" class="bg-white p-6 rounded-lg shadow-lg">
-      <div class="flex mb-4">
-        <div class="w-1/2 pr-2">
-          <label for="subject" class="block text-sm font-medium text-gray-700">Subject</label>
-          <select v-model="form.subject" id="subject" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-            <option value="" disabled>Auto-Detect</option>
-            <option v-for="subject in subjects" :key="subject" :value="subject">{{ subject }}</option>
-          </select>
-        </div>
-            <div class="w-1/2 pl-2">
-              <label for="level" class="block text-sm font-medium text-gray-700">Level</label>
-              <select v-model="form.level" id="level"
-                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        <form @submit.prevent="update" class="bg-indigo-950/70 backdrop-blur-lg p-8 rounded-2xl shadow-2xl">
+          <div class="flex flex-col sm:flex-row mb-6 gap-4">
+            <div class="w-full sm:w-1/2">
+              <label for="subject" class="block text-sm font-medium text-indigo-100 mb-2">Subject</label>
+              <select v-model="form.subject" id="subject" class="w-full bg-indigo-700/50 text-white border-0 rounded-lg py-3 px-4 focus:ring-2 focus:ring-blue-500 transition-all duration-300">
+                <option value="" disabled>Auto-Detect</option>
+                <option v-for="subject in subjects" :key="subject" :value="subject">{{ subject }}</option>
+              </select>
+            </div>
+            <div class="w-full sm:w-1/2">
+              <label for="level" class="block text-sm font-medium text-indigo-100 mb-2">Level</label>
+              <select v-model="form.level" id="level" class="w-full bg-indigo-700/50 text-white border-0 rounded-lg py-3 px-4 focus:ring-2 focus:ring-blue-500 transition-all duration-300">
                 <option value="" selected>Any Level</option>
                 <option value="1-5th grade">1-5th grade</option>
                 <option value="6-8th grade">6-8th grade</option>
@@ -47,44 +48,33 @@
             </div>
           </div>
 
-          <div class="relative w-full pb-8 pr-6">
-                        <label for="question" class="block text-sm font-medium text-gray-700">Your homework question
-
-                          <div class="hidden sm:block">
-                           <!-- SVG and Badge -->
-                  <figure class="absolute top-0 right-0 text-nowrap">
-                    <svg class="absolute ms-4 mt-4" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-                      viewBox="0 0 99.3 57" width="48">
-                      <path fill="none" stroke="#bdc5d1" stroke-width="4" stroke-linecap="round" stroke-miterlimit="10"
-                        d="M2,39.5l7.7,14.8c0.4,0.7,1.3,0.9,2,0.4L27.9,42"></path>
-                      <path fill="none" stroke="#bdc5d1" stroke-width="4" stroke-linecap="round" stroke-miterlimit="10"
-                        d="M11,54.3c0,0,10.3-65.2,86.3-50"></path>
-                    </svg>
-                    <span class="badge text-gray-600 badge-pill ms-7 fa-beat-fade"
-                      style="--fa-beat-fade-opacity: 0.90; --fa-beat-fade-scale: 1.075; --fa-animation-duration: 2s;">Type
-                      your question here!</span>
-                  </figure>
-                </div>
-                        </label>
+          <div class="relative w-full mb-6">
+            <label for="question" class="block text-sm font-medium text-indigo-100 mb-2">Your homework question</label>
             <textarea v-model="form.question" id="question" rows="4"
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              class="w-full bg-indigo-700/50 text-white border-0 rounded-lg py-3 px-4 focus:ring-2 focus:ring-blue-500 transition-all duration-300"
               placeholder="Enter your homework question here..."></textarea>
+            <div class="absolute top-0 right-0 mt-8 mr-4 text-indigo-300 animate-bounce">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+            </div>
           </div>
 
           <button type="submit"
-            class="w-full btn-indigo1 transition-colors duration-200 hover:text-indigo-500 flex items-center justify-center space-x-2">
-            <span class="question-mark">?</span>
-            <span>Ask Question</span>
+            class="w-full py-4 px-6 bg-gradient-to-r from-teal-400 to-blue-500 text-white font-semibold rounded-lg shadow-lg hover:from-teal-500 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-indigo-200 transition-all duration-300 transform hover:scale-105">
+            <span class="inline-block mr-2 transition-transform group-hover:translate-x-1 motion-safe:animate-bounce">🚀</span>
+            Ask Question
           </button>
         </form>
 
-        <p class="mt-4 max-w-md text-xs tracking-wide text-indigo-100 sm:text-sm sm:mx-auto">
+        <p class="mt-6 max-w-md text-xs tracking-wide text-indigo-200 sm:text-sm sm:mx-auto">
           Experience the power of multi-model AI analysis for all your homework needs.
         </p>
       </div>
     </div>
   </div>
 </template>
+
 
 <script>
 export default {
@@ -113,7 +103,6 @@ export default {
         photo: null,
       }),
       subjects: ['Biology', 'Chemistry', 'Computer Science', 'Economics', 'English', 'Geography', 'History', 'Mathematics', 'Physics', 'Science']
-
     };
   },
   watch: {
@@ -138,12 +127,8 @@ export default {
         onSuccess: () => {
           if (this.isAuthenticated) {
             // Handle authenticated user response
-            // Maybe redirect to a dashboard
-           // this.$inertia.visit('/ask');
           } else {
             // Handle public user response
-            // Maybe show the result on the same page
-         //   this.showResult(response.data);
           }
         },
         onError: () => {
@@ -155,50 +140,43 @@ export default {
 };
 </script>
 
-<style scoped>
-/* Add any specific styles for this component here */
-.btn-indigo1 {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: none;
-  border-radius: 0.5rem;
-  color: white;
-  font-weight: 600;
-  padding: 0.75rem 1.5rem;
-  transition: all 0.3s ease;
-}
-
-.btn-indigo1:hover {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-.question-mark {
-  display: inline-block;
-  font-size: 1.5rem;
-  margin-right: 0.5rem;
-  animation: flip-spin 5s ease-in-out infinite;
-}
-
-@keyframes flip-spin {
+<style>
+@keyframes gradient {
   0% {
-    transform: rotate(0deg) scaleY(1);
+    background-position: 0% 50%;
   }
-
   25% {
-    transform: rotate(90deg) scaleY(-1);
+    background-position: 100% 50%;
   }
-
   50% {
-    transform: rotate(180deg) scaleY(1);
+    background-position: 50% 100%;
   }
-
   75% {
-    transform: rotate(270deg) scaleY(-1);
+    background-position: 0% 50%;
   }
-
   100% {
-    transform: rotate(360deg) scaleY(1);
+    background-position: 0% 0%;
   }
 }
+
+.bg-gradient-animation {
+  background: linear-gradient(
+    -45deg,
+    #4338ca,
+    #3730a3,
+    #312e81,
+    #1e3a8a
+  );
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
+
+.bg-grid-white {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+}
+
+/* Rest of the styles remain unchanged */
 </style>
+
+Version 2 of 2

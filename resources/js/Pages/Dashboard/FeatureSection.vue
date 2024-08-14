@@ -38,7 +38,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
-              <p class="ml-16 text-lg leading-6 font-medium text-gray-900">Image Recognition</p>
+              <p class="ml-16 text-lg leading-6 font-medium text-gray-900">Optical Character Recognition</p>
             </dt>
             <dd class="mt-2 ml-16 text-base text-gray-500">
               Simply take a photo of your homework or test, and our AI will instantly analyze and provide solutions.

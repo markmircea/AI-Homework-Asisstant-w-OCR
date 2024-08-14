@@ -348,7 +348,7 @@ private function updateDailyQuestionCount($user, $now, $ip, $dailyCount)
     }
     private function buildSystemContent($subject, $instructions, $steps, $explain, $level)
     {
-        $content = "The current subject is: $subject. First, include a string called \"subject=\" followed by one word from this list that best categorizes the content: Biology,Chemistry,Computer-Science,Economics,English,Geography,History,Mathematics,Physics,Science. Then, provide a short summary of the content. ";
+        $content = "The current subject is: $subject. If no subject was included, include a string called \"subject=\" followed by one word from this list that best categorizes the content: Biology,Chemistry,Computer-Science,Economics,English,Geography,History,Mathematics,Physics,Science. Then, provide a short summary of the content and resolve it. ";
 
         $content .= "Your response should be structured as follows:\n";
         $content .= "First: Main content (without any specific keyword)\n";
