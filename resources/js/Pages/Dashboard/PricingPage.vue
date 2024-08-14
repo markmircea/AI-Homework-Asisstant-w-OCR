@@ -2,6 +2,7 @@
   <div class="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white font-sans">
     <Nav v-if="user" :user="user" />
     <PublicNav v-else />
+    <Head title="Pricing" />
 
     <section class="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
       <div class="max-w-7xl mx-auto">
