@@ -162,7 +162,6 @@ export default {
   },
   computed: {
     subscriptionTypeText() {
-      console.log(this.user.subscription_type)
       switch (this.user.subscription_type) {
         case '1': return 'Free'
         case '2': return 'Pro'

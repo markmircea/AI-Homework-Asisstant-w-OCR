@@ -24,8 +24,8 @@
         </div>
         <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
           <Link href="/" class="flex flex-shrink-0 items-center group">
-            <icon name="logo" class="h-8 w-auto fill-gray-300 group-hover:fill-indigo-300 transition-colors duration-300" />
-            <span class="ml-2 text-xl font-bold text-white group-hover:text-indigo-300 transition-colors duration-300">Easy Ace</span>
+            <icon name="logo" class="h-8 w-auto fill-gray-300 group-hover:fill-indigo-300 animate-pulse-slow transition-colors duration-300" />
+            <span class="hidden md:block ml-2 text-xl font-bold text-white group-hover:text-indigo-300 transition-colors duration-300">Easy Ace</span>
           </Link>
           <div class="hidden sm:ml-6 sm:block">
             <div class="flex space-x-4">
@@ -77,14 +77,14 @@
           </div>
         </div>
         <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-          <a href="/login" type="button"
+          <Link href="/login" type="button"
             class="rounded-md mr-2 px-3 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-300">
             Sign In
-          </a>
-          <a href="/register" type="button"
+          </Link>
+          <Link href="/register" type="button"
             class="rounded-md px-3 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-300">
             Sign Up
-          </a>
+          </Link>
         </div>
       </div>
     </div>

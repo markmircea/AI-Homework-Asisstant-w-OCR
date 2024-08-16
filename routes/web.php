@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImagesController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\UserSessionController;
 use App\Http\Controllers\PricingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicAskController;
+
 
 
 
@@ -59,6 +61,25 @@ Route::delete('logout', [AuthenticatedSessionController::class, 'destroy'])
 Route::get('log-out', [AuthenticatedSessionController::class, 'destroy'])
     ->name('log-out');
 
+// Show forgot password form
+Route::get('/forgot-password', [PasswordResetController::class, 'showLinkRequestForm'])
+    ->middleware('guest')
+    ->name('password.request');
+
+// Handle forgot password form submission
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])
+    ->middleware('guest')
+    ->name('password.email');
+
+// Show reset password form
+Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])
+    ->middleware('guest')
+    ->name('password.reset');
+
+// Handle reset password form submission
+Route::post('/reset-password', [PasswordResetController::class, 'reset'])
+    ->middleware('guest')
+    ->name('password.update');
 
 
 // Google OCR
@@ -134,7 +155,9 @@ Route::get('profile/{user}', [ProfileController::class, 'Index'])
 
     Route::get('users', [UsersController::class, 'Index'])
     ->name('Index')
-   ->middleware('auth');
+   ->middleware('auth')
+   ->middleware('owner');
+
 
 Route::get('users/create', [UsersController::class, 'create'])
     ->name('users.create')

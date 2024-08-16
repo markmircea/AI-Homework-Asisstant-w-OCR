@@ -7,6 +7,11 @@
       <div class="bg-gray-50 border border-gray-200 rounded-md p-4 mb-6">
         <p class="text-sm sm:text-base">Hi {{ user.first_name }}! Welcome to your dashboard, here are some of your historic items.</p>
       </div>
+  <!-- Empty state message -->
+  <div v-if="localAnnouncements.length === 0" class="text-center py-8">
+        <p class="text-gray-500 text-lg">No search history...</p>
+      </div>
+
 
 
 
@@ -78,7 +83,7 @@
         <button @click="goToPage(currentPage + 1)" :disabled="currentPage >= totalPages" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md text-sm hover:bg-gray-300 transition-colors disabled:opacity-50">Next</button>
       </div>
 
-      <p class="mt-4 text-center text-sm text-gray-700">You have {{ coins }} coins.</p>
+
     </div>
 
     <!-- Modals -->

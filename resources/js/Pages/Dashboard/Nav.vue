@@ -25,9 +25,9 @@
         <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
           <Link href="/" class="flex flex-shrink-0 items-center group">
           <icon name="logo"
-            class="h-8 w-auto fill-gray-300 group-hover:fill-indigo-300 transition-colors duration-300" />
+            class="h-8 w-auto fill-gray-300 group-hover:fill-indigo-300 animate-pulse-slow transition-colors duration-300" />
           <span
-            class="ml-2 text-xl font-bold text-white group-hover:text-indigo-300 transition-colors duration-300">Easy
+            class="hidden md:block ml-2 text-xl font-bold text-white group-hover:text-indigo-300 transition-colors duration-300">Easy
             Ace</span>
           </Link>
           <div class="hidden sm:ml-6 sm:block">

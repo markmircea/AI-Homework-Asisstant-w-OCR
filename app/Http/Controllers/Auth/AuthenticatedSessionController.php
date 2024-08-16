@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
-use App\Models\User; // Adjust the namespace as per your User model
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Notifications\RegistrationConfirmation;
@@ -106,6 +106,11 @@ class AuthenticatedSessionController extends Controller
 
 
         return redirect()->intended('/');
+    }
+
+    public function showForgotPasswordForm(): \Inertia\Response
+    {
+        return Inertia::render('Auth/ForgotPassword');
     }
     /**
      * Destroy an authenticated session.

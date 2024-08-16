@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
       <div class="xl:grid xl:grid-cols-4 xl:gap-8">
         <div class="xl:col-span-1">
-          <icon name="logo" class="h-10 fill-indigo-400" />
+          <icon name="logo" class="h-10 animate-pulse-slow fill-indigo-400" />
           <p class="mt-4 text-sm text-gray-300">
             AI-powered homework and test helper that leverages the latest in machine learning technology to provide personalized and adaptive support to learners of all ages and backgrounds.
           </p>

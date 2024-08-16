@@ -7,7 +7,7 @@
       {{ form.title }}
     </h1>
     <trashed-message v-if="announcement.deleted_at" class="mb-6" @restore="restore">
-      This announcement has been deleted.
+      This search has been deleted.
     </trashed-message>
     <div class="bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
       <form @submit.prevent="update" class="p-6">

@@ -6,7 +6,7 @@
         <div class="md:flex md:flex-shrink-0">
           <div class="flex items-center justify-between px-6 py-4 bg-indigo-900 md:flex-shrink-0 md:justify-center md:w-56">
             <Link class="mt-1" href="/">
-              <logo class="fill-white" width="120" height="28" />
+              <logo class="fill-white animate-pulse-slow" width="120" height="28" />
             </Link>
             <button @click="toggleMobileMenu" class="md:hidden focus:outline-none">
               <svg :class="{'rotate-90': mobileMenuOpen}" class="w-6 h-6 fill-white transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">

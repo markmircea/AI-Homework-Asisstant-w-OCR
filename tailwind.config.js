@@ -9,6 +9,19 @@ export default {
   ],
   theme: {
     extend: {
+        backgroundImage: {
+            'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+          },
+          animation: {
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          transitionProperty: {
+            'height': 'height',
+            'spacing': 'margin, padding',
+          },
+        boxShadow: {
+            '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
+          },
       fontFamily: {
         sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
       },
@@ -89,6 +102,7 @@ export default {
           600: '#3949ab',
           700: '#303f9f',
           800: '#283593',
+          850: '#3730a3', // Custom shade between 800 and 900
           900: '#1a237e',
           'accent-100': '#8c9eff',
           'accent-200': '#536dfe',
@@ -327,6 +341,9 @@ export default {
     },
   },
   variants: {
+    extend: {
+        boxShadow: ['hover'],
+      },
     scale: ['responsive', 'hover', 'focus', 'group-hover'],
     textColor: ['responsive', 'hover', 'focus', 'group-hover'],
     opacity: ['responsive', 'hover', 'focus', 'group-hover'],

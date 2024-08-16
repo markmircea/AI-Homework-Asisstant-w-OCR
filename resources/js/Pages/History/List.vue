@@ -25,7 +25,13 @@
       </th>
     </tr>
   </thead>
-  <tbody class="bg-white divide-y divide-gray-200">
+  <tbody class=" divide-y divide-gray-200">
+    <!-- Empty state message -->
+  <tr v-if="announcements.data.length === 0" class="text-center py-8">
+        <p class="text-gray-500 text-lg"><br>No  history...<br></p>
+      </tr>
+
+
     <tr v-for="announcement in announcements.data" :key="announcement.id" class="hover:bg-gray-50">
       <td class="w-1/8 px-6 py-4 whitespace-nowrap">
         <Link class="flex items-center text-sm font-medium text-gray-900 hover:text-indigo-600" :href="`/history-list/${announcement.id}/edit`">
