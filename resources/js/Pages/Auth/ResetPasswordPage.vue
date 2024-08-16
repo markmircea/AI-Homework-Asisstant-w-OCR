@@ -2,7 +2,10 @@
   <Head title="Reset Password" />
   <div class="flex items-center justify-center p-6 min-h-screen bg-gradient-radial from-indigo-800 via-indigo-850 to-indigo-900">
     <div class="w-full max-w-md">
+      <Link href="/" class="flex flex-shrink-0 items-center group">
+
       <logo class="block mx-auto w-full max-w-xs fill-white animate-pulse-slow" height="50" />
+      </Link>
        <form class="mt-8 bg-white rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl" @submit.prevent="resetPassword">
         <div class="px-10 py-12">
           <h1 class="text-center text-3xl font-bold text-indigo-800">Reset Password</h1>

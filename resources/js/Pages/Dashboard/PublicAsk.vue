@@ -277,7 +277,6 @@ export default {
     Nav,
     Footer,
     FullPageLoader,
-    FlashMessages
   },
 
   props: {

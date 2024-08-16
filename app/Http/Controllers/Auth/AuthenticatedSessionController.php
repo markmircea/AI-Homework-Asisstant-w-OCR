@@ -14,6 +14,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Notifications\RegistrationConfirmation;
+use Illuminate\Auth\Events\Registered;
+
 
 class AuthenticatedSessionController extends Controller
 {
@@ -23,22 +25,27 @@ class AuthenticatedSessionController extends Controller
         return Inertia::render('Auth/Register');
     }
 
-    public function storeRegistration(Request $request): RedirectResponse
+    public function storeRegistration(Request $request)
     {
-        $validated = $this->validator($request->all())->validate();
-
-        $user = User::create([
-            'first_name' => $validated['first_name'],
-            'last_name' => $validated['last_name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|confirmed|min:8',
         ]);
 
-        $user->notify(new RegistrationConfirmation($user));
+        $user = User::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
 
-        auth()->login($user);
+        event(new Registered($user));
 
-        return redirect()->intended('/');
+        Auth::login($user);
+
+        return redirect()->route('verification.notice');
     }
 
     protected function validator(array $data)
@@ -125,4 +132,5 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
+
 }

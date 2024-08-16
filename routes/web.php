@@ -19,6 +19,10 @@ use App\Http\Controllers\UserSessionController;
 use App\Http\Controllers\PricingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicAskController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+
 
 
 
@@ -81,6 +85,20 @@ Route::post('/reset-password', [PasswordResetController::class, 'reset'])
     ->middleware('guest')
     ->name('password.update');
 
+    Route::get('/email/verify', function () {
+        return Inertia::render('Auth/VerifyEmail');
+    })->middleware('auth')->name('verification.notice');
+
+    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+        $request->fulfill();
+        return redirect('/index')->with('flash.success', 'Your email has been verified successfully!');
+    })->middleware(['auth', 'signed'])->name('verification.verify');
+
+    Route::post('/email/verification-notification', function (Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+        return back()->with('flash.success', 'Verification link sent!');
+    })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
 
 // Google OCR
 
@@ -99,7 +117,7 @@ Route::get('/login/google/callback', [AuthenticatedSessionController::class, 'ha
 
 // Route for authenticated users
 Route::get('/index', [DashboardController::class, 'index'])
-    ->middleware('auth')
+    ->middleware('auth', 'verified')
     ->name('dashboard');
 
 // Route for non-authenticated users
@@ -127,13 +145,13 @@ Route::get('/', function () {
 
 // Announcement
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'verified')->group(function () {
     Route::resource('announcements', AnnouncementController::class)->except(['show', 'index']);
 });
 
 Route::post('/announcements/update-order', [AnnouncementController::class, 'updateOrder'])
     ->name('updateOrder')
-    ->middleware('auth');
+    ->middleware('auth', 'verified');
 
 
 
@@ -141,15 +159,15 @@ Route::post('/announcements/update-order', [AnnouncementController::class, 'upda
 
 Route::get('profile/{user}', [ProfileController::class, 'Index'])
     ->name('user.profile')
-    ->middleware('auth');
+    ->middleware('auth', 'verified');
 
     Route::put('profile/{user}', [ProfileController::class, 'Update'])
     ->name('account.update')
-    ->middleware('auth');
+    ->middleware('auth', 'verified');
 
     Route::delete('profile/{user}', [ProfileController::class, 'Destroy'])
     ->name('account.destroy')
-    ->middleware('auth');
+    ->middleware('auth', 'verified');
 
 
 
@@ -194,11 +212,11 @@ Route::put('users/{user}/restore', [UsersController::class, 'restore'])
 
 Route::get('ask', [AskController::class, 'index'])
 ->name('ask')
-->middleware('auth');
+->middleware('auth', 'verified');
 
 Route::post('ask', [AskController::class, 'store'])
 ->name('ask.store')
-->middleware('auth');
+->middleware('auth', 'verified');
 
 
 
@@ -207,7 +225,7 @@ Route::post('ask', [AskController::class, 'store'])
 
 // History
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'verified')->group(function () {
     Route::get('history', [HistoryController::class, 'index'])->name('history');
     Route::get('history/{announcement}/edit', [HistoryController::class, 'edit'])->name('history.edit');
     Route::put('history/{announcement}', [HistoryController::class, 'update'])->name('history.update');
@@ -217,35 +235,35 @@ Route::middleware('auth')->group(function () {
 
 Route::post('/history/{id}/send-email', [HistoryController::class, 'sendEmail'])
     ->name('history.sendEmail')
-    ->middleware('auth');
+    ->middleware('auth', 'verified');
 
     Route::get('history-list', [HistoryListController::class, 'index'])
     ->name('history-list')
-    ->middleware('auth');
+    ->middleware('auth', 'verified');
 
 
     Route::get('history-list/{announcement}/edit', [HistoryListController::class, 'edit'])
     ->name('history-list.edit')
-    ->middleware('auth');
+    ->middleware('auth', 'verified');
 
     Route::put('history-list/{announcement}', [HistoryListController::class, 'update'])
     ->name('history-list.update')
-    ->middleware('auth');
+    ->middleware('auth', 'verified');
 
 Route::delete('history-list/{announcement}', [HistoryListController::class, 'destroy'])
     ->name('history-list.destroy')
-    ->middleware('auth');
+    ->middleware('auth', 'verified');
 
 Route::put('history-list/{announcement}/restore', [HistoryListController::class, 'restore'])
     ->name('history-list.restore')
-    ->middleware('auth');
+    ->middleware('auth', 'verified');
 
 
     // Active Session
 
-    Route::get('/user/active-sessions', [UserSessionController::class, 'getActiveSessions'])->middleware('auth');
+    Route::get('/user/active-sessions', [UserSessionController::class, 'getActiveSessions'])->middleware('auth', 'verified');
 
-    Route::delete('/user/active-sessions/{sessionId}', [UserSessionController::class, 'terminateSession'])->middleware('auth');
+    Route::delete('/user/active-sessions/{sessionId}', [UserSessionController::class, 'terminateSession'])->middleware('auth', 'verified');
 
 
 
