@@ -126,7 +126,7 @@ class HistoryListController extends Controller
 
         $announcement->update($validated);
 
-        return redirect()->route('history-list')->with('success', 'Announcement updated.');
+        return redirect()->route('history-list')->with('success', 'Title updated.');
     }
 
     public function destroy(Announcement $announcement)
@@ -135,7 +135,7 @@ class HistoryListController extends Controller
 
         $announcement->delete();
 
-        return redirect()->back()->with('success', 'Announcement deleted.');
+        return redirect()->back()->with('success', 'Search deleted.');
     }
 
 
@@ -144,6 +144,6 @@ class HistoryListController extends Controller
     {
         $announcement->restore();
 
-        return Redirect::back()->with('success', 'Contact restored.');
+        return Redirect::back()->with('success', 'Search restored.');
     }
 }

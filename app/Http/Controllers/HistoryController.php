@@ -90,7 +90,7 @@ class HistoryController extends Controller
 
         $announcement->update($request->all());
 
-        return redirect()->route('history')->with('success', 'Announcement updated.');
+        return redirect()->route('history')->with('success', 'Search updated.');
     }
 
 
@@ -102,7 +102,7 @@ class HistoryController extends Controller
 
         $announcement->delete();
 
-        return redirect()->route('history')->with('success', 'Announcement deleted.');
+        return redirect()->route('history')->with('success', 'Search deleted.');
     }
 
 
@@ -123,6 +123,6 @@ class HistoryController extends Controller
             }
         }
 
-        return redirect()->route('history')->with('success', 'Announcements reordered.');
+        return redirect()->route('history')->with('success', 'Search reordered.');
     }
 }
