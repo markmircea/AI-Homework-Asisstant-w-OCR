@@ -115,7 +115,7 @@
       </div>
       <div class="mt-12 border-t border-gray-700 pt-8">
         <p class="text-base text-gray-400 xl:text-center">
-          &copy; 2023 AI Homework Assistant, Inc. All rights reserved.
+          &copy; 2024 AI Homework Assistant, Inc. All rights reserved.
         </p>
       </div>
     </div>

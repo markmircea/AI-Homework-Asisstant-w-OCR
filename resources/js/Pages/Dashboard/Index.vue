@@ -19,10 +19,9 @@
 
     <Footer />
 
-    <div class="md:flex-1 md:p-12 md:overflow-y-auto" scroll-region>
-            <flash-messages-vue ref="FlashMessages"/>
+            <flash-messages ref="FlashMessages">
             <slot />
-          </div>
+            </flash-messages>
   </div>
 </template>
 
@@ -38,7 +37,7 @@ import Pricing from './Pricing.vue'
 import Footer from './Footer.vue'
 import ContactUs from './ContactUs.vue'
 import PricingPage from './PricingPage.vue'
-import FlashMessagesVue from '../../Shared/FlashMessages.vue'
+import FlashMessages from '../../Shared/FlashMessages.vue'
 
 export default {
   props: {
@@ -59,7 +58,7 @@ export default {
     Footer,
     ContactUs,
     PricingPage,
-    FlashMessagesVue
+    FlashMessages
   },
 
 

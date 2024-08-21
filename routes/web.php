@@ -125,6 +125,10 @@ Route::get('/index-no-auth', [DashboardController::class, 'indexNoAuth'])
     ->middleware('guest')
     ->name('indexNoAuth');
 
+    Route::post('/contact', [DashboardController::class, 'contact'])->name('contact.submit');
+
+
+
 
     Route::get('/public-ask', [PublicAskController::class, 'index'])->name('public.ask');
 Route::post('/public-ask', [PublicAskController::class, 'store'])->name('public.ask.store');
