@@ -100,14 +100,14 @@
             </h3>
             <ul role="list" class="mt-4 space-y-4">
               <li>
-                <a href="#" class="text-base text-gray-300 hover:text-indigo-400 transition-colors duration-300">
-                  Privacy
-                </a>
+                <Link href="/privacy" class="text-base text-gray-300 hover:text-indigo-400 transition-colors duration-300">
+                  Privacy Policy
+                </Link>
               </li>
               <li>
-                <a href="#" class="text-base text-gray-300 hover:text-indigo-400 transition-colors duration-300">
-                  Terms
-                </a>
+                <Link href="/terms" class="text-base text-gray-300 hover:text-indigo-400 transition-colors duration-300">
+                  Terms of Service
+                </Link>
               </li>
             </ul>
           </div>
@@ -123,12 +123,14 @@
 </template>
 
 <script>
+import { Link } from '@inertiajs/vue3';
 import Icon from '../../Shared/Icon.vue';
 
 export default {
   name: 'Footer',
   components: {
     Icon,
+    Link,
   },
 };
 </script>

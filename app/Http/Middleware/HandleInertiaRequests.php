@@ -46,8 +46,6 @@ class HandleInertiaRequests extends Middleware
                         'owner' => $request->user()->owner,
                         'coins' => $request->user()->coins,
                         'photo' => $request->user()->photo_path ? URL::route('image', ['path' => $request->user()->photo_path, 'w' => 400, 'h' => 400, 'fit' => 'crop']) : null,                        'account' => [
-                            'id' => $request->user()->account->id,
-                            'name' => $request->user()->account->name,
                         ],
                     ] : null,
                 ];

@@ -346,3 +346,13 @@ Route::put('contacts/{contact}/restore', [ContactsController::class, 'restore'])
     ->name('contacts.restore')
     ->middleware('auth');
 
+
+
+    // Privacy Policy and Terms of Service
+Route::get('/privacy', function () {
+    return Inertia::render('Legal/PrivacyPolicy');
+})->name('privacy');
+
+Route::get('/terms', function () {
+    return Inertia::render('Legal/TermsOfService');
+})->name('terms');
