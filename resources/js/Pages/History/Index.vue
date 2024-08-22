@@ -191,6 +191,11 @@ export default {
   layout: Layout,
 
   methods: {
+    handleEscape(event) {
+      if (event.key === 'Escape') {
+        this.closeEnlargedImage();
+      }
+    },
     toggleCollapse(announcement) {
       announcement.collapsed = !announcement.collapsed;
     },
@@ -250,6 +255,15 @@ export default {
       }
       return 'file';
     },
+  },
+
+  mounted() {
+    document.addEventListener('keyup', this.handleEscape);
+  },
+
+  beforeUnmount() {
+    document.removeEventListener('keyup', this.handleEscape);
+    document.body.style.overflow = '';
   },
 
   watch: {

@@ -31,14 +31,14 @@
             type="button"
             @click="destroy"
           >
-            Delete Announcement
+            Delete Search
           </button>
           <loading-button
             :loading="form.processing"
             class="btn-indigo"
             type="submit"
           >
-            Update Announcement
+            Update Search
           </loading-button>
         </div>
       </form>
