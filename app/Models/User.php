@@ -22,7 +22,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
 
     const SUBSCRIPTION_FREE = 1;
-    const SUBSCRIPTION_PAID = 2;
+    const SUBSCRIPTION_PRO = 2;
+    const SUBSCRIPTION_PREMIUM = 3;
 
     /**
      * The attributes that are mass assignable.
@@ -35,7 +36,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'coins',
         'google_id',
-        'subscription_type'
+        'subscription_type',
+        'paypal_subscription_id',
+
     ];
 
     /**
@@ -62,10 +65,11 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function isPaidTier()
+    public function getSubscriptionType()
     {
-        return $this->subscription_type === self::SUBSCRIPTION_PAID;
+        return $this->subscription_type;
     }
+
     public function dailyQuestionCounts()
     {
         return $this->hasMany(DailyQuestionCount::class);
@@ -74,20 +78,26 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getDailyQuestionCount()
     {
         $now = now();
-    $latestCount = $this->dailyQuestionCounts()
-        ->latest('created_at')
-        ->first();
+        $latestCount = $this->dailyQuestionCounts()
+            ->whereDate('date', $now->toDateString())
+            ->first();
 
-    if (!$latestCount || $latestCount->created_at->addHours(24)->isPast()) {
-        return 0;
+        return $latestCount ? $latestCount->count : 0;
     }
 
-    return $latestCount->count;
-    }
 
     public function getQuestionLimit()
     {
-        return $this->isPaidTier() ? 10 : 3;
+        switch ($this->subscription_type) {
+            case self::SUBSCRIPTION_FREE:
+                return 3;
+            case self::SUBSCRIPTION_PRO:
+                return 50;
+            case self::SUBSCRIPTION_PREMIUM:
+                return PHP_INT_MAX; // Effectively unlimited
+            default:
+                return 3; // Default to free tier limit
+        }
     }
 
     public function resolveRouteBinding($value, $field = null)

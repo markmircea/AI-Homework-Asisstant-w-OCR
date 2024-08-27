@@ -18,7 +18,7 @@
           <input type="checkbox" v-model="isAnnual" class="sr-only peer">
           <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-indigo-600"></div>
         </label>
-        <span class="text-gray-700 font-medium">Yearly <span class="text-green-600 text-sm">(Save 20%)</span></span>
+        <span class="text-gray-700 font-medium">Yearly <span class="text-green-600 text-sm">(Save 25%)</span></span>
       </div>
 
       <div class="mt-10">
@@ -68,10 +68,10 @@
             <div class="flex-1">
               <h3 class="text-xl font-semibold text-gray-900">Pro</h3>
               <p class="mt-4 flex items-baseline text-gray-900">
-                <span class="text-5xl font-extrabold tracking-tight">${{ isAnnual ? '8' : '10' }}</span>
+                <span class="text-5xl font-extrabold tracking-tight">${{ isAnnual ? '5.99' : '7.99' }}</span>
                 <span class="ml-1 text-xl font-semibold">/month</span>
               </p>
-              <p v-if="isAnnual" class="mt-2 text-sm text-green-600">Billed annually at $96/year</p>
+              <p v-if="isAnnual" class="mt-2 text-sm text-green-600">Billed annually at $71.88/year</p>
               <p class="mt-6 text-gray-500">Complete homework solution</p>
 
               <ul role="list" class="mt-6 space-y-6">
@@ -87,7 +87,7 @@
                     viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                   </svg>
-                  <span class="ml-3 text-gray-500"><strong>Unlimited</strong> subjects</span>
+                  <span class="ml-3 text-gray-500"><strong>UNLIMITED</strong> subjects</span>
                 </li>
                 <li class="flex">
                   <svg class="flex-shrink-0 w-6 h-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -113,10 +113,10 @@
             <div class="flex-1">
               <h3 class="text-xl font-semibold text-gray-900">Premium</h3>
               <p class="mt-4 flex items-baseline text-gray-900">
-                <span class="text-5xl font-extrabold tracking-tight">${{ isAnnual ? '11' : '15' }}</span>
+                <span class="text-5xl font-extrabold tracking-tight">${{ isAnnual ? '7.99' : '9.99' }}</span>
                 <span class="ml-1 text-xl font-semibold">/month</span>
               </p>
-              <p v-if="isAnnual" class="mt-2 text-sm text-green-600">Billed annually at $132/year</p>
+              <p v-if="isAnnual" class="mt-2 text-sm text-green-600">Billed annually at $95.88/year</p>
               <p class="mt-6 text-gray-500">Complete homework and test hacking solution</p>
 
               <ul role="list" class="mt-6 space-y-6">
@@ -125,14 +125,14 @@
                     viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                   </svg>
-                  <span class="ml-3 text-gray-500"><strong>100</strong> questions daily</span>
+                  <span class="ml-3 text-gray-500"><strong>UNLIMITED</strong> questions daily</span>
                 </li>
                 <li class="flex">
                   <svg class="flex-shrink-0 w-6 h-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                   </svg>
-                  <span class="ml-3 text-gray-500"><strong>Unlimited</strong> subjects</span>
+                  <span class="ml-3 text-gray-500"><strong>UNLIMITED</strong> subjects</span>
                 </li>
                 <li class="flex">
                   <svg class="flex-shrink-0 w-6 h-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -168,17 +168,22 @@
     </div>
   </div>
 </template>
-
 <script>
+import { router } from '@inertiajs/vue3'
+
 export default {
   name: 'Pricing',
   data() {
     return {
-      isAnnual: false
+      isAnnual: false,
+      loading: false,
+      error: null
     }
   },
   mounted() {
     this.loadPayPalScript();
+    this.setupInertiaEvents();
+
   },
   methods: {
     loadPayPalScript() {
@@ -191,6 +196,19 @@ export default {
       };
 
       document.body.appendChild(script);
+    },
+    setupInertiaEvents() {
+      router.on('success', (event) => {
+        this.loading = false;
+        if (event.detail.page.props.flash && event.detail.page.props.flash.success) {
+          alert(event.detail.page.props.flash.success);
+        }
+      });
+      router.on('error', (event) => {
+        this.loading = false;
+        this.error = 'There was an error processing your subscription. Please contact support.';
+        console.error('Error updating subscription:', event);
+      });
     },
     renderPayPalButtons() {
       // Clear existing buttons
@@ -221,8 +239,22 @@ export default {
             plan_id: planId
           });
         },
-        onApprove: function(data, actions) {
-          alert(`You have successfully subscribed to the ${planName}! Subscription ID: ${data.subscriptionID}`);
+        onApprove: (data, actions) => {
+          this.loading = true;
+          this.error = null;
+          console.log('PayPal subscription approved:', data);
+
+          router.post('/api/update-subscription', {
+            subscriptionId: data.subscriptionID,
+            planId: planId
+          }, {
+            preserveState: true,
+            preserveScroll: true,
+          });
+        },
+        onError: (err) => {
+          this.error = 'There was an error with PayPal. Please try again or contact support.';
+          console.error('PayPal error:', err);
         }
       }).render(`#paypal-button-container-${planId}`);
     }
@@ -236,7 +268,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-/* Add any specific styles for this component here */
-</style>

@@ -35,7 +35,6 @@ class AskController extends Controller
             'user' => $userTransformed,
             'announcements' => $announcements,
             'remainingQuestions' => $remainingQuestions,
-
         ]);
     }
 
@@ -46,12 +45,11 @@ class AskController extends Controller
 
         $dailyCount = $this->getDailyQuestionCount($user, $now);
         $limit = $user->getQuestionLimit();
-
         if ($dailyCount['count'] >= $limit) {
             return redirect()->route('ask')->with('error', 'You have reached your daily question limit.');
         }
-        DB::beginTransaction();
 
+        DB::beginTransaction();
 
 
 
@@ -117,40 +115,39 @@ class AskController extends Controller
     }
 
     private function getDailyQuestionCount($user, $now)
-{
-    $latestCount = $user->dailyQuestionCounts()
-        ->latest('created_at')
-        ->first();
+    {
+        $latestCount = $user->dailyQuestionCounts()
+            ->whereDate('date', $now->toDateString())
+            ->first();
 
-    if (!$latestCount || $latestCount->created_at->addHours(24)->isPast()) {
-        // If no previous count or it's been more than 24 hours, return a new count
-        return ['count' => 0, 'record' => null];
-    }
-
-    return ['count' => $latestCount->count, 'record' => $latestCount];
-}
-
-private function updateDailyQuestionCount($user, $now, $ip, $dailyCount)
-{
-    if ($dailyCount['record']) {
-        // Update existing record
-        $record = $dailyCount['record'];
-        $record->count += 1;
-        $ips = explode(',', $record->ip);
-        if (!in_array($ip, $ips)) {
-            $ips[] = $ip;
-            $record->ip = implode(',', $ips);
+        if (!$latestCount) {
+            return ['count' => 0, 'record' => null];
         }
-        $record->save();
-    } else {
-        // Create new record
-        $user->dailyQuestionCounts()->create([
-            'date' => $now->toDateString(),  // Add this line
-            'count' => 1,
-            'ip' => $ip,
-        ]);
+
+        return ['count' => $latestCount->count, 'record' => $latestCount];
     }
-}
+
+    private function updateDailyQuestionCount($user, $now, $ip, $dailyCount)
+    {
+        if ($dailyCount['record']) {
+            // Update existing record
+            $record = $dailyCount['record'];
+            $record->count += 1;
+            $ips = explode(',', $record->ip);
+            if (!in_array($ip, $ips)) {
+                $ips[] = $ip;
+                $record->ip = implode(',', $ips);
+            }
+            $record->save();
+        } else {
+            // Create new record
+            $user->dailyQuestionCounts()->create([
+                'date' => $now->toDateString(),
+                'count' => 1,
+                'ip' => $ip,
+            ]);
+        }
+    }
 
     private function extractTextFromWord($filePath)
     {

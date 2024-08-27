@@ -19,9 +19,14 @@ use App\Http\Controllers\UserSessionController;
 use App\Http\Controllers\PricingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicAskController;
+use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\PayPalWebhookController;
+
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
+
 
 
 
@@ -279,8 +284,15 @@ Route::get('/img/{path}', [ImagesController::class, 'show'])
     ->where('path', '.*')
     ->name('image');
 
-// Coins
+// PayPal
 
+Route::post('/api/update-subscription', [SubscriptionController::class, 'updateSubscription'])
+->middleware('auth');
+
+
+Route::post('/paypal/webhook', [PayPalWebhookController::class, 'handleWebhook'])
+    ->middleware('web')
+    ->withoutMiddleware(['verify-csrf-token']);
 
 
 

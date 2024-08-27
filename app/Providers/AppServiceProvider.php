@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use App\Http\Middleware\CheckOwner;
+use Inertia\Inertia;
+
 
 
 class AppServiceProvider extends ServiceProvider
@@ -37,7 +39,9 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Route::aliasMiddleware('owner', CheckOwner::class);
-
+        Inertia::share('auth.user', function () {
+            return auth()->user() ? auth()->user()->only('id', 'name', 'email', 'subscription_type') : null;
+        });
         $this->bootRoute();
 
     }
