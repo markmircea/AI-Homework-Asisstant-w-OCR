@@ -3,8 +3,7 @@
   <div class="flex items-center justify-center p-6 min-h-screen bg-gradient-radial from-indigo-800 via-indigo-850 to-indigo-900">
     <div class="w-full max-w-md">
       <Link href="/" class="flex flex-shrink-0 items-center group">
-
-      <logo class="block mx-auto w-full max-w-xs fill-white animate-pulse-slow" height="50" />
+        <logo class="block mx-auto w-full max-w-xs fill-white animate-pulse-slow" height="50" />
       </Link>
       <form class="mt-8 bg-white rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl" @submit.prevent="sendResetLink">
         <div class="px-10 py-12">
@@ -25,7 +24,7 @@
 </template>
 
 <script>
-import { Head, Link } from '@inertiajs/vue3'
+import { Head, Link, useForm } from '@inertiajs/vue3'
 import Logo from '@/Shared/Logo.vue'
 import TextInput from '@/Shared/TextInput.vue'
 import LoadingButton from '@/Shared/LoadingButton.vue'
@@ -38,17 +37,29 @@ export default {
     Logo,
     TextInput,
   },
-  data() {
-    return {
-      form: this.$inertia.form({
-        email: '',
-      }),
+  setup() {
+    const form = useForm({
+      email: '',
+    })
+
+    const sendResetLink = () => {
+      form.post('/forgot-password', {
+        preserveState: false,
+        preserveScroll: true,
+        onSuccess: (page) => {
+          console.log('Password reset link sent successfully', page)
+        },
+        onError: (errors) => {
+          console.error('Error sending password reset link:', errors)
+        },
+      })
     }
-  },
-  methods: {
-    sendResetLink() {
-      this.form.post('/forgot-password')
-    },
+
+    return {
+      form,
+      sendResetLink,
+    }
   },
 }
 </script>
+

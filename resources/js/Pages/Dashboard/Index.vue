@@ -8,10 +8,10 @@
 
     <FeatureSection />
 
+    <black-bar :isAuthenticated="$page.props.auth.user !== null" />
 
     <Steps />
 
-    <DarkDivider />
 
     <Pricing />
 

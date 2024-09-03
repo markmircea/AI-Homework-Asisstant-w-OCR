@@ -1,4 +1,7 @@
 <template>
+      <FullPageLoader />
+      <flash-messages ref="FlashMessages" class="pt-16" />
+
   <div class="relative overflow-hidden min-h-screen" style="z-index: 1;">
     <div class="absolute inset-0 bg-gradient-animation" style="z-index: -1;"></div>
     <div class="absolute inset-0 bg-grid-white/[0.05] bg-[size:40px_40px]" style="z-index: -1;"></div>
@@ -16,11 +19,11 @@
           Unlock Your Academic Potential with
           <span class="relative inline-block px-2 py-1 mt-2">
             <div class="absolute inset-0 transform -skew-x-12 bg-gradient-to-r from-teal-400 to-blue-500 opacity-80"></div>
-            <span class="relative text-indigo-900 font-extrabold">AI-Powered Assistance</span>
+            <span class="relative text-indigo-900 font-extrabold">AI-Powered Analysis</span>
           </span>
         </h2>
         <p class="mb-6 text-base text-indigo-100 md:text-lg">
-          Upload a photo or text and our advanced multi-model AI will analyze your assignments and tests, provide detailed explanations, and guide you
+          Upload a photo, document, or screenshot and our advanced multi-model AI will analyze your assignments and tests, provide detailed explanations, and guide you
           through step-by-step solutions.
         </p>
 
@@ -103,8 +106,15 @@
 
 
 <script>
+import FullPageLoader from '../../Shared/FullPageLoader.vue'
+import FlashMessages from '@/Shared/FlashMessages.vue'
+
 export default {
   name: 'Hero',
+  components: {
+    FullPageLoader,
+    FlashMessages
+  },
   props: {
     selectedSubject: {
       type: String,

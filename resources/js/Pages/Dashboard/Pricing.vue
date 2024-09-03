@@ -7,7 +7,7 @@
           Choose the perfect plan for you
         </p>
         <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-          Get access to our AI-powered homework assistance at a price that fits your needs.
+          Get access to our AI-powered homework / test assistance at a price that fits your needs. <br> <br>7-day FREE trial!
         </p>
       </div>
 
@@ -182,7 +182,6 @@ export default {
   },
   mounted() {
     this.loadPayPalScript();
-    this.setupInertiaEvents();
 
   },
   methods: {
@@ -197,19 +196,7 @@ export default {
 
       document.body.appendChild(script);
     },
-    setupInertiaEvents() {
-      router.on('success', (event) => {
-        this.loading = false;
-        if (event.detail.page.props.flash && event.detail.page.props.flash.success) {
-          alert(event.detail.page.props.flash.success);
-        }
-      });
-      router.on('error', (event) => {
-        this.loading = false;
-        this.error = 'There was an error processing your subscription. Please contact support.';
-        console.error('Error updating subscription:', event);
-      });
-    },
+
     renderPayPalButtons() {
       // Clear existing buttons
       ['P-27C40840MP185570GM25ATXY', 'P-49H18172SJ932691BM25CJPY', 'P-7PP87202865174126M25AWTA', 'P-90V19407PM991921WM25CKIY'].forEach(id => {

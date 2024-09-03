@@ -14,7 +14,7 @@
       <trashed-message v-if="user.deleted_at" class="mb-6" @restore="restore">
         This account has been deleted.
       </trashed-message>
-      <div class="bg-white rounded-md shadow overflow-hidden">
+      <div id="profile-information" class="bg-white rounded-md shadow overflow-hidden">
         <div class="px-4 sm:px-6 py-4 bg-gradient-to-r from-indigo-400 to-indigo-600 text-white border-gray-200">
           <h2 class="text-s font-medium text-white uppercase tracking-wider font-semibold">Profile Information</h2>
         </div>
@@ -41,11 +41,8 @@
         </form>
       </div>
 
-
-
-
       <!-- Daily Questions Section -->
-      <div class="mt-20">
+      <div id="billing" class="mt-20">
         <div class="bg-white rounded-none shadow-lg overflow-hidden sm:rounded-lg">
           <div class="px-6 py-8 bg-gradient-to-r from-indigo-400 to-indigo-600">
             <h2 class="text-xl font-medium text-white uppercase tracking-wider font-semibold mb-2">Daily Questions</h2>
@@ -78,7 +75,7 @@
               </p>
             </div>
 
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">Upgrade Subscription</h3>
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Subscription Management</h3>
             <form @submit.prevent="goToPricingPage" class="space-y-4">
               <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between">
                 <select-input v-model="form.subscription_type" :error="form.errors.subscription_type"
@@ -88,11 +85,18 @@
                   <option :value="3">Premium</option>
                 </select-input>
 
-                <loading-button :loading="form.processing" :disabled="!canUpgrade"
-                  class="w-full sm:w-auto px-6 py-3 bg-indigo-400 text-white text-sm font-bold rounded-lg shadow hover:bg-indigo-200 focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                  type="submit">
-                  Upgrade Subscription
-                </loading-button>
+                <div class="flex space-x-2">
+                  <loading-button :loading="form.processing" :disabled="!canUpgrade"
+                    class="w-full sm:w-auto px-6 py-3 bg-indigo-400 text-white text-sm font-bold rounded-lg shadow hover:bg-indigo-200 focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                    type="submit">
+                    Upgrade Subscription
+                  </loading-button>
+                  <loading-button v-if="user.subscription_type != 1" :loading="cancellingSubscription" @click="cancelSubscription"
+                    class="w-full sm:w-auto px-6 py-3 bg-red-400 text-white text-sm font-bold rounded-lg shadow hover:bg-red-200 focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                    type="button">
+                    Cancel Subscription
+                  </loading-button>
+                </div>
               </div>
             </form>
           </div>
@@ -110,12 +114,13 @@
       </div>
 
       <!-- Active Sessions Section -->
-      <div class="mt-20">
+      <div id="active-sessions" class="mt-20">
         <ActiveSessions />
       </div>
     </div>
   </div>
 </template>
+
 <script>
 import { Head, Link } from '@inertiajs/vue3'
 import Layout from '@/Shared/Layout.vue'
@@ -125,8 +130,6 @@ import SelectInput from '@/Shared/SelectInput.vue'
 import LoadingButton from '@/Shared/LoadingButton.vue'
 import TrashedMessage from '@/Shared/TrashedMessage.vue'
 import ActiveSessions from './ActiveSessions.vue'
-
-
 
 export default {
   components: {
@@ -157,7 +160,8 @@ export default {
         id: this.user.id,
       }),
       passwordError: '',
-      passwordConfirmationError: ''
+      passwordConfirmationError: '',
+      cancellingSubscription: false,
     }
   },
   computed: {
@@ -176,7 +180,6 @@ export default {
       return this.form.subscription_type !== this.user.subscription_type;
     }
   },
-
   methods: {
     validateAndSubmit() {
       this.passwordError = '';
@@ -219,7 +222,21 @@ export default {
         data: { selectedType: this.form.subscription_type }
       });
     },
-
+    cancelSubscription() {
+      if (confirm('Are you sure you want to cancel your subscription? Your subscription type will revert to Free at the end of your current billing period.')) {
+        this.cancellingSubscription = true;
+        this.$inertia.post('/cancel-subscription', {}, {
+          preserveState: true,
+          preserveScroll: true,
+          onSuccess: () => {
+            this.cancellingSubscription = false;
+          },
+          onError: () => {
+            this.cancellingSubscription = false;
+          }
+        });
+      }
+    },
   },
 }
 </script>

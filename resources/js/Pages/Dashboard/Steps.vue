@@ -15,9 +15,9 @@
             <div class="w-px h-full bg-gray-300"></div>
           </div>
           <div class="pt-1 pb-8">
-            <p class="mb-2 text-lg font-bold">Step 1: Submit Your Assignment</p>
+            <p class="mb-2 text-lg font-bold">Step 1: Submit Your Assignment or Test</p>
             <p class="text-gray-700">
-              Upload your homework question or take a photo of your assignment. Our system accepts various formats to make submission easy.
+              Upload your homework question or take a photo of your assignment, quiz or test. Our system accepts various image and document formats to make submission easy.
             </p>
           </div>
         </div>
@@ -36,7 +36,7 @@
           <div class="pt-1 pb-8">
             <p class="mb-2 text-lg font-bold">Step 2: AI Analysis</p>
             <p class="text-gray-700">
-              Our advanced AI models analyze your assignment, processing it through multiple specialized systems to ensure comprehensive understanding.
+              Our advanced AI models analyze your assignment, processing it through multiple specialized systems to ensure comprehensive understanding. First the image gets processed through a specialized OCR AI model to extract the text even from blurry, fuzzy, poor quality photos. Then it gets sent to our analysis model to give you the best possible response.
             </p>
           </div>
         </div>

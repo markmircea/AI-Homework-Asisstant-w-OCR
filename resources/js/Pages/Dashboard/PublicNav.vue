@@ -67,6 +67,11 @@
               >
                 Pricing
               </Link>
+              <Link href="/pricing#faq"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-indigo-700 hover:text-white"
+              >
+                FAQ
+              </Link>
               <Link href="/public-ask#contact-us"
                 class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-indigo-700 hover:text-white"
               >
@@ -77,15 +82,15 @@
           </div>
         </div>
         <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-          <Link href="/login" type="button"
-            class="rounded-md mr-2 px-3 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-300">
-            Sign In
-          </Link>
-          <Link href="/register" type="button"
-            class="rounded-md px-3 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-300">
-            Sign Up
-          </Link>
-        </div>
+    <Link href="/login" type="button"
+      class="rounded-md mr-2 px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-300">
+      Sign In
+    </Link>
+    <Link href="/register" type="button"
+      class="rounded-md px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-300">
+      Sign Up
+    </Link>
+  </div>
       </div>
     </div>
 
@@ -116,6 +121,7 @@
           <Link href="/public-ask" @click="closeMobileMenu" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">Ask</Link>
 
           <Link href="/pricing" @click="closeMobileMenu" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">Pricing</Link>
+          <Link href="/pricing#faq" @click="closeMobileMenu" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">FAQ</Link>
           <Link href="/public-ask#contact-us" @click="closeMobileMenu" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">Contact Us</Link>
             <!-- Mobile Subjects Dropdown -->
            <div class="relative">

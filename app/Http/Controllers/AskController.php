@@ -284,7 +284,12 @@ class AskController extends Controller
 
     private function getChatGPTResponse(Request $request, $extractedText, $instructions, $subject, $steps, $explain, $level)
     {
-        $text = $request->input('question') ?: $extractedText;
+        $text = $request->input('question');
+        if ($text) {
+            $text .= ' ' . $extractedText;  // Concatenate if the input exists
+        } else {
+            $text = $extractedText;  // Only use $extractedText if input is not provided
+        }
         return $this->sendToChatGPT(
             $text,
             $instructions,

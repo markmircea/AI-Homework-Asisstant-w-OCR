@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-
-
+use App\Notifications\CancelSubscription;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\RateLimiter;
 
 
 class SubscriptionController extends Controller
@@ -46,6 +47,37 @@ class SubscriptionController extends Controller
         }
     }
 
+    public function cancelSubscription(Request $request)
+    {
+        $user = Auth::user();
+        $key = 'cancel_subscription_' . $request->ip();
+        $maxAttempts = 2; // Maximum 3 attempts
+        $decaySeconds = 86400; // Per hour
+
+        if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
+            $seconds = RateLimiter::availableIn($key);
+            return back()->with('error', "You have already submitted a request to cancel today... Too many attempts. Please try again in {$seconds} seconds.");
+        }
+
+        RateLimiter::hit($key, $decaySeconds);
+
+        // Send email to support
+        Notification::route('mail', 'support@easyace.ai')
+            ->notify(new CancelSubscription([
+                'firstName' => $user->first_name,
+                'lastName' => $user->last_name,
+                'email' => $user->email,
+                'message' => 'User has requested to cancel their subscription.',
+            ]));
+
+        // Update user's subscription type to Free at the end of the billing period
+        // Note: You may need to implement a job or event to handle this if you want to delay the change
+
+       // $user->subscription_type = User::SUBSCRIPTION_FREE;
+      //  $user->save();
+
+        return redirect()->back()->with('success', 'Your subscription type will revert to Free at the end of your current billing period. Thank you!');
+    }
 
     private function getSubscriptionTypeFromPlanId($planId)
     {

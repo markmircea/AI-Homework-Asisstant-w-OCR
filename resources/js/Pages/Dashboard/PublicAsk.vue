@@ -6,20 +6,23 @@
 
     <Head title="Ask" />
 
-   <div class="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+    <div class="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
       <div class="max-w-7xl mx-auto">
         <div class="text-center mb-16">
-          <h1 class="text-5xl font-extrabold sm:text-6xl md:text-7xl bg-clip-text text-transparent bg-gradient-to-r from-white to-white">
-              Ask
+          <h1
+            class="text-5xl font-extrabold sm:text-6xl md:text-7xl bg-clip-text text-transparent bg-gradient-to-r from-white to-white">
+            Ask
           </h1>
           <p class="mt-6 text-xl text-gray-300 max-w-2xl mx-auto">
-            Get instant answers powered by advanced AI models.
+            Get instant answers powered by advanced AI models. Homework / Test help, just upload an image from your
+            phone or a screenshot and get the response!
           </p>
         </div>
 
         <div class="flex flex-col lg:flex-row gap-8">
           <!-- Question Section -->
-          <div class="flex-1 bg-gray-800 bg-opacity-50 shadow-xl rounded-2xl overflow-hidden backdrop-filter backdrop-blur-lg">
+          <div
+            class="flex-1 bg-gray-800 bg-opacity-50 shadow-xl rounded-2xl overflow-hidden backdrop-filter backdrop-blur-lg">
             <div class="px-8 py-4 bg-gradient-to-r from-indigo-400 to-indigo-500">
               <h2 class="text-2xl font-semibold text-white">Question</h2>
             </div>
@@ -53,7 +56,8 @@
                 <!-- Text Area for Homework Question -->
                 <div>
                   <div class="flex items-center justify-between mb-2">
-                    <label for="homework_question" class="block text-sm font-medium text-gray-300">Your homework question</label>
+                    <label for="homework_question" class="block text-sm font-medium text-gray-300">Your homework
+                      question</label>
                     <button type="button" @click="toggleUploadSection"
                       class="flex items-center px-3 py-2 text-sm font-medium text-white bg-indigo-500 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -84,12 +88,42 @@
                           clip-rule="evenodd" />
                       </svg>
                     </button>
-                    <div v-show="showUploadSection" class="px-4 py-2 bg-gray-200">
-                      <FileUpload v-model="form.photo" :error="form.errors.photo" name="photo"
-                        label="Upload File or Image" required />
+                    <div v-show="showUploadSection" class="px-4 py-2 bg-gray-700">
+                      <div class="flex flex-col space-y-4">
+                        <FileUpload v-model="form.photo" :error="form.errors.photo" name="photo"
+                          label="Upload File or Image" required @input="handleFileUpload" />
+                        <div class="flex justify-center">
+                          <button @click="captureScreenshot" type="button" :class="[
+                            'px-3 py-2 text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out flex items-center',
+                            screenshotCaptured ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-indigo-500 hover:bg-indigo-600 text-white'
+                          ]">
+                            <svg v-if="!screenshotCaptured" xmlns="http://www.w3.org/2000/svg" fill="none"
+                              viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                              <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                              <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+                            </svg>
+                            <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                              stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                            </svg>
+                            {{ screenshotCaptured ? 'Captured' : 'Screenshot' }}
+                          </button>
+                        </div>
+                      </div>
+                      <div v-if="form.photo" class="mt-4">
+                        <p class="text-sm text-gray-300 mb-1">
+                          {{ screenshotCaptured ? 'Screenshot captured:' : 'File uploaded:' }}
+                        </p>
+                        <div class="flex items-center">
+                          <img v-if="imagePreview" :src="imagePreview" alt="Image preview"
+                            class="max-w-xs h-20 object-cover rounded-md shadow-sm mr-2" />
+                          <span class="text-sm text-gray-400">{{ form.photo.name }}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-
                   <!-- Advanced Options Section -->
                   <div class="border border-gray-600 rounded-md">
                     <button @click.prevent="toggleAdvancedOptions"
@@ -105,15 +139,20 @@
                     </button>
                     <div v-show="showAdvancedOptions" class="px-4 py-2 bg-gray-200 space-y-4">
                       <div class="flex items-center">
-                        <input v-model="form.explain" id="explanation" type="checkbox" class="mr-2 text-indigo-500 focus:ring-indigo-500" />
-                        <label for="explain" class="text-sm font-medium text-gray-600">Explain why the answer is correct</label>
+                        <input v-model="form.explain" id="explanation" type="checkbox"
+                          class="mr-2 text-indigo-500 focus:ring-indigo-500" />
+                        <label for="explain" class="text-sm font-medium text-gray-600">Explain why the answer is
+                          correct</label>
                       </div>
                       <div class="flex items-center">
-                        <input v-model="form.steps" id="steps" type="checkbox" class="mr-2 text-indigo-500 focus:ring-indigo-500" />
-                        <label for="steps" class="text-sm font-medium text-gray-600">Show the work done to get to the answer</label>
+                        <input v-model="form.steps" id="steps" type="checkbox"
+                          class="mr-2 text-indigo-500 focus:ring-indigo-500" />
+                        <label for="steps" class="text-sm font-medium text-gray-600">Show the work done to get to the
+                          answer</label>
                       </div>
                       <div>
-                        <label for="temperature" class="block text-sm font-medium text-gray-600">Creativity (Higher = More Creative, Lower = Logical)</label>
+                        <label for="temperature" class="block text-sm font-medium text-gray-600">Creativity (Higher =
+                          More Creative, Lower = Logical)</label>
                         <select v-model="form.temperature" id="temperature"
                           class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white">
                           <option value="0.6" selected>0.6</option>
@@ -155,15 +194,19 @@
               <div class="mt-8">
                 <loading-button :loading="form.processing"
                   class="w-full btn-indigo transition-colors duration-200 bg-gradient-to-r from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold py-3 px-6 rounded-full flex items-center justify-center space-x-2">
-                  <span class="question-mark">?</span>
+                  <span
+                    class="inline-block mr-2 transition-transform group-hover:translate-x-1 motion-safe:animate-bounce">🚀</span>
+                  Ask
                   <span>Ask Question</span>
                 </loading-button>
               </div>
+
             </form>
           </div>
 
           <!-- Response Section -->
-          <div id="result-section" class="flex-1 bg-gray-800 bg-opacity-50 shadow-xl rounded-2xl overflow-hidden backdrop-filter backdrop-blur-lg">
+          <div id="result-section"
+            class="flex-1 bg-gray-800 bg-opacity-50 shadow-xl rounded-2xl overflow-hidden backdrop-filter backdrop-blur-lg">
             <div class="h-full">
               <div class="px-8 py-4 bg-gradient-to-r from-indigo-400 to-indigo-500">
                 <h2 class="text-2xl font-semibold text-white">Response</h2>
@@ -327,6 +370,8 @@ export default {
       placeholderAnswer: 'Ask away!',
       placeholderExplain: 'You can enable explanations in "Advanced Options" under the question box',
       placeholderSteps: 'You can enable steps in "Advanced Options" under the question box',
+      screenshotCaptured: false,
+      imagePreview: null,
     }
   },
   watch: {
@@ -339,10 +384,76 @@ export default {
       if (newValue && !this.isScrolled) {
         this.handleScroll();
       }
+    },
+    'form.photo': function (newVal) {
+      if (newVal && !this.screenshotCaptured) {
+        this.screenshotCaptured = false;
+        this.imagePreview = null;
+      }
     }
   },
 
   methods: {
+    async captureScreenshot() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+        alert("Your browser doesn't support screenshot capture. Please use the file upload option.");
+        return;
+      }
+
+      const activeElement = document.activeElement;
+
+      try {
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+          video: {
+            displaySurface: "window",
+          },
+          audio: false,
+          selfBrowserSurface: "include",
+        });
+
+        const video = document.createElement('video');
+        video.srcObject = stream;
+        video.autoplay = true;
+
+        await new Promise((resolve) => {
+          video.onloadeddata = resolve;
+        });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        stream.getTracks().forEach(track => track.stop());
+
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        const file = new File([blob], "screenshot.png", { type: "image/png" });
+
+        this.form.photo = file;
+        this.screenshotCaptured = true;
+        this.imagePreview = URL.createObjectURL(blob);
+
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          console.log('User cancelled the screenshot capture');
+        } else {
+          console.error("Error capturing screenshot:", error);
+          alert("Failed to capture screenshot. Please try again or use the file upload option.");
+        }
+      } finally {
+        if (activeElement && typeof activeElement.focus === 'function') {
+          activeElement.focus();
+        }
+        window.focus();
+      }
+    },
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.screenshotCaptured = false;
+        this.imagePreview = URL.createObjectURL(file);
+      }
+    },
     copyToClipboard(type) {
       let textToCopy = '';
 
@@ -397,6 +508,7 @@ export default {
       this.showAdvancedOptions = !this.showAdvancedOptions
     },
   },
+
 }
 </script>
 
@@ -452,11 +564,25 @@ export default {
 }
 
 @keyframes flip-spin {
-  0% { transform: rotate(0deg) scaleY(1); }
-  25% { transform: rotate(90deg) scaleY(-1); }
-  50% { transform: rotate(180deg) scaleY(1); }
-  75% { transform: rotate(270deg) scaleY(-1); }
-  100% { transform: rotate(360deg) scaleY(1); }
+  0% {
+    transform: rotate(0deg) scaleY(1);
+  }
+
+  25% {
+    transform: rotate(90deg) scaleY(-1);
+  }
+
+  50% {
+    transform: rotate(180deg) scaleY(1);
+  }
+
+  75% {
+    transform: rotate(270deg) scaleY(-1);
+  }
+
+  100% {
+    transform: rotate(360deg) scaleY(1);
+  }
 }
 
 /* Loader styles */
@@ -494,9 +620,19 @@ export default {
 }
 
 @keyframes l20 {
-  30%, 70% { transform: rotate(0deg) }
-  49.99% { transform: rotate(0.2deg) }
-  50% { transform: rotate(-0.2deg) }
+
+  30%,
+  70% {
+    transform: rotate(0deg)
+  }
+
+  49.99% {
+    transform: rotate(0.2deg)
+  }
+
+  50% {
+    transform: rotate(-0.2deg)
+  }
 }
 </style>
 

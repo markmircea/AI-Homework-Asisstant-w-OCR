@@ -419,6 +419,29 @@
                   </svg>
                 </td>
               </tr>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-300">Crossover Criteria Cognitive Aptitude CCAT Test Hacker</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-400">
+                  <svg class="w-5 h-5 text-red-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                  </svg>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-400">
+                  <svg class="w-5 h-5 text-red-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                  </svg>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-400">
+                  <svg class="w-5 h-5 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </td>
+              </tr>
 
             </tbody>
           </table>
@@ -430,7 +453,7 @@
     <!-- FAQ Section -->
     <!-- FAQ Section -->
     <!-- FAQ Section -->
-    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-900">
+    <section id="faq" class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-900">
       <div class="max-w-3xl mx-auto">
         <div class="text-center mb-16">
           <h2
@@ -470,6 +493,7 @@
 </template>
 <script>
 import { Head } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 
 import ContactUs from './ContactUs.vue';
 import Footer from './Footer.vue';
@@ -546,34 +570,26 @@ export default {
             plan_id: planId
           });
         },
-        onApprove: function (data, actions) {
-          return this.updateSubscription(data.subscriptionID, planId)
-            .then(() => {
-              alert(`You have successfully subscribed to the ${planName}! Subscription ID: ${data.subscriptionID}`);
-            })
-            .catch((error) => {
-              console.error('Error updating subscription:', error);
-              alert('There was an error processing your subscription. Please contact support.');
-            });
+        onApprove: (data, actions) => {
+          this.loading = true;
+          this.error = null;
+          console.log('PayPal subscription approved:', data);
+
+          router.post('/api/update-subscription', {
+            subscriptionId: data.subscriptionID,
+            planId: planId
+          }, {
+            preserveState: true,
+            preserveScroll: true,
+          });
+        },
+        onError: (err) => {
+          this.error = 'There was an error with PayPal. Please try again or contact support.';
+          console.error('PayPal error:', err);
         }
       }).render(`#paypal-button-container-${planId}`);
     },
-    updateSubscription(subscriptionId, planId) {
-      // Make an API call to your backend
-      return fetch('/api/update-subscription', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: JSON.stringify({ subscriptionId, planId })
-      }).then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      });
-    }
+
 
   },
   watch: {
@@ -592,17 +608,27 @@ export default {
         {
           question: "Do you provide customer support?",
           answer: "Yes, we provide customer support for users on any of our two paid plans. You can contact us through our contact form.",
-          isOpen: false
+          isOpen: true
         },
         {
           question: "Do you offer a free trial?",
-          answer: "Yes, we offer a 14-day free trial of our premium plans. You can cancel anytime during your trial for a full refund.",
-          isOpen: false
+          answer: "Yes, we offer a 7-day free trial of our premium plans. You can cancel anytime during your trial for a full refund.",
+          isOpen: true
         },
         {
           question: "Is there a money-back guarantee?",
           answer: "Yes, you can cancel anytime during your trial for a full refund. After the trial period, all sales are final.",
-          isOpen: false
+          isOpen: true
+        },
+        {
+          question: "How does it work exactly?",
+          answer: "You can either upload a file, (image or .doc,.docx,.pdf) or submit text. The file is then processed and text is extraced from the image using a highly specialized OCR AI model, after which it is sent for analysis to the best AI models available at this time. (We routinly update our models list to make sure we only have top of the line models available) The users query is analyized with the users specific inputs, temperature, model, tokens, steps, explanation etc. and then the response is returned and formatted.",
+          isOpen: true
+        },
+        {
+          question: "How can I use this to get hired on Crossover for Work?",
+          answer: "One of the initial phases in Crossovers hiring process is a psychometric test, the CCAT, which is provided by Criteria Corp. This test is online based but you cannot switch tabs while you are taking the timed exam. You can easily use our models to take a picture of the qustions and immediatly recieve the correct response. It even functions on some of the visual logic questions as well! We do NOT release our customers information to anyone for any reason, so you do no need to worry about this catching up to you in the future.",
+          isOpen: true
         }
       ]
     }

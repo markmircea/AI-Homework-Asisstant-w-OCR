@@ -1,13 +1,18 @@
 <template>
-  <footer class="bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-      <div class="xl:grid xl:grid-cols-4 xl:gap-8">
-        <div class="xl:col-span-1">
-          <icon name="logo" class="h-10 animate-pulse-slow fill-indigo-400" />
-          <p class="mt-4 text-sm text-gray-300">
-            AI-powered homework and test helper that leverages the latest in machine learning technology to provide personalized and adaptive support to learners of all ages and backgrounds.
+  <footer class="bg-gradient-to-br from-gray-900 to-gray-800 text-white py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-6 md:mb-0">
+          <div class="flex items-center">
+            <icon name="logo" class="h-8 animate-pulse-slow fill-gray-300" />
+            <span class="ml-2 text-xl font-bold text-gray-300">Easy Ace</span>
+          </div>
+          <p class="mt-2 text-sm text-gray-300 max-w-md">
+            AI-powered homework and test helper leveraging the latest in machine learning technology.
           </p>
-          <div class="mt-6 flex space-x-6">
+        </div>
+        <div class="flex flex-col items-center md:items-end">
+          <div class="flex space-x-4 mb-4">
             <a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors duration-300">
               <span class="sr-only">Facebook</span>
               <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -27,101 +32,24 @@
               </svg>
             </a>
           </div>
-          <!-- Payment Methods -->
-          <div class="mt-8">
-            <h5 class="text-sm font-semibold text-indigo-400 tracking-wider uppercase mb-4">Payment & Security</h5>
-            <div class="flex space-x-4">
-              <Icon name="paypal" class="h-8 w-auto text-gray-400 hover:text-indigo-400 transition-colors duration-300" />
-              <Icon name="pp" class="h-8 w-auto text-gray-400 hover:text-indigo-400 transition-colors duration-300" />
-              <Icon name="visa" class="h-8 w-auto text-gray-400 hover:text-indigo-400 transition-colors duration-300" />
-              <Icon name="mastercard" class="h-8 w-auto text-gray-400 hover:text-indigo-400 transition-colors duration-300" />
-              <Icon name="amex" class="h-8 w-auto text-gray-400 hover:text-indigo-400 transition-colors duration-300" />
-            </div>
-          </div>
-        </div>
-        <div class="mt-12 grid grid-cols-3 gap-8 xl:mt-0 xl:col-span-3">
-          <div>
-            <h3 class="text-sm font-semibold text-indigo-400 tracking-wider uppercase">
-              Solutions
-            </h3>
-            <ul role="list" class="mt-4 space-y-4">
-              <li>
-                <a href="#" class="text-base text-gray-300 hover:text-indigo-400 transition-colors duration-300">
-                  Math Assistance
-                </a>
-              </li>
-              <li>
-                <a href="#" class="text-base text-gray-300 hover:text-indigo-400 transition-colors duration-300">
-                  Science Help
-                </a>
-              </li>
-              <li>
-                <a href="#" class="text-base text-gray-300 hover:text-indigo-400 transition-colors duration-300">
-                  Essay Writing
-                </a>
-              </li>
-              <li>
-                <a href="#" class="text-base text-gray-300 hover:text-indigo-400 transition-colors duration-300">
-                  Test Prep
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="text-sm font-semibold text-indigo-400 tracking-wider uppercase">
-              Company
-            </h3>
-            <ul role="list" class="mt-4 space-y-4">
-              <li>
-                <a href="#" class="text-base text-gray-300 hover:text-indigo-400 transition-colors duration-300">
-                  About
-                </a>
-              </li>
-              <li>
-                <a href="#" class="text-base text-gray-300 hover:text-indigo-400 transition-colors duration-300">
-                  Blog
-                </a>
-              </li>
-              <li>
-                <a href="#" class="text-base text-gray-300 hover:text-indigo-400 transition-colors duration-300">
-                  Careers
-                </a>
-              </li>
-              <li>
-                <a href="#" class="text-base text-gray-300 hover:text-indigo-400 transition-colors duration-300">
-                  Contact
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="text-sm font-semibold text-indigo-400 tracking-wider uppercase">
-              Legal
-            </h3>
-            <ul role="list" class="mt-4 space-y-4">
-              <li>
-                <Link href="/privacy" class="text-base text-gray-300 hover:text-indigo-400 transition-colors duration-300">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms" class="text-base text-gray-300 hover:text-indigo-400 transition-colors duration-300">
-                  Terms of Service
-                </Link>
-              </li>
-            </ul>
+          <div class="flex space-x-4">
+            <Link href="/privacy" class="text-sm text-gray-300 hover:text-indigo-400 transition-colors duration-300">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" class="text-sm text-gray-300 hover:text-indigo-400 transition-colors duration-300">
+              Terms of Service
+            </Link>
           </div>
         </div>
       </div>
-      <div class="mt-12 border-t border-gray-700 pt-8">
-        <p class="text-base text-gray-400 xl:text-center">
+      <div class="mt-6 border-t border-gray-700 pt-4 text-center">
+        <p class="text-sm text-gray-400">
           &copy; 2024 AI Homework Assistant, Inc. All rights reserved.
         </p>
       </div>
     </div>
   </footer>
 </template>
-
 <script>
 import { Link } from '@inertiajs/vue3';
 import Icon from '../../Shared/Icon.vue';
@@ -134,7 +62,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/* Add any additional styles here if needed */
-</style>

@@ -33,104 +33,75 @@ class PublicAskController extends Controller
     }
 
     public function store(Request $request)
-{
-    $remainingQuestions = $this->getRemainingPublicQuestions();
+    {
+        //if (Auth::check()) {
+          //  return redirect()->route('ask')->with('error', 'This page is for public users only.');
+        //}
 
-    if ($remainingQuestions <= 0) {
-        return redirect()->route('public.ask')->with('error', 'You have reached your daily question limit.');
-    }
+        $remainingQuestions = $this->getRemainingPublicQuestions();
 
-    DB::beginTransaction();
 
-    try {
-        $this->validateRequest($request);
+        if ($remainingQuestions <= 0) {
+            return redirect()->route('public.ask')->with('error', 'You have reached your daily question limit.');
+        }
 
-        $file = $request->file('photo');
-        $extractedText = '';
 
-        if ($file) {
-            $mimeType = $file->getMimeType();
-            $extension = $file->getClientOriginalExtension();
-            $filePath = $this->handleFileUpload($file);
+        DB::beginTransaction();
 
-            if (strpos($mimeType, 'image/') === 0) {
-                // Replacing Azure OCR with OpenAI image-to-text handling
-                $extractedText = $this->performOpenAIImageToText($filePath);
-            } elseif ($mimeType === 'application/pdf') {
-                $extractedText = $this->extractTextFromPDF($filePath);
-            } elseif (in_array($extension, ['doc', 'docx']) || in_array($mimeType, ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])) {
-                $extractedText = $this->extractTextFromWord($filePath);
-            } else {
-                return redirect()->route('public.ask')->with('error', 'Unsupported file type.');
+
+
+
+        try {
+            $this->validateRequest($request);
+
+            $file = $request->file('photo');
+            $extractedText = '';
+
+            if ($file) {
+                $mimeType = $file->getMimeType();
+                $extension = $file->getClientOriginalExtension();
+
+                $filePath = $this->handleFileUpload($file);
+
+                if (strpos($mimeType, 'image/') === 0) {
+                    $extractedText = $this->performOCR($filePath);
+                } elseif ($mimeType === 'application/pdf') {
+                    $extractedText = $this->extractTextFromPDF($filePath);
+                } elseif (in_array($extension, ['doc', 'docx']) || in_array($mimeType, ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])) {
+                    $extractedText = $this->extractTextFromWord($filePath);
+                } else {
+                    return redirect()->route('public.ask')->with('error', 'Unsupported file type.');
+                }
             }
+
+            $chatGPTResponse = $this->getChatGPTResponse(
+                $request,
+                $extractedText,
+                $request->input('instructions'),
+                $request->input('subject', 'auto-detect'),
+                $request->boolean('steps', false),
+                $request->boolean('explain', false),
+                $request->input('level')
+            );
+
+            if ($chatGPTResponse === null) {
+                return redirect()->route('public.ask')->with('error', 'Nothing Submitted.');
+            }
+
+            $processedResponse = $this->processChatGPTResponse($chatGPTResponse, $request);
+
+            $this->incrementPublicQuestionCount();
+
+            DB::commit();
+
+            return $this->renderResponse($processedResponse);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // Redirect back with an error message
+            return redirect()->route('public.ask')->with('error', $e->getMessage());
         }
-
-        $chatGPTResponse = $this->getChatGPTResponse(
-            $request,
-            $extractedText,
-            $request->input('instructions'),
-            $request->input('subject', 'auto-detect'),
-            $request->boolean('steps', false),
-            $request->boolean('explain', false),
-            $request->input('level')
-        );
-
-        if ($chatGPTResponse === null) {
-            return redirect()->route('public.ask')->with('error', 'Nothing Submitted.');
-        }
-
-        $processedResponse = $this->processChatGPTResponse($chatGPTResponse, $request);
-        $this->incrementPublicQuestionCount();
-        DB::commit();
-
-        return $this->renderResponse($processedResponse);
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return redirect()->route('public.ask')->with('error', $e->getMessage());
     }
-}
-
-private function performOpenAIImageToText($imagePath)
-{
-    try {
-        $apiKey = env('OPENAI_API_KEY');
-        $endpoint = 'https://api.openai.com/v1/images/generate'; // Replace with the correct endpoint
-        $photoFullPath = storage_path('app/' . $imagePath);
-
-        $headers = [
-            'Content-Type: multipart/form-data',
-            'Authorization: Bearer ' . $apiKey,
-        ];
-
-        $data = [
-            'image' => fopen($photoFullPath, 'r'),
-            // Add any additional parameters if needed
-        ];
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $endpoint);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-        $response = curl_exec($ch);
-        curl_close($ch);
-
-        $decodedResponse = json_decode($response, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            \Log::error('Error decoding JSON response from OpenAI: ' . json_last_error_msg());
-            return '';
-        }
-
-        // Process the response to extract text if possible
-        return $decodedResponse['text'] ?? '';  // Adjust according to actual API response
-    } catch (\Exception $e) {
-        \Log::error('Error calling OpenAI image API: ' . $e->getMessage());
-        return '';
-    }
-}
 
     private function getPublicQuestionCount()
     {

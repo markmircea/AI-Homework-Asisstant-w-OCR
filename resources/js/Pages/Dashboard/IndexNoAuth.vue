@@ -9,7 +9,7 @@
 
 
     <feature-section />
-    <black-bar />
+    <black-bar :isAuthenticated="$page.props.auth.user !== null" />
     <steps></steps>
 
 

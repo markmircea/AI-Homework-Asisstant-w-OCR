@@ -56,16 +56,16 @@
         @leave="leave"
       >
         <div v-show="accountSubmenuOpen" class="pl-4 mt-2">
-          <Link class="group flex items-center text-sm py-2" :class="isUrl(`profile`) ? 'text-white' : 'text-indigo-300 hover:text-white'" :href="`/profile/${auth.user.id}`" @click="$emit('linkClicked')">
+          <Link class="group flex items-center text-sm py-2" :class="isUrl(`profile`) ? 'text-white' : 'text-indigo-300 hover:text-white'" :href="`/profile/${auth.user.id}`" @click="scrollToSection('profile-information')">
             <icon name="profile" class="mr-2 w-4 h-4" :class="isUrl(`profile`) ? 'text-white' : 'text-white'" />
             <div>Profile</div>
           </Link>
-          <Link class="group flex items-center text-sm py-2 text-indigo-300 hover:text-white" href="/billing" @click="$emit('linkClicked')">
-            <icon name="billing" class="mr-2 w-4 h-4 text-white" />
+          <Link class="group flex items-center text-sm py-2" :class="activeSection === 'billing' ? 'text-white' : 'text-indigo-300 hover:text-white'" :href="`/profile/${auth.user.id}#billing`" @click="scrollToSection('billing')">
+            <icon name="billing" class="mr-2 w-4 h-4" :class="activeSection === 'billing' ? 'text-white' : 'text-white'" />
             <div>Billing</div>
           </Link>
-          <Link class="group flex items-center text-sm py-2 text-indigo-300 hover:text-white" href="/active-sessions" @click="$emit('linkClicked')">
-            <icon name="active" class="mr-2 w-4 h-4 text-white" />
+          <Link class="group flex items-center text-sm py-2" :class="activeSection === 'active-sessions' ? 'text-white' : 'text-indigo-300 hover:text-white'" :href="`/profile/${auth.user.id}#active-sessions`" @click="scrollToSection('active-sessions')">
+            <icon name="active" class="mr-2 w-4 h-4" :class="activeSection === 'active-sessions' ? 'text-white' : 'text-white'" />
             <div>Active Sessions</div>
           </Link>
           <Link class="group flex items-center text-sm py-2 text-indigo-300 hover:text-red-500" href="/log-out" @click="$emit('linkClicked')">

@@ -1,14 +1,15 @@
 <template>
   <div>
-<full-page-loader/>
+    <full-page-loader />
+
     <Head :title="`${user.first_name} ${user.last_name}`" />
 
     <div class="container bg-gray-100 min-h-screen py-12 px-0 sm:px-6 lg:px-8">
       <div class="hidden lg:block text-center mb-12">
-          <h1 class="text-xl font-extrabold text-gray-900 sm:text-2xl md:text-3xl">
-            <span class="hidden lg:block">Hi {{ user.first_name }}, let's get started!</span>
-          </h1>
-        </div>
+        <h1 class="text-xl font-extrabold text-gray-900 sm:text-2xl md:text-3xl">
+          <span class="hidden lg:block">Hi {{ user.first_name }}, let's get started!</span>
+        </h1>
+      </div>
       <div class="flex flex-col lg:flex-row gap-4">
 
         <!-- Question Section -->
@@ -33,7 +34,8 @@
                     </button>
                     <p v-if="showTooltip"
                       class="absolute flex items-center justify-center w-36 p-2 text-gray-600 bg-white rounded-lg shadow-lg left-10 -top-6 dark:shadow-none shadow-gray-200 dark:bg-gray-800 dark:text-white text-xs">
-                      <span>Enter the title of your question</span>
+                      <span>The title is only used to make searching your query history easier. You can use the title to
+                        organize your searches better.</span>
                       <svg xmlns="http://www.w3.org/2000/svg"
                         class="absolute w-4 h-4 text-white transform rotate-45 -translate-y-1/2 fill-current -left-2 top-1/2 dark:text-gray-800"
                         stroke="currentColor" viewBox="0 0 24 24">
@@ -81,22 +83,22 @@
 
               <!-- Text Area for Homework Question -->
               <div class="relative w-full pb-8 pr-6">
-                  <div class="flex items-center justify-between mb-2">
-                    <label for="homework_question" class="block text-sm font-medium text-gray-700">Your homework
-                      question</label>
-                    <button type="button" @click="toggleUploadSection"
-                      class=" flex items-center px-3 py-2 text-sm font-medium text-white bg-indigo-400 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="upload-button w-5 h-5 ">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                      </svg>
-                    </button>
-                  </div>
-                  <textarea v-model="form.question" id="question" rows="4"
-                    class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    placeholder="Enter your homework question here..."></textarea>
+                <div class="flex items-center justify-between mb-2">
+                  <label for="homework_question" class="block text-sm font-medium text-gray-700">Your homework
+                    question</label>
+                  <button type="button" @click="toggleUploadSection"
+                    class=" flex items-center px-3 py-2 text-sm font-medium text-white bg-indigo-400 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" class="upload-button w-5 h-5 ">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                    </svg>
+                  </button>
                 </div>
+                <textarea v-model="form.question" id="question" rows="4"
+                  class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  placeholder="Enter your homework question here..."></textarea>
+              </div>
 
 
               <!-- Accordion for Upload and Advanced Options -->
@@ -104,7 +106,7 @@
                 <!-- Upload Section -->
                 <div class="border border-gray-200 rounded-md mb-4">
                   <button type="button" @click.prevent="toggleUploadSection"
-                  class="w-full px-4 py-2 text-left font-semibold text-indigo-600 hover:bg-indigo-50 focus:outline-none flex justify-between items-center">
+                    class="w-full px-4 py-2 text-left font-semibold text-indigo-600 hover:bg-indigo-50 focus:outline-none flex justify-between items-center">
                     <span>{{ showUploadSection ? 'Hide Upload' : 'Add Upload' }}</span>
                     <svg class="w-5 h-5 transform transition-transform duration-200"
                       :class="{ 'rotate-180': showUploadSection }" xmlns="http://www.w3.org/2000/svg"
@@ -115,9 +117,12 @@
                     </svg>
                   </button>
                   <div v-show="showUploadSection" class="px-4 py-2 bg-white">
-    <div class="flex items-center space-x-2">
+  <div class="flex flex-col items-center space-y-4">
+    <div class="w-full">
       <FileUpload v-model="form.photo" :error="form.errors.photo" name="photo"
         label="Upload File or Image" required @input="handleFileUpload" />
+    </div>
+    <div class="w-full flex justify-center">
       <button @click="captureScreenshot" type="button"
         :class="[
           'px-3 py-2 text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out flex items-center',
@@ -137,16 +142,17 @@
         {{ screenshotCaptured ? 'Captured' : 'Screenshot' }}
       </button>
     </div>
-    <div v-if="form.photo" class="mt-2">
-      <p class="text-sm text-gray-600 mb-1">
-        {{ screenshotCaptured ? 'Screenshot captured:' : 'File uploaded:' }}
-      </p>
-      <div class="flex items-center">
-        <img v-if="imagePreview" :src="imagePreview" alt="Image preview" class="max-w-xs h-20 object-cover rounded-md shadow-sm mr-2" />
-        <span class="text-sm text-gray-500">{{ form.photo.name }}</span>
-      </div>
+  </div>
+  <div v-if="form.photo" class="mt-4">
+    <p class="text-sm text-gray-600 mb-1">
+      {{ screenshotCaptured ? 'Screenshot captured:' : 'File uploaded:' }}
+    </p>
+    <div class="flex items-center">
+      <img v-if="imagePreview" :src="imagePreview" alt="Image preview" class="max-w-xs h-20 object-cover rounded-md shadow-sm mr-2" />
+      <span class="text-sm text-gray-500">{{ form.photo.name }}</span>
     </div>
   </div>
+</div>
                 </div>
 
                 <!-- Advanced Options Section -->
@@ -216,9 +222,11 @@
               <loading-button :loading="form.processing"
                 class="w-full btn-indigo1 transition-colors duration-200 hover:text-indigo-500 flex items-center justify-center space-x-2"
                 type="submit">
-                <span class="question-mark">?</span>
-                <span>Ask</span>
-                <span class="hidden md:inline">&nbsp;Question</span>
+                <span
+                  class="inline-block mr-2 transition-transform group-hover:translate-x-1 motion-safe:animate-bounce">🚀</span>
+                Ask
+
+                <span class="hidden md:inline">Question</span>
               </loading-button>
             </div>
           </form>
@@ -421,68 +429,68 @@ export default {
     },
 
     async captureScreenshot() {
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
-    alert("Your browser doesn't support screenshot capture. Please use the file upload option.");
-    return;
-  }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+        alert("Your browser doesn't support screenshot capture. Please use the file upload option.");
+        return;
+      }
 
-  // Store the current active element to restore focus later
-  const activeElement = document.activeElement;
+      // Store the current active element to restore focus later
+      const activeElement = document.activeElement;
 
-  try {
-    const stream = await navigator.mediaDevices.getDisplayMedia({
-      video: {
-        displaySurface: "window",
-      },
-      audio: false,
-      selfBrowserSurface: "include", // Include the current tab in selection options
-    });
+      try {
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+          video: {
+            displaySurface: "window",
+          },
+          audio: false,
+          selfBrowserSurface: "include", // Include the current tab in selection options
+        });
 
-    // Create a video element to capture the stream
-    const video = document.createElement('video');
-    video.srcObject = stream;
-    video.autoplay = true;
+        // Create a video element to capture the stream
+        const video = document.createElement('video');
+        video.srcObject = stream;
+        video.autoplay = true;
 
-    // Wait for the video to have enough data to capture a frame
-    await new Promise((resolve) => {
-      video.onloadeddata = resolve;
-    });
+        // Wait for the video to have enough data to capture a frame
+        await new Promise((resolve) => {
+          video.onloadeddata = resolve;
+        });
 
-    // Create a canvas and draw the video frame
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        // Create a canvas and draw the video frame
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Stop all tracks immediately
-    stream.getTracks().forEach(track => track.stop());
+        // Stop all tracks immediately
+        stream.getTracks().forEach(track => track.stop());
 
-    // Convert canvas to blob
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-    const file = new File([blob], "screenshot.png", { type: "image/png" });
+        // Convert canvas to blob
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        const file = new File([blob], "screenshot.png", { type: "image/png" });
 
-    // Update component state
-    this.form.photo = file;
-    this.screenshotCaptured = true;
-    this.imagePreview = URL.createObjectURL(blob);
+        // Update component state
+        this.form.photo = file;
+        this.screenshotCaptured = true;
+        this.imagePreview = URL.createObjectURL(blob);
 
-  } catch (error) {
-    if (error.name === 'AbortError') {
-      console.log('User cancelled the screenshot capture');
-    } else {
-      console.error("Error capturing screenshot:", error);
-      alert("Failed to capture screenshot. Please try again or use the file upload option.");
-    }
-  } finally {
-    // Restore focus to the original active element
-    if (activeElement && typeof activeElement.focus === 'function') {
-      activeElement.focus();
-    }
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          console.log('User cancelled the screenshot capture');
+        } else {
+          console.error("Error capturing screenshot:", error);
+          alert("Failed to capture screenshot. Please try again or use the file upload option.");
+        }
+      } finally {
+        // Restore focus to the original active element
+        if (activeElement && typeof activeElement.focus === 'function') {
+          activeElement.focus();
+        }
 
-    // Force focus back to the current window
-    window.focus();
-  }
-},
+        // Force focus back to the current window
+        window.focus();
+      }
+    },
 
     handleFileUpload(event) {
       const file = event.target.files[0];
@@ -515,7 +523,7 @@ export default {
   },
 
   watch: {
-    'form.photo': function(newVal) {
+    'form.photo': function (newVal) {
       // Reset screenshot state if a file is uploaded through the file input
       if (newVal && !this.screenshotCaptured) {
         this.screenshotCaptured = false;
@@ -527,16 +535,17 @@ export default {
 </script>
 
 <style>
-
 /* General form styling */
 .container {
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   padding: 2rem;
   border-radius: 1rem;
 }
+
 /* Card styling */
 .bg-white {
-  background-color: rgba(255, 255, 255, 0.95);  /* Increased opacity */
+  background-color: rgba(255, 255, 255, 0.95);
+  /* Increased opacity */
   border-radius: 1rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
@@ -546,15 +555,20 @@ export default {
   transform: translateY(-5px);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
+
 /* Input styling */
-input[type="text"], textarea, select {
+input[type="text"],
+textarea,
+select {
   border: 1px solid #e2e8f0;
   border-radius: 0.5rem;
   padding: 0.75rem 1rem;
   transition: all 0.3s ease;
 }
 
-input[type="text"]:focus, textarea:focus, select:focus {
+input[type="text"]:focus,
+textarea:focus,
+select:focus {
   border-color: #4f46e5;
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
   outline: none;
@@ -615,6 +629,7 @@ input[type="checkbox"]:checked {
   font-size: 0.875rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
+
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

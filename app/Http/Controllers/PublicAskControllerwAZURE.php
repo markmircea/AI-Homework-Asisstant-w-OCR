@@ -35,7 +35,7 @@ class PublicAskController extends Controller
     public function store(Request $request)
     {
         //if (Auth::check()) {
-          //  return redirect()->route('ask')->with('error', 'This page is for public users only.');
+        //  return redirect()->route('ask')->with('error', 'This page is for public users only.');
         //}
 
         $remainingQuestions = $this->getRemainingPublicQuestions();
@@ -111,10 +111,10 @@ class PublicAskController extends Controller
 
         return PublicQuestionCount::where(function ($query) use ($ipAddress, $sessionId, $today) {
             $query->where('ip_address', $ipAddress)
-                  ->orWhere('session_id', $sessionId);
+                ->orWhere('session_id', $sessionId);
         })
-        ->where('date', $today)
-        ->first();
+            ->where('date', $today)
+            ->first();
     }
 
     private function incrementPublicQuestionCount()
@@ -141,10 +141,10 @@ class PublicAskController extends Controller
     }
 
     private function getRemainingPublicQuestions()
-{
-    $count = $this->getPublicQuestionCount();
-    return 3 - ($count ? $count->count : 0);
-}
+    {
+        $count = $this->getPublicQuestionCount();
+        return 3 - ($count ? $count->count : 0);
+    }
 
 
 
@@ -257,7 +257,12 @@ class PublicAskController extends Controller
 
     private function getChatGPTResponse(Request $request, $extractedText, $instructions, $subject, $steps, $explain, $level)
     {
-        $text = $request->input('question') ?: $extractedText;
+        $text = $request->input('question');
+        if ($text) {
+            $text .= ' ' . $extractedText;  // Concatenate if the input exists
+        } else {
+            $text = $extractedText;  // Only use $extractedText if input is not provided
+        }
         return $this->sendToChatGPT(
             $text,
             $instructions,

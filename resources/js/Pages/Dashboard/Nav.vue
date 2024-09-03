@@ -67,6 +67,10 @@
                 class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">
                 Pricing
               </Link>
+              <Link href="/pricing#faq"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">
+                FAQ
+              </Link>
               <Link href="/pricing#contact-us"
                 class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">
                 Contact Us
@@ -172,6 +176,10 @@
           <Link href="/pricing" @click="closeMobileMenu"
             class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">
             Pricing
+          </Link>
+          <Link href="/pricing#faq" @click="closeMobileMenu"
+            class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">
+            FAQ
           </Link>
           <Link href="/pricing#contact-us" @click="closeMobileMenu"
             class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">

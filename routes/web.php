@@ -151,6 +151,9 @@ Route::get('/', function () {
     }
 });
 
+// New route for canceling subscription
+Route::post('/cancel-subscription', [SubscriptionController::class, 'cancelSubscription'])
+    ->name('subscription.cancel');
 
 // Announcement
 
