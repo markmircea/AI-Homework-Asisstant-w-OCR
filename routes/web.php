@@ -99,11 +99,9 @@ Route::post('/reset-password', [PasswordResetController::class, 'reset'])
         return redirect('/index')->with('flash.success', 'Your email has been verified successfully!');
     })->middleware(['auth', 'signed'])->name('verification.verify');
 
-    Route::post('/email/verification-notification', function (Request $request) {
-        $request->user()->sendEmailVerificationNotification();
-        return back()->with('flash.success', 'Verification link sent!');
-    })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
-
+    Route::post('/email/verification-notification', [PasswordResetController::class, 'sendVerificationNotification'])
+    ->middleware(['auth'])
+    ->name('verification.send');
 
 // Google OCR
 

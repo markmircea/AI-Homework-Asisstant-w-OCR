@@ -1,7 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
-
       <logo @click="logout" class="mx-auto h-12 w-auto" />
       <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
         Verify Your Email Address
@@ -20,9 +19,13 @@
             {{ status }}
           </div>
 
+          <div v-if="error" class="mb-4 font-medium text-sm text-red-600">
+            {{ error }}
+          </div>
+
           <div>
-            <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-              Resend Verification Email
+            <button type="submit" :disabled="form.processing" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50">
+              {{ form.processing ? 'Sending...' : 'Resend Verification Email' }}
             </button>
           </div>
         </form>
@@ -39,7 +42,7 @@
 
 <script>
 import { defineComponent } from 'vue'
-import { Head } from '@inertiajs/vue3'
+import { Head, useForm } from '@inertiajs/vue3'
 import Logo from '@/Shared/Logo.vue'
 
 export default defineComponent({
@@ -50,17 +53,27 @@ export default defineComponent({
   props: {
     status: String,
   },
+  data() {
+    return {
+      error: '',
+      form: useForm({}),
+    }
+  },
   methods: {
     sendVerification() {
-      this.$inertia.post(route('verification.send'))
+      this.form.post('/email/verification-notification', {
+        preserveState: true,
+        preserveScroll: true,
+        onSuccess: () => {
+          this.error = ''
+        },
+        onError: (errors) => {
+          this.error = errors.error || 'An error occurred. Please try again.'
+        },
+      })
     },
     logout() {
-      this.showProfile = false
-      this.$inertia.get('/log-out', {
-        onFinish: () => {
-          window.location.href = '/'
-        }
-      })
+      this.$inertia.delete('/logout')
     },
   }
 })

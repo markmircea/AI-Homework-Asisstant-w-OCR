@@ -7,6 +7,10 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Log;
+
+
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -78,5 +82,33 @@ class PasswordResetController extends Controller
         }
 
         return back()->withErrors(['email' => [__($status)]]);
+    }
+
+
+     public function sendVerificationNotification(Request $request)
+    {
+        $user = $request->user();
+        $key = 'verification-notification:' . $user->id;
+
+
+        if (RateLimiter::tooManyAttempts($key, 3)) {
+            $seconds = RateLimiter::availableIn($key);
+            return back()->with('error', "Too many verification attempts. Please try again in {$seconds} seconds.");
+        }
+
+        RateLimiter::hit($key);
+
+        $user->sendEmailVerificationNotification();
+
+        $attemptsLeft = 3 - RateLimiter::attempts($key);
+
+        $message = 'Verification link sent!';
+        if ($attemptsLeft > 0) {
+            $message .= " You have {$attemptsLeft} attempt(s) remaining today.";
+        } else {
+            $message .= " This was your last attempt for today.";
+        }
+
+        return back()->with('message', $message);
     }
 }
