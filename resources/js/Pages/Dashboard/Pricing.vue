@@ -68,10 +68,10 @@
             <div class="flex-1">
               <h3 class="text-xl font-semibold text-gray-900">Pro</h3>
               <p class="mt-4 flex items-baseline text-gray-900">
-                <span class="text-5xl font-extrabold tracking-tight">${{ isAnnual ? '5.99' : '7.99' }}</span>
+                <span class="text-5xl font-extrabold tracking-tight">${{ isAnnual ? '4.99' : '5.99' }}</span>
                 <span class="ml-1 text-xl font-semibold">/month</span>
               </p>
-              <p v-if="isAnnual" class="mt-2 text-sm text-green-600">Billed annually at $71.88/year</p>
+              <p v-if="isAnnual" class="mt-2 text-sm text-green-600">Billed annually at $59.88/year</p>
               <p class="mt-6 text-gray-500">Complete homework solution</p>
 
               <ul role="list" class="mt-6 space-y-6">

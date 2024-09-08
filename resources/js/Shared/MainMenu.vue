@@ -2,7 +2,7 @@
   <div>
     <!-- Dashboard Link -->
     <div class="mb-4">
-      <Link class="group flex items-center py-3" href="/" @click="$emit('linkClicked')">
+      <Link class="group flex items-center py-3" href="/" @click="closeAllSubmenus">
         <icon name="dashboard" class="mr-2 w-4 h-4" :class="isUrl('') ? 'fill-white' : 'fill-indigo-400'" />
         <div :class="isUrl('') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Main</div>
       </Link>
@@ -10,7 +10,7 @@
 
     <!-- Organizations Link -->
     <div class="mb-4">
-      <Link class="group flex items-center py-3" href="/ask" @click="$emit('linkClicked')">
+      <Link class="group flex items-center py-3" href="/ask" @click="closeAllSubmenus">
         <icon name="question" class="mr-2 w-4 h-4" :class="isUrl('ask') ? 'fill-white' : 'fill-indigo-400'" />
         <div :class="isUrl('ask') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Ask</div>
       </Link>
@@ -18,7 +18,7 @@
 
     <!-- History Link with Collapsible Submenu -->
     <div class="mb-4">
-      <button @click="toggleHistorySubmenu" class="group flex items-center py-3 w-full text-left focus:outline-none">
+      <button @click="toggleSubmenu('history')" class="group flex items-center py-3 w-full text-left focus:outline-none">
         <icon name="history" class="mr-2 w-4 h-4" :class="isHistoryActive ? 'fill-white' : 'fill-indigo-400'" />
         <div :class="isHistoryActive ? 'text-white' : 'text-indigo-300 group-hover:text-white'">History</div>
         <icon name="cheveron-down" class="ml-auto w-4 h-4 transition-transform duration-200" :class="historySubmenuOpen ? 'transform rotate-180' : 'transform rotate-0'"/>
@@ -30,11 +30,11 @@
         @leave="leave"
       >
         <div v-show="historySubmenuOpen" class="pl-4 mt-2">
-          <Link class="group flex items-center text-sm py-2" :class="isExactUrl('history-list') ? 'text-white' : 'text-indigo-300 hover:text-white'" href="/history-list" @click="$emit('linkClicked')">
+          <Link class="group flex items-center text-sm py-2" :class="isExactUrl('history-list') ? 'text-white' : 'text-indigo-300 hover:text-white'" href="/history-list" @click="handleSubmenuLinkClick('history')">
             <icon name="list" class="mr-2 w-4 h-4" :class="isExactUrl('history-list') ? 'fill-white' : 'fill-indigo-400'" />
             <div>List</div>
           </Link>
-          <Link class="group flex items-center text-sm py-2" :class="isExactUrl('history') ? 'text-white' : 'text-indigo-300 hover:text-white'" href="/history" @click="$emit('linkClicked')">
+          <Link class="group flex items-center text-sm py-2" :class="isExactUrl('history') ? 'text-white' : 'text-indigo-300 hover:text-white'" href="/history" @click="handleSubmenuLinkClick('history')">
             <icon name="card" class="mr-2 w-4 h-4" :class="isExactUrl('history') ? 'fill-white' : 'fill-indigo-400'" />
             <div>Cards</div>
           </Link>
@@ -44,7 +44,7 @@
 
     <!-- Account Link with Collapsible Submenu -->
     <div class="mb-4">
-      <button @click="toggleAccountSubmenu" class="group flex items-center py-3 w-full text-left focus:outline-none">
+      <button @click="toggleSubmenu('account')" class="group flex items-center py-3 w-full text-left focus:outline-none">
         <icon name="users" class="mr-2 w-4 h-4" :class="isUrl('profile') ? 'fill-white' : 'fill-indigo-400'" />
         <div :class="isUrl(`profile`) ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Account</div>
         <icon name="cheveron-down" class="ml-auto w-4 h-4 transition-transform duration-200" :class="accountSubmenuOpen ? 'transform rotate-180' : 'transform rotate-0'"/>
@@ -56,19 +56,19 @@
         @leave="leave"
       >
         <div v-show="accountSubmenuOpen" class="pl-4 mt-2">
-          <Link class="group flex items-center text-sm py-2" :class="isUrl(`profile`) ? 'text-white' : 'text-indigo-300 hover:text-white'" :href="`/profile/${auth.user.id}`" @click="scrollToSection('profile-information')">
+          <Link class="group flex items-center text-sm py-2" :class="isUrl(`profile`) ? 'text-white' : 'text-indigo-300 hover:text-white'" :href="`/profile/${auth.user.id}`" @click="handleSubmenuLinkClick('account')">
             <icon name="profile" class="mr-2 w-4 h-4" :class="isUrl(`profile`) ? 'text-white' : 'text-white'" />
             <div>Profile</div>
           </Link>
-          <Link class="group flex items-center text-sm py-2" :class="activeSection === 'billing' ? 'text-white' : 'text-indigo-300 hover:text-white'" :href="`/profile/${auth.user.id}#billing`" @click="scrollToSection('billing')">
+          <Link class="group flex items-center text-sm py-2" :class="activeSection === 'billing' ? 'text-white' : 'text-indigo-300 hover:text-white'" :href="`/profile/${auth.user.id}#billing`" @click="handleSubmenuLinkClick('account')">
             <icon name="billing" class="mr-2 w-4 h-4" :class="activeSection === 'billing' ? 'text-white' : 'text-white'" />
             <div>Billing</div>
           </Link>
-          <Link class="group flex items-center text-sm py-2" :class="activeSection === 'active-sessions' ? 'text-white' : 'text-indigo-300 hover:text-white'" :href="`/profile/${auth.user.id}#active-sessions`" @click="scrollToSection('active-sessions')">
+          <Link class="group flex items-center text-sm py-2" :class="activeSection === 'active-sessions' ? 'text-white' : 'text-indigo-300 hover:text-white'" :href="`/profile/${auth.user.id}#active-sessions`" @click="handleSubmenuLinkClick('account')">
             <icon name="active" class="mr-2 w-4 h-4" :class="activeSection === 'active-sessions' ? 'text-white' : 'text-white'" />
             <div>Active Sessions</div>
           </Link>
-          <Link class="group flex items-center text-sm py-2 text-indigo-300 hover:text-red-500" href="/log-out" @click="$emit('linkClicked')">
+          <Link class="group flex items-center text-sm py-2 text-indigo-300 hover:text-red-500" href="/log-out" @click="closeAllSubmenus">
             <icon name="signout" class="mr-2 w-4 h-4 text-red-500" />
             <div>Sign Out</div>
           </Link>
@@ -96,6 +96,7 @@ export default {
     return {
       historySubmenuOpen: false,
       accountSubmenuOpen: false,
+      activeSection: null,
     }
   },
   computed: {
@@ -113,11 +114,26 @@ export default {
       const currentUrl = this.$page.url.split('?')[0]; // Remove query parameters
       return currentUrl === '/' + url;
     },
-    toggleHistorySubmenu() {
-      this.historySubmenuOpen = !this.historySubmenuOpen;
+    closeOtherSubmenus(current) {
+      if (current !== 'history') this.historySubmenuOpen = false;
+      if (current !== 'account') this.accountSubmenuOpen = false;
     },
-    toggleAccountSubmenu() {
-      this.accountSubmenuOpen = !this.accountSubmenuOpen;
+    toggleSubmenu(submenu) {
+      this.closeOtherSubmenus(submenu);
+      if (submenu === 'history') {
+        this.historySubmenuOpen = !this.historySubmenuOpen;
+      } else if (submenu === 'account') {
+        this.accountSubmenuOpen = !this.accountSubmenuOpen;
+      }
+    },
+    handleSubmenuLinkClick(submenu) {
+      this.closeOtherSubmenus(submenu);
+      this.$emit('linkClicked');
+    },
+    closeAllSubmenus() {
+      this.historySubmenuOpen = false;
+      this.accountSubmenuOpen = false;
+      this.$emit('linkClicked');
     },
     beforeEnter(el) {
       el.style.opacity = 0;
@@ -135,6 +151,10 @@ export default {
       el.style.opacity = 0;
       el.style.transform = 'translateY(-10px)';
       done();
+    },
+    scrollToSection(section) {
+      this.activeSection = section;
+      // Add any additional logic for scrolling if needed
     }
   }
 }

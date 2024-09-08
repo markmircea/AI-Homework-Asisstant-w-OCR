@@ -82,10 +82,10 @@
               <h3 class="text-2xl font-semibold text-blue-400">Pro</h3>
               <p class="mt-4 text-gray-400">Complete homework solution</p>
               <p class="mt-8">
-                <span class="text-5xl font-extrabold text-white">${{ isAnnual ? '5.99' : '7.99' }}</span>
+                <span class="text-5xl font-extrabold text-white">${{ isAnnual ? '4.99' : '5.99' }}</span>
                 <span class="text-base font-medium text-gray-400">/ {{ isAnnual ? 'month' : 'month' }}</span>
               </p>
-              <p v-if="isAnnual" class="mt-2 text-sm text-green-400">Billed annually at $71.88/year</p>
+              <p v-if="isAnnual" class="mt-2 text-sm text-green-400">Billed annually at $59.88/year</p>
               <ul class="mt-8 space-y-4">
                 <li class="flex items-center">
                   <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">

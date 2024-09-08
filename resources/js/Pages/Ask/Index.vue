@@ -4,7 +4,7 @@
 
     <Head :title="`${user.first_name} ${user.last_name}`" />
 
-    <div class="container bg-gray-100 min-h-screen py-12 px-0 sm:px-6 lg:px-8">
+    <div class="container bg-gray-100 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
       <div class="hidden lg:block text-center mb-12">
         <h1 class="text-xl font-extrabold text-gray-900 sm:text-2xl md:text-3xl">
           <span class="hidden lg:block">Hi {{ user.first_name }}, let's get started!</span>
@@ -50,7 +50,7 @@
               </div>
 
               <!-- Subject and Level Selection -->
-              <div class="w-full lg:w-1/2 pb-8 pr-6">
+              <div class="w-full pb-8 pr-6">
                 <label for="subject" class="block text-sm font-medium text-gray-700">Subject</label>
                 <select v-model="form.subject" id="subject"
                   class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
@@ -67,7 +67,7 @@
                   <option value="Science">Science</option>
                 </select>
               </div>
-              <div class="w-full lg:w-1/2 pb-8 pr-6">
+              <div class="w-full pb-8 pr-6">
                 <label for="level" class="block text-sm font-medium text-gray-700">Level</label>
                 <select v-model="form.level" id="level"
                   class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
@@ -82,12 +82,12 @@
               </div>
 
               <!-- Text Area for Homework Question -->
-              <div class="relative w-full pb-8 pr-6">
+              <div class="w-full pb-8 pr-6">
                 <div class="flex items-center justify-between mb-2">
                   <label for="homework_question" class="block text-sm font-medium text-gray-700">Your homework
                     question</label>
                   <button type="button" @click="toggleUploadSection"
-                    class=" flex items-center px-3 py-2 text-sm font-medium text-white bg-indigo-400 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                    class="flex items-center px-3 py-2 text-sm font-medium text-white bg-indigo-400 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                       stroke="currentColor" class="upload-button w-5 h-5 ">
                       <path stroke-linecap="round" stroke-linejoin="round"
@@ -99,7 +99,6 @@
                   class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="Enter your homework question here..."></textarea>
               </div>
-
 
               <!-- Accordion for Upload and Advanced Options -->
               <div class="w-full pb-8 pr-6">
@@ -117,42 +116,42 @@
                     </svg>
                   </button>
                   <div v-show="showUploadSection" class="px-4 py-2 bg-white">
-  <div class="flex flex-col items-center space-y-4">
-    <div class="w-full">
-      <FileUpload v-model="form.photo" :error="form.errors.photo" name="photo"
-        label="Upload File or Image" required @input="handleFileUpload" />
-    </div>
-    <div class="w-full flex justify-center">
-      <button @click="captureScreenshot" type="button"
-        :class="[
-          'px-3 py-2 text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out flex items-center',
-          screenshotCaptured ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-indigo-400 hover:bg-indigo-500 text-white'
-        ]">
-        <svg v-if="!screenshotCaptured" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-          stroke="currentColor" class="w-5 h-5 mr-2">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
-        </svg>
-        <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-          stroke="currentColor" class="w-5 h-5 mr-2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-        </svg>
-        {{ screenshotCaptured ? 'Captured' : 'Screenshot' }}
-      </button>
-    </div>
-  </div>
-  <div v-if="form.photo" class="mt-4">
-    <p class="text-sm text-gray-600 mb-1">
-      {{ screenshotCaptured ? 'Screenshot captured:' : 'File uploaded:' }}
-    </p>
-    <div class="flex items-center">
-      <img v-if="imagePreview" :src="imagePreview" alt="Image preview" class="max-w-xs h-20 object-cover rounded-md shadow-sm mr-2" />
-      <span class="text-sm text-gray-500">{{ form.photo.name }}</span>
-    </div>
-  </div>
-</div>
+                    <div class="flex flex-col items-center space-y-4">
+                      <div class="w-full">
+                        <FileUpload v-model="form.photo" :error="form.errors.photo" name="photo"
+                          label="Upload File or Image" required @input="handleFileUpload" />
+                      </div>
+                      <div class="w-full flex justify-center">
+                        <button @click="captureScreenshot" type="button"
+                          :class="[
+                            'px-3 py-2 text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out flex items-center',
+                            screenshotCaptured ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-indigo-400 hover:bg-indigo-500 text-white'
+                          ]">
+                          <svg v-if="!screenshotCaptured" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5 mr-2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+                          </svg>
+                          <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5 mr-2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                          </svg>
+                          {{ screenshotCaptured ? 'Captured' : 'Screenshot' }}
+                        </button>
+                      </div>
+                    </div>
+                    <div v-if="form.photo" class="mt-4">
+                      <p class="text-sm text-gray-600 mb-1">
+                        {{ screenshotCaptured ? 'Screenshot captured:' : 'File uploaded:' }}
+                      </p>
+                      <div class="flex items-center">
+                        <img v-if="imagePreview" :src="imagePreview" alt="Image preview" class="max-w-xs h-20 object-cover rounded-md shadow-sm mr-2" />
+                        <span class="text-sm text-gray-500">{{ form.photo.name }}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <!-- Advanced Options Section -->
@@ -174,12 +173,13 @@
                       <label for="explain" class="text-sm font-medium text-gray-700">Explain why the answer is
                         correct</label>
                     </div>
+
                     <div class="flex items-center mb-8">
                       <input v-model="form.steps" id="steps" type="checkbox" class="mr-2" />
                       <label for="steps" class="text-sm font-medium text-gray-700">Show the work done to get to the
                         answer</label>
                     </div>
-                    <div class="w-full lg:w-1/2 pb-8 pr-6">
+                    <div class="w-full pb-8 pr-6">
                       <label for="tokensCost" class="block text-sm font-medium text-gray-700">Response Length</label>
                       <select v-model="form.tokensCost" id="tokensCost"
                         class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
@@ -192,7 +192,7 @@
                         <option value="1500">1500 Tokens</option>
                       </select>
                     </div>
-                    <div class="w-full lg:w-1/2 pb-8 pr-6">
+                    <div class="w-full pb-8 pr-6">
                       <label for="temperature" class="block text-sm font-medium text-gray-700">Creativity (Higher = More
                         Creative, Lower = Logical)</label>
                       <select v-model="form.temperature" id="temperature"
@@ -205,7 +205,7 @@
                         <option value="1.0">1.0</option>
                       </select>
                     </div>
-                    <div class="w-full lg:w-1/2 pb-8 pr-6">
+                    <div class="w-full pb-8 pr-6">
                       <label for="model" class="block text-sm font-medium text-gray-700">AI Model</label>
                       <select v-model="form.model" id="model"
                         class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
@@ -225,7 +225,6 @@
                 <span
                   class="inline-block mr-2 transition-transform group-hover:translate-x-1 motion-safe:animate-bounce">🚀</span>
                 Ask
-
                 <span class="hidden md:inline">Question</span>
               </loading-button>
             </div>
@@ -237,14 +236,10 @@
             <div class="px-8 py-4 bg-gradient-to-r from-indigo-500 to-indigo-700 text-white border-gray-200">
               <h2 class="text-s font-medium text-white uppercase tracking-wider font-semibold">Response</h2>
             </div>
-
-
             <div class="p-4">
               <!-- Loader Section -->
               <div id="answer-loader" v-if="form.processing" class="flex flex-col items-center  ">
-
                 <div class="loader mb-10 mt-10"></div>
-
                 <div class="text-center mt-4">
                   <h6 class="text-gray-600">One moment while I get the answer...</h6>
                   <div class="text-gray-500">
@@ -252,7 +247,6 @@
                   </div>
                 </div>
               </div>
-
               <!-- Result Section -->
               <div id="result-card">
                 <h5 class="text-lg font-semibold mt-4 mb-2" id="result-scroll-point">Answer</h5>
@@ -272,7 +266,6 @@
                     {{ response || placeholderAnswer }}
                   </div>
                 </div>
-
                 <div class="mt-5">
                   <h5 class="text-lg font-semibold mb-2">Explanation</h5>
                   <div>
@@ -292,7 +285,6 @@
                     </div>
                   </div>
                 </div>
-
                 <div class="mt-5 pb-5">
                   <h5 class="text-lg font-semibold mb-2">Steps</h5>
                   <div>
@@ -312,27 +304,14 @@
                     </div>
                   </div>
                 </div>
-
-
               </div>
             </div>
-
-
-
           </div>
-
         </div>
       </div>
     </div>
   </div>
 </template>
-
-<script setup>
-
-const placeholderAnswer = 'Ask away!';
-const placeholderExplain = 'You can enable explanations in "Advanced Options" under the question box'
-const placeholderSteps = 'You can enable steps in "Advanced Options" under the question box'
-</script>
 
 <script>
 import { Head, Link } from '@inertiajs/vue3'
@@ -361,19 +340,13 @@ export default {
     explainResponse: String,
     stepsResponse: String,
     remainingQuestions: Number,
-
-
-
   },
   remember: 'form',
-
-
 
   data() {
     return {
       form: this.$inertia.form({
         _method: 'post',
-
         id: this.user.id,
         title: '',
         subject: '',
@@ -390,20 +363,16 @@ export default {
       showUploadSection: false,
       showAdvancedOptions: false,
       screenshotCaptured: false,
-      screenshotPreview: null,
+      imagePreview: null,
       clicked: {
         answer: false,
         explanation: false,
         steps: false
-
       },
     }
   },
 
-
-
   methods: {
-
     copyToClipboard(type) {
       let textToCopy = '';
 
@@ -421,7 +390,6 @@ export default {
       navigator.clipboard.writeText(textToCopy).then(() => {
         this.copyButtonClass(type);
         this.$forceUpdate();
-
       });
     },
     copyButtonClass(type) {
@@ -434,7 +402,6 @@ export default {
         return;
       }
 
-      // Store the current active element to restore focus later
       const activeElement = document.activeElement;
 
       try {
@@ -443,33 +410,27 @@ export default {
             displaySurface: "window",
           },
           audio: false,
-          selfBrowserSurface: "include", // Include the current tab in selection options
+          selfBrowserSurface: "include",
         });
 
-        // Create a video element to capture the stream
         const video = document.createElement('video');
         video.srcObject = stream;
         video.autoplay = true;
 
-        // Wait for the video to have enough data to capture a frame
         await new Promise((resolve) => {
           video.onloadeddata = resolve;
         });
 
-        // Create a canvas and draw the video frame
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        // Stop all tracks immediately
         stream.getTracks().forEach(track => track.stop());
 
-        // Convert canvas to blob
         const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
         const file = new File([blob], "screenshot.png", { type: "image/png" });
 
-        // Update component state
         this.form.photo = file;
         this.screenshotCaptured = true;
         this.imagePreview = URL.createObjectURL(blob);
@@ -482,12 +443,9 @@ export default {
           alert("Failed to capture screenshot. Please try again or use the file upload option.");
         }
       } finally {
-        // Restore focus to the original active element
         if (activeElement && typeof activeElement.focus === 'function') {
           activeElement.focus();
         }
-
-        // Force focus back to the current window
         window.focus();
       }
     },
@@ -500,31 +458,27 @@ export default {
       }
     },
 
-
-
     update() {
-
       this.form.post(`/ask`, {
-        onSuccess: () => this.form.reset(''),
-        onSuccess: this.clicked.answer = false,
-        onSuccess: this.clicked.explanation = false,
-        onSuccess: this.clicked.steps = false
-      })
+        onSuccess: () => {
+          this.form.reset('');
+          this.clicked.answer = false;
+          this.clicked.explanation = false;
+          this.clicked.steps = false;
+        }
+      });
     },
 
     toggleUploadSection() {
-
-      this.showUploadSection = !this.showUploadSection
+      this.showUploadSection = !this.showUploadSection;
     },
     toggleAdvancedOptions() {
-      this.showAdvancedOptions = !this.showAdvancedOptions
-
+      this.showAdvancedOptions = !this.showAdvancedOptions;
     },
   },
 
   watch: {
     'form.photo': function (newVal) {
-      // Reset screenshot state if a file is uploaded through the file input
       if (newVal && !this.screenshotCaptured) {
         this.screenshotCaptured = false;
         this.screenshotPreview = null;
@@ -545,7 +499,6 @@ export default {
 /* Card styling */
 .bg-white {
   background-color: rgba(255, 255, 255, 0.95);
-  /* Increased opacity */
   border-radius: 1rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
@@ -565,6 +518,7 @@ select {
   padding: 0.75rem 1rem;
   transition: all 0.3s ease;
 }
+
 
 input[type="text"]:focus,
 textarea:focus,
@@ -644,25 +598,11 @@ input[type="checkbox"]:checked {
 }
 
 @keyframes flip-spin {
-  0% {
-    transform: rotate(0deg) scaleY(1);
-  }
-
-  25% {
-    transform: rotate(90deg) scaleY(-1);
-  }
-
-  50% {
-    transform: rotate(180deg) scaleY(1);
-  }
-
-  75% {
-    transform: rotate(270deg) scaleY(-1);
-  }
-
-  100% {
-    transform: rotate(360deg) scaleY(1);
-  }
+  0% { transform: rotate(0deg) scaleY(1); }
+  25% { transform: rotate(90deg) scaleY(-1); }
+  50% { transform: rotate(180deg) scaleY(1); }
+  75% { transform: rotate(270deg) scaleY(-1); }
+  100% { transform: rotate(360deg) scaleY(1); }
 }
 
 /* Tooltip styles */
@@ -682,14 +622,11 @@ input[type="checkbox"]:checked {
   background-color: #333;
   color: #fff;
   padding: 2px 4px;
-  /* Smaller padding */
   border-radius: 4px;
   white-space: nowrap;
   font-size: 0.625rem;
-  /* Smaller font size */
   z-index: 10;
 }
-
 
 /* Fade transition for the expandable section */
 .fade-enter-active,
@@ -698,29 +635,19 @@ input[type="checkbox"]:checked {
 }
 
 .fade-enter,
-.fade-leave-to
-
-/* .fade-leave-active in <2.1.8 */
-  {
+.fade-leave-to {
   opacity: 0;
 }
 
-
-
-
-
 .form-textarea {
   white-space: pre-wrap;
-  /* Ensures whitespace and line breaks are preserved */
   overflow: auto;
   resize: none;
   min-height: 4em;
-  /* Adjust the height as needed */
   padding: 0.5em;
 }
 
-
-/* HTML: <div class="loader"></div> */
+/* Loader */
 .loader {
   height: 60px;
   aspect-ratio: 1;
@@ -755,29 +682,16 @@ input[type="checkbox"]:checked {
 }
 
 @keyframes l20 {
-
-  30%,
-  70% {
-    transform: rotate(0deg)
-  }
-
-  49.99% {
-    transform: rotate(0.2deg)
-  }
-
-  50% {
-    transform: rotate(-0.2deg)
-  }
+  30%, 70% { transform: rotate(0deg) }
+  49.99% { transform: rotate(0.2deg) }
+  50% { transform: rotate(-0.2deg) }
 }
-
-
 
 /* Smooth transition for accordion content */
 .accordion-content-enter-active,
 .accordion-content-leave-active {
   transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
   max-height: 1000px;
-  /* Adjust this value based on your content's maximum height */
   opacity: 1;
 }
 
@@ -786,4 +700,23 @@ input[type="checkbox"]:checked {
   max-height: 0;
   opacity: 0;
 }
+
+/* Add these new styles for responsiveness */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .flex-1 {
+    width: 100%;
+  }
+
+  select,
+  textarea,
+  .form-textarea {
+    width: 100% !important;
+  }
+}
 </style>
+

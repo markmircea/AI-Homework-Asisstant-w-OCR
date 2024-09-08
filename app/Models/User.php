@@ -38,6 +38,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'google_id',
         'subscription_type',
         'paypal_subscription_id',
+        'email_verified_at'
 
     ];
 

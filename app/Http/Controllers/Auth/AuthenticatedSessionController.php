@@ -15,6 +15,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Notifications\RegistrationConfirmation;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+
+
 
 
 class AuthenticatedSessionController extends Controller
@@ -81,39 +86,66 @@ class AuthenticatedSessionController extends Controller
     /**
      * Redirect the user to the Google authentication page.
      */
-    public function redirectToGoogle(): RedirectResponse
+    public function redirectToGoogle()
     {
         return Socialite::driver('google')->redirect();
     }
 
-    /**
-     * Obtain the user information from Google.
-     */
-    public function handleGoogleCallback(): RedirectResponse
+    public function handleGoogleCallback()
     {
-        $user = Socialite::driver('google')->user();
+        try {
+            $googleUser = Socialite::driver('google')->user();
+            Log::info('Google user data:', ['user' => $googleUser]);
 
-        $existingUser = User::where('google_id', $user->id)->first();
+            $user = User::where('email', $googleUser->email)->first();
 
-        if ($existingUser) {
-            // Log in the existing user.
-            auth()->login($existingUser, true);
-        } else {
-            // Create a new user.
-            $newUser = new User();
-            $newUser->name = $user->name;
-            $newUser->email = $user->email;
-            $newUser->google_id = $user->id;
-            $newUser->password = bcrypt(request(Str::random())); // Set some random password
-            $newUser->save();
+            if ($user) {
+                // User exists, update google_id and photo if not set
+                if (!$user->google_id) {
+                    $user->google_id = $googleUser->id;
+                }
+                if(!$user->email_verified_at){
+                    $user->email_verified_at = now();
+                }
+                if(!$user->photo_path){
+                    $user->photo_path = $googleUser->avatar;
+                }
 
-            // Log in the new user.
-            auth()->login($newUser, true);
+                $user->save();
+
+            } else {
+                // Create new user
+                $name_parts = explode(' ', $googleUser->name, 2);
+                $user = User::create([
+                    'first_name' => $name_parts[0],
+                    'last_name' => isset($name_parts[1]) ? $name_parts[1] : '',
+                    'email' => $googleUser->email,
+                    'google_id' => $googleUser->id,
+                    'password' => Hash::make(Str::random(24)),
+                    'subscription_type' => User::SUBSCRIPTION_FREE,
+                    'email_verified_at' => now(),
+                    'photo_path' => $googleUser->avatar,
+
+                ]);
+
+
+
+                event(new Registered($user));
+            }
+
+
+
+            Auth::login($user);
+            return redirect()->route('dashboard')->with('success', 'Logged In.');
+
+        } catch (\Exception $e) {
+            Log::error('Google authentication failed:', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            return redirect('login')->with('error', 'Google authentication failed. Please try again.');
         }
 
-
-        return redirect()->intended('/');
     }
+
+
 
     public function showForgotPasswordForm(): \Inertia\Response
     {

@@ -118,6 +118,8 @@ Route::get('/login/google', [AuthenticatedSessionController::class, 'redirectToG
 Route::get('/login/google/callback', [AuthenticatedSessionController::class, 'handleGoogleCallback']);
 
 
+
+
 // Route for authenticated users
 Route::get('/index', [DashboardController::class, 'index'])
     ->middleware('auth', 'verified')

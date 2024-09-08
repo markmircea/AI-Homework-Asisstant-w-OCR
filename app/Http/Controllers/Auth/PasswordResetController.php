@@ -85,28 +85,34 @@ class PasswordResetController extends Controller
     }
 
 
-     public function sendVerificationNotification(Request $request)
+    public function sendVerificationNotification(Request $request)
     {
         $user = $request->user();
         $key = 'verification-notification:' . $user->id;
 
+        Log::info("Rate limit key: $key");
+        Log::info("Attempts before check: " . RateLimiter::attempts($key));
 
-        if (RateLimiter::tooManyAttempts($key, 3)) {
+        if (RateLimiter::tooManyAttempts($key, -1)) {
             $seconds = RateLimiter::availableIn($key);
-            return back()->with('error', "Too many verification attempts. Please try again in {$seconds} seconds.");
+            $minutes = ceil($seconds / 60);
+            Log::info("Rate limit exceeded. Minutes until reset: $minutes");
+            return back()->with('error', "Too many verification attempts. Please try again in {$minutes} minute(s).");
         }
 
-        RateLimiter::hit($key);
+        RateLimiter::hit($key, 60 * 60); // 1 hour decay
 
         $user->sendEmailVerificationNotification();
 
-        $attemptsLeft = 3 - RateLimiter::attempts($key);
+        $attemptsLeft = -1 - RateLimiter::attempts($key);
+        Log::info("Attempts after hit: " . RateLimiter::attempts($key));
+        Log::info("Attempts left: " . $attemptsLeft);
 
         $message = 'Verification link sent!';
         if ($attemptsLeft > 0) {
-            $message .= " You have {$attemptsLeft} attempt(s) remaining today.";
+            $message .= " You have {$attemptsLeft} attempt(s) remaining this hour.";
         } else {
-            $message .= " This was your last attempt for today.";
+            $message .= " This was your last attempt for this hour.";
         }
 
         return back()->with('message', $message);
