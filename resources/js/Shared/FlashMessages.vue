@@ -38,6 +38,7 @@
           </svg>
           <div v-if="$page.props.flash.error" class="text-sm font-medium">{{ $page.props.flash.error }}</div>
           <div v-else class="text-sm font-medium">
+
             <span v-if="Object.keys($page.props.errors).length === 1">There is one form error.</span>
             <span v-else>There are {{ Object.keys($page.props.errors).length }} form errors.</span>
           </div>
@@ -81,7 +82,7 @@ export default {
       this.clearAutoHideTimer();
       this.timeout = setTimeout(() => {
         this.hideMessage();
-      }, 5000); // Hide message after 5 seconds (adjust as needed)
+      }, 10000); // Hide message after 5 seconds (adjust as needed)
     },
     clearAutoHideTimer() {
       if (this.timeout) {

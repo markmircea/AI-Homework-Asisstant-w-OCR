@@ -8,14 +8,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use Illuminate\Support\Facades\Storage;
+
 use Smalot\PdfParser\Parser as PdfParser;
 use PhpOffice\PhpWord\IOFactory;
 use App\Models\Announcement;
 use Carbon\Carbon;
 use App\Models\DailyQuestionCount;
 use Illuminate\Support\Facades\DB;
-
-
 
 class AskController extends Controller
 {
@@ -51,13 +52,11 @@ class AskController extends Controller
 
         DB::beginTransaction();
 
-
-
         try {
             $this->validateRequest($request);
 
             $file = $request->file('photo');
-            $extractedText = '';
+            $filePath = null;
 
             if ($file) {
                 $mimeType = $file->getMimeType();
@@ -66,19 +65,19 @@ class AskController extends Controller
                 $filePath = $this->handleFileUpload($file);
 
                 if (strpos($mimeType, 'image/') === 0) {
-                    $extractedText = $this->performOCR($filePath);
+                    // No need to process the image, we'll use the file path directly
                 } elseif ($mimeType === 'application/pdf') {
-                    $extractedText = $this->extractTextFromPDF($filePath);
+                    $filePath = $this->extractTextFromPDF($filePath);
                 } elseif (in_array($extension, ['doc', 'docx']) || in_array($mimeType, ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])) {
-                    $extractedText = $this->extractTextFromWord($filePath);
+                    $filePath = $this->extractTextFromWord($filePath);
                 } else {
-                    return redirect()->route('ask')->with('error', 'Unsupported file type.');
+                    throw new \Exception('Unsupported file type.');
                 }
             }
 
             $chatGPTResponse = $this->getChatGPTResponse(
                 $request,
-                $extractedText,
+                $filePath,
                 $request->input('instructions'),
                 $request->input('subject', 'auto-detect'),
                 $request->boolean('steps', false),
@@ -92,7 +91,7 @@ class AskController extends Controller
 
             $processedResponse = $this->processChatGPTResponse($chatGPTResponse, $request);
 
-            $this->createAnnouncement($processedResponse, $extractedText, $file ? $file->hashName() : null);
+            $this->createAnnouncement($processedResponse, $filePath, $file ? $file->hashName() : null);
 
             $this->updateDailyQuestionCount($user, $now, $request->ip(), $dailyCount);
 
@@ -101,10 +100,27 @@ class AskController extends Controller
             return $this->renderResponse($processedResponse);
         } catch (\Exception $e) {
             DB::rollBack();
-
-            // Redirect back with an error message
-            return redirect()->route('ask')->with('error', $e->getMessage());
+            \Log::error('Error in AskController@store: ' . $e->getMessage());
+            return redirect()->route('ask')->with('error', $this->getReadableErrorMessage($e));
         }
+    }
+
+    private function getReadableErrorMessage(\Exception $e)
+    {
+        $message = $e->getMessage();
+
+        $readableMessages = [
+            'InvalidImageSize' => 'The uploaded image is too large. Please try with a smaller image.',
+            'Unsupported file type.' => 'The file type you uploaded is not supported. Please try a different file.',
+        ];
+
+        foreach ($readableMessages as $key => $readableMessage) {
+            if (strpos($message, $key) !== false) {
+                return $readableMessage;
+            }
+        }
+
+        return 'An error occurred while processing your request. Please try again.';
     }
 
     private function getTransformedAnnouncements($user)
@@ -130,7 +146,6 @@ class AskController extends Controller
     private function updateDailyQuestionCount($user, $now, $ip, $dailyCount)
     {
         if ($dailyCount['record']) {
-            // Update existing record
             $record = $dailyCount['record'];
             $record->count += 1;
             $ips = explode(',', $record->ip);
@@ -140,7 +155,6 @@ class AskController extends Controller
             }
             $record->save();
         } else {
-            // Create new record
             $user->dailyQuestionCounts()->create([
                 'date' => $now->toDateString(),
                 'count' => 1,
@@ -227,45 +241,15 @@ class AskController extends Controller
 
     private function handleFileUpload($file)
     {
-        return $file->store('public/uploads');
+        $path = $file->store('uploads', 'public');
+        return Storage::disk('public')->path($path);
     }
 
-    private function performOCR($imagePath)
+    private function prepareImageForChatGPT($imagePath)
     {
-        try {
-            $client = new Client();
-            $photoFullPath = storage_path('app/' . $imagePath);
-            $response = $client->post('https://ocrphp.cognitiveservices.azure.com/vision/v3.2/ocr', [
-                'headers' => [
-                    'Ocp-Apim-Subscription-Key' => env('AZURE_OCR_SUBSCRIPTION_KEY'),
-                    'Content-Type' => 'application/octet-stream',
-                ],
-                'body' => fopen($photoFullPath, 'r'),
-            ]);
-
-            $ocrResult = json_decode($response->getBody()->getContents(), true);
-            \Log::info('OCR Result: ', $ocrResult);
-
-            return $this->extractTextFromOCRResult($ocrResult);
-        } catch (\Exception $e) {
-            \Log::error('Error calling Azure OCR API: ' . $e->getMessage());
-            return '';
-        }
-    }
-
-    private function extractTextFromOCRResult($ocrResult)
-    {
-        $extractedWords = [];
-        if ($ocrResult && isset($ocrResult['regions'])) {
-            foreach ($ocrResult['regions'] as $region) {
-                foreach ($region['lines'] as $line) {
-                    foreach ($line['words'] as $word) {
-                        $extractedWords[] = $word['text'];
-                    }
-                }
-            }
-        }
-        return implode(' ', $extractedWords);
+        $fullPath = storage_path('app/' . $imagePath);
+        $imageData = file_get_contents($fullPath);
+        return base64_encode($imageData);
     }
 
     private function extractTextFromPDF($pdfPath)
@@ -282,16 +266,12 @@ class AskController extends Controller
         }
     }
 
-    private function getChatGPTResponse(Request $request, $extractedText, $instructions, $subject, $steps, $explain, $level)
+    private function getChatGPTResponse(Request $request, $filePath, $instructions, $subject, $steps, $explain, $level)
     {
         $text = $request->input('question');
-        if ($text) {
-            $text .= ' ' . $extractedText;  // Concatenate if the input exists
-        } else {
-            $text = $extractedText;  // Only use $extractedText if input is not provided
-        }
         return $this->sendToChatGPT(
             $text,
+            $filePath,
             $instructions,
             $subject,
             $steps,
@@ -303,7 +283,7 @@ class AskController extends Controller
         );
     }
 
-    private function sendToChatGPT($text, $instructions, $subject, $steps, $explain, $level, $maxTokens, $temperature, $model)
+    private function sendToChatGPT($text, $filePath, $instructions, $subject, $steps, $explain, $level, $maxTokens, $temperature, $model)
     {
         $apiKey = env('OPENAI_API_KEY');
         $endpoint = 'https://api.openai.com/v1/chat/completions';
@@ -315,17 +295,30 @@ class AskController extends Controller
 
         $systemContent = $this->buildSystemContent($subject, $instructions, $steps, $explain, $level);
 
+        $messages = [
+            ['role' => 'system', 'content' => $systemContent],
+        ];
+
+        if ($filePath) {
+            $base64Image = base64_encode(file_get_contents($filePath));
+            $messages[] = [
+                'role' => 'user',
+                'content' => [
+                    ['type' => 'text', 'text' => $text ?: 'Describe this image.'],
+                    ['type' => 'image_url', 'image_url' => ['url' => "data:image/jpeg;base64,{$base64Image}"]]
+                ]
+            ];
+        } else {
+            $messages[] = ['role' => 'user', 'content' => $text];
+        }
+
         $data = [
             'model' => $model,
-            'messages' => [
-                ['role' => 'system', 'content' => $systemContent],
-                ['role' => 'user', 'content' => $text]
-            ],
+            'messages' => $messages,
             'max_tokens' => (int) $maxTokens,
             'temperature' => (float) $temperature,
             'top_p' => 1.0,
             'n' => 1,
-            'stop' => ['\n'],
         ];
 
         $ch = curl_init();
@@ -348,9 +341,11 @@ class AskController extends Controller
 
         return $decodedResponse;
     }
+
     private function buildSystemContent($subject, $instructions, $steps, $explain, $level)
     {
-        $content = "The current subject is: $subject. If no subject was included, include a string called \"subject=\" followed by one word from this list that best categorizes the content: Biology,Chemistry,Computer-Science,Economics,English,Geography,History,Mathematics,Physics,Science. Then, provide a short summary of the content and resolve it. ";
+        $content = "Do not describe the image, extract the text then do the following: You are a homework/test assistant. The current subject is: $subject. If no subject was included, include a string called \"subject=\" followed by one word from this list that best categorizes the content:
+        Biology,Chemistry,Computer-Science,Economics,English,Geography,History,Mathematics,Physics,Science. Then, the first sentence should be the exact answer if its a multiple choice, select and respond with the correct answer from the list of answers given, if not solve it and provide the answer. ";
 
         $content .= "Your response should be structured as follows:\n";
         $content .= "First: Main content (without any specific keyword)\n";
@@ -385,11 +380,9 @@ class AskController extends Controller
         $stepsText = $this->extractAndRemoveSection($responseBody, 'steps=');
         $explainText = $this->extractAndRemoveSection($responseBody, 'explain=');
 
-        // If no steps or explain sections were found, the entire response is the main content
         if (empty($stepsText) && empty($explainText)) {
             $mainContent = $responseBody;
         } else {
-            // The main content is what's left after removing steps and explain sections
             $mainContent = trim($responseBody);
         }
 
@@ -434,16 +427,16 @@ class AskController extends Controller
         return $requestTitle ? "$requestTitle  |  $titleFormatted" : $titleFormatted;
     }
 
-    private function createAnnouncement($processedResponse, $extractedText, $filePath)
+    private function createAnnouncement($processedResponse, $filePath, $originalFileName)
     {
         Auth::user()->announcements()->create([
-            'extracted_text' => $extractedText,
+            'extracted_text' => $filePath ? basename($filePath) : null, // Store only the filename
             'title' => $processedResponse['title'],
             'content' => $processedResponse['responseBody'],
             'aiquery' => request('question'),
             'subject' => $processedResponse['subject'],
             'instructions' => $processedResponse['explainText'] . " " . $processedResponse['stepsText'],
-            'photo_path' => $filePath,
+            'photo_path' => $originalFileName,
             'created_at' => $processedResponse['createdAt'],
         ]);
     }
@@ -455,7 +448,6 @@ class AskController extends Controller
 
         $limit = $user->getQuestionLimit();
         $remainingQuestions = $limit - $user->getDailyQuestionCount();
-
 
         return Inertia::render('Ask/Index', [
             'coins' => $user->coins,

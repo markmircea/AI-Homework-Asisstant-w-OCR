@@ -248,7 +248,7 @@
                 </div>
               </div>
               <!-- Result Section -->
-              <div id="result-card">
+              <div id="result-card" ref="responseSection">
                 <h5 class="text-lg font-semibold mt-4 mb-2" id="result-scroll-point">Answer</h5>
                 <div>
                   <label class="flex justify-between items-end mb-2">
@@ -392,6 +392,7 @@ export default {
         this.$forceUpdate();
       });
     },
+
     copyButtonClass(type) {
       return this.clicked[type] ? 'bg-gray-500 text-white text-xs px-3 py-1 rounded-lg cursor-not-allowed opacity-50' : 'bg-indigo-400 text-white text-xs px-3 py-1 rounded-lg';
     },
@@ -472,8 +473,16 @@ export default {
     toggleUploadSection() {
       this.showUploadSection = !this.showUploadSection;
     },
+
     toggleAdvancedOptions() {
       this.showAdvancedOptions = !this.showAdvancedOptions;
+    },
+
+    scrollToResponse() {
+      const responseSection = this.$refs.responseSection;
+      if (responseSection) {
+        responseSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     },
   },
 
@@ -483,8 +492,29 @@ export default {
         this.screenshotCaptured = false;
         this.screenshotPreview = null;
       }
-    }
-  }
+    },
+    response(newVal, oldVal) {
+      if (newVal && newVal !== oldVal) {
+        this.$nextTick(() => {
+          this.scrollToResponse();
+        });
+      }
+    },
+    explainResponse(newVal, oldVal) {
+      if (newVal && newVal !== oldVal) {
+        this.$nextTick(() => {
+          this.scrollToResponse();
+        });
+      }
+    },
+    stepsResponse(newVal, oldVal) {
+      if (newVal && newVal !== oldVal) {
+        this.$nextTick(() => {
+          this.scrollToResponse();
+        });
+      }
+    },
+  },
 }
 </script>
 

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Smalot\PdfParser\Parser as PdfParser;
 use PhpOffice\PhpWord\IOFactory;
 use App\Models\Announcement;
@@ -16,7 +17,7 @@ use App\Models\DailyQuestionCount;
 use Illuminate\Support\Facades\DB;
 use App\Models\PublicQuestionCount;
 use Illuminate\Support\Facades\Session;
-
+use Illuminate\Support\Facades\Storage;
 
 
 class PublicAskController extends Controller
@@ -28,34 +29,25 @@ class PublicAskController extends Controller
         return Inertia::render('Dashboard/PublicAsk', [
             'remainingQuestions' => $remainingQuestions,
             'selectedSubject' => $request->query('subject', ''),
-
         ]);
     }
 
+
     public function store(Request $request)
     {
-        //if (Auth::check()) {
-          //  return redirect()->route('ask')->with('error', 'This page is for public users only.');
-        //}
-
         $remainingQuestions = $this->getRemainingPublicQuestions();
-
 
         if ($remainingQuestions <= 0) {
             return redirect()->route('public.ask')->with('error', 'You have reached your daily question limit.');
         }
 
-
         DB::beginTransaction();
-
-
-
 
         try {
             $this->validateRequest($request);
 
             $file = $request->file('photo');
-            $extractedText = '';
+            $filePath = null;
 
             if ($file) {
                 $mimeType = $file->getMimeType();
@@ -64,19 +56,19 @@ class PublicAskController extends Controller
                 $filePath = $this->handleFileUpload($file);
 
                 if (strpos($mimeType, 'image/') === 0) {
-                    $extractedText = $this->performOCR($filePath);
+                    // No need to process the image, we'll use the file path directly
                 } elseif ($mimeType === 'application/pdf') {
-                    $extractedText = $this->extractTextFromPDF($filePath);
+                    $filePath = $this->extractTextFromPDF($filePath);
                 } elseif (in_array($extension, ['doc', 'docx']) || in_array($mimeType, ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])) {
-                    $extractedText = $this->extractTextFromWord($filePath);
+                    $filePath = $this->extractTextFromWord($filePath);
                 } else {
-                    return redirect()->route('public.ask')->with('error', 'Unsupported file type.');
+                    throw new \Exception('Unsupported file type.');
                 }
             }
 
             $chatGPTResponse = $this->getChatGPTResponse(
                 $request,
-                $extractedText,
+                $filePath,
                 $request->input('instructions'),
                 $request->input('subject', 'auto-detect'),
                 $request->boolean('steps', false),
@@ -85,7 +77,7 @@ class PublicAskController extends Controller
             );
 
             if ($chatGPTResponse === null) {
-                return redirect()->route('public.ask')->with('error', 'Nothing Submitted.');
+                throw new \Exception('No response received from ChatGPT.');
             }
 
             $processedResponse = $this->processChatGPTResponse($chatGPTResponse, $request);
@@ -97,9 +89,8 @@ class PublicAskController extends Controller
             return $this->renderResponse($processedResponse);
         } catch (\Exception $e) {
             DB::rollBack();
-
-            // Redirect back with an error message
-            return redirect()->route('public.ask')->with('error', $e->getMessage());
+            \Log::error('Error in PublicAskController@store: ' . $e->getMessage());
+            return redirect()->route('public.ask')->with('error', $this->getReadableErrorMessage($e));
         }
     }
 
@@ -141,19 +132,15 @@ class PublicAskController extends Controller
     }
 
     private function getRemainingPublicQuestions()
-{
-    $count = $this->getPublicQuestionCount();
-    return 3 - ($count ? $count->count : 0);
-}
-
-
-
+    {
+        $count = $this->getPublicQuestionCount();
+        return 3 - ($count ? $count->count : 0);
+    }
 
     private function extractTextFromWord($filePath)
     {
         try {
-            $fullPath = storage_path('app/' . $filePath);
-            $phpWord = IOFactory::load($fullPath);
+            $phpWord = IOFactory::load($filePath);
 
             $text = '';
             foreach ($phpWord->getSections() as $section) {
@@ -174,14 +161,9 @@ class PublicAskController extends Controller
             return $text;
         } catch (\Exception $e) {
             \Log::error('Error extracting text from Word document: ' . $e->getMessage());
-            return '';
+            throw new \Exception('Unable to extract text from the Word document.');
         }
     }
-
-
-
-
-
     private function validateRequest(Request $request)
     {
         $request->validate([
@@ -200,7 +182,13 @@ class PublicAskController extends Controller
 
     private function handleFileUpload($file)
     {
-        return $file->store('public/uploads');
+        try {
+            $path = $file->store('uploads', 'public');
+            return Storage::disk('public')->path($path);
+        } catch (\Exception $e) {
+            \Log::error('Error uploading file: ' . $e->getMessage());
+            throw new \Exception('Unable to upload the file. Please try again.');
+        }
     }
 
     private function performOCR($imagePath)
@@ -220,9 +208,19 @@ class PublicAskController extends Controller
             \Log::info('OCR Result: ', $ocrResult);
 
             return $this->extractTextFromOCRResult($ocrResult);
+        } catch (ClientException $e) {
+            $response = $e->getResponse();
+            $errorBody = json_decode($response->getBody()->getContents(), true);
+            $errorMessage = $errorBody['error']['message'] ?? 'Unknown error occurred during OCR.';
+
+            if (isset($errorBody['error']['innererror']['code']) && $errorBody['error']['innererror']['code'] === 'InvalidImageSize') {
+                $errorMessage = 'The uploaded image is too large. Please try with a smaller image.';
+            }
+
+            throw new \Exception($errorMessage);
         } catch (\Exception $e) {
             \Log::error('Error calling Azure OCR API: ' . $e->getMessage());
-            return '';
+            throw new \Exception('Error processing the image. Please try again or use a different image.');
         }
     }
 
@@ -245,21 +243,22 @@ class PublicAskController extends Controller
     {
         try {
             $parser = new PdfParser();
-            $pdf = $parser->parseFile(storage_path('app/' . $pdfPath));
+            $pdf = $parser->parseFile($pdfPath);
             $extractedText = $pdf->getText();
             \Log::info('Extracted text from PDF:', ['text' => $extractedText]);
             return $extractedText;
         } catch (\Exception $e) {
             \Log::error('Error extracting text from PDF: ' . $e->getMessage());
-            return '';
+            throw new \Exception('Unable to extract text from the PDF. Please try a different file.');
         }
     }
 
-    private function getChatGPTResponse(Request $request, $extractedText, $instructions, $subject, $steps, $explain, $level)
+    private function getChatGPTResponse(Request $request, $filePath, $instructions, $subject, $steps, $explain, $level)
     {
-        $text = $request->input('question') ?: $extractedText;
+        $text = $request->input('question') ?: '';
         return $this->sendToChatGPT(
             $text,
+            $filePath,
             $instructions,
             $subject,
             $steps,
@@ -267,11 +266,12 @@ class PublicAskController extends Controller
             $level,
             $request->input('tokensCost', 1500),
             $request->input('temperature', 0.6),
-            $request->input('model', 'gpt-4o-mini')
+            $request->input('model', 'gpt-4-vision-preview')
         );
     }
 
-    private function sendToChatGPT($text, $instructions, $subject, $steps, $explain, $level, $maxTokens, $temperature, $model)
+
+    private function sendToChatGPT($text, $filePath, $instructions, $subject, $steps, $explain, $level, $maxTokens, $temperature, $model)
     {
         $apiKey = env('OPENAI_API_KEY');
         $endpoint = 'https://api.openai.com/v1/chat/completions';
@@ -283,17 +283,30 @@ class PublicAskController extends Controller
 
         $systemContent = $this->buildSystemContent($subject, $instructions, $steps, $explain, $level);
 
+        $messages = [
+            ['role' => 'system', 'content' => $systemContent],
+        ];
+
+        if ($filePath && file_exists($filePath)) {
+            $base64Image = base64_encode(file_get_contents($filePath));
+            $messages[] = [
+                'role' => 'user',
+                'content' => [
+                    ['type' => 'text', 'text' => $text ?: 'Describe this image.'],
+                    ['type' => 'image_url', 'image_url' => ['url' => "data:image/jpeg;base64,{$base64Image}"]]
+                ]
+            ];
+        } else {
+            $messages[] = ['role' => 'user', 'content' => $text];
+        }
+
         $data = [
             'model' => $model,
-            'messages' => [
-                ['role' => 'system', 'content' => $systemContent],
-                ['role' => 'user', 'content' => $text]
-            ],
+            'messages' => $messages,
             'max_tokens' => (int) $maxTokens,
             'temperature' => (float) $temperature,
             'top_p' => 1.0,
             'n' => 1,
-            'stop' => ['\n'],
         ];
 
         $ch = curl_init();
@@ -304,24 +317,32 @@ class PublicAskController extends Controller
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         $response = curl_exec($ch);
+        $error = curl_error($ch);
         curl_close($ch);
+
+        if ($error) {
+            \Log::error('cURL Error: ' . $error);
+            throw new \Exception('Error connecting to ChatGPT. Please try again later.');
+        }
 
         $decodedResponse = json_decode($response, true);
         \Log::info($decodedResponse);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             \Log::error('Error decoding JSON response from ChatGPT: ' . json_last_error_msg());
-            return null;
+            throw new \Exception('Error processing the response from ChatGPT. Please try again.');
         }
 
         return $decodedResponse;
     }
+
     private function buildSystemContent($subject, $instructions, $steps, $explain, $level)
     {
-        $content = "The current subject is: $subject. If no subject was included, include a string called \"subject=\" followed by one word from this list that best categorizes the content: Biology,Chemistry,Computer-Science,Economics,English,Geography,History,Mathematics,Physics,Science. Then, provide a short summary of the content and resolve it. ";
+        $content = "Do not describe the image, extract the text then do the following: You are a homework/test assistant. The current subject is: $subject. If no subject was included, include a string called \"subject=\" followed by one word from this list that best categorizes the content:
+        Biology,Chemistry,Computer-Science,Economics,English,Geography,History,Mathematics,Physics,Science. Then, the first sentence should be the exact answer if its a multiple choice, select and respond with the correct answer from the list of answers given, if not solve it and provide the answer. ";
 
         $content .= "Your response should be structured as follows:\n";
-        $content .= "first: Main content (without any specific keyword)\n";
+        $content .= "First: Main content (without any specific keyword)\n";
 
         if ($steps) {
             $content .= "second: Keyword 'steps=' followed by numbered steps explaining key points, ending with '$#$'\n";
@@ -353,11 +374,9 @@ class PublicAskController extends Controller
         $stepsText = $this->extractAndRemoveSection($responseBody, 'steps=');
         $explainText = $this->extractAndRemoveSection($responseBody, 'explain=');
 
-        // If no steps or explain sections were found, the entire response is the main content
         if (empty($stepsText) && empty($explainText)) {
             $mainContent = $responseBody;
         } else {
-            // The main content is what's left after removing steps and explain sections
             $mainContent = trim($responseBody);
         }
 
@@ -402,8 +421,6 @@ class PublicAskController extends Controller
         return $requestTitle ? "$requestTitle  |  $titleFormatted" : $titleFormatted;
     }
 
-
-
     private function renderResponse($processedResponse)
     {
         $remainingQuestions = $this->getRemainingPublicQuestions();
@@ -414,7 +431,31 @@ class PublicAskController extends Controller
             'stepsResponse' => $processedResponse['stepsText'],
             'explainResponse' => $processedResponse['explainText'],
             'remainingQuestions' => $remainingQuestions,
-
         ]);
+    }
+
+    private function getReadableErrorMessage(\Exception $e)
+    {
+        $message = $e->getMessage();
+
+        $readableMessages = [
+            'InvalidImageSize' => 'The uploaded image is too large. Please try with a smaller image.',
+            'Unsupported file type.' => 'The file type you uploaded is not supported. Please try a different file.',
+            'Unable to extract text from the Word document.' => 'We couldn\'t read the content of your Word document. Please try a different file or copy the text into the question field.',
+            'Unable to extract text from the PDF.' => 'We couldn\'t read the content of your PDF. Please try a different file or copy the text into the question field.',
+            'Error processing the image.' => 'We had trouble reading your image. Please try a different image or type your question instead.',
+            'Error connecting to ChatGPT.' => 'We\'re having trouble connecting to our AI. Please try again in a few minutes.',
+            'Error processing the response from ChatGPT.' => 'We received an unexpected response from our AI. Please try your question again.',
+            'No response received from ChatGPT.' => 'We didn\'t get a response from our AI. Please try your question again.',
+        ];
+
+        foreach ($readableMessages as $key => $readableMessage) {
+            if (strpos($message, $key) !== false) {
+                return $readableMessage;
+            }
+        }
+
+        // If no specific message is found, return a generic error message
+        return 'An unexpected error occurred. Please try again or contact support if the problem persists.';
     }
 }

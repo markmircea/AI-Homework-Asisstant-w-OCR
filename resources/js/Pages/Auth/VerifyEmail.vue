@@ -37,6 +37,7 @@
         </div>
       </div>
     </div>
+    <flash-messages/>
   </div>
 </template>
 
@@ -44,14 +45,19 @@
 import { defineComponent } from 'vue'
 import { Head, useForm } from '@inertiajs/vue3'
 import Logo from '@/Shared/Logo.vue'
+import FlashMessages from '@/Shared/FlashMessages.vue'  // Import the FlashMessages component
+
 
 export default defineComponent({
   components: {
     Head,
-    Logo
+    Logo,
+    FlashMessages
   },
   props: {
     status: String,
+    errors: Object,
+
   },
   data() {
     return {

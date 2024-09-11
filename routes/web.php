@@ -130,7 +130,7 @@ Route::get('/index-no-auth', [DashboardController::class, 'indexNoAuth'])
     ->middleware('guest')
     ->name('indexNoAuth');
 
-    Route::post('/contact', [DashboardController::class, 'contact'])->name('contact.submit');
+Route::post('/contact', [DashboardController::class, 'contact'])->name('contact.submit');
 
 
 

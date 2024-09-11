@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\CustomVerifyEmail;
+use Illuminate\Support\Facades\RateLimiter;
 
 
 use Illuminate\Notifications\Notifiable;
@@ -133,6 +134,17 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function sendEmailVerificationNotification()
     {
+        $key = 'email-verification:' . $this->id;
+        $maxAttempts = 2; // Maximum 3 attempts
+        $decaySeconds = 3600; // Per hour
+
+        if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
+            $seconds = RateLimiter::availableIn($key);
+            throw new \Exception("Too many verification attempts. Please try again in {$seconds} seconds.");
+        }
+
+        RateLimiter::hit($key, $decaySeconds);
+
         $this->notify(new CustomVerifyEmail);
     }
 

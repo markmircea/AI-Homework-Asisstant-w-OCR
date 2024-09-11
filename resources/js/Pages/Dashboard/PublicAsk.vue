@@ -196,8 +196,10 @@
                   class="w-full btn-indigo transition-colors duration-200 bg-gradient-to-r from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold py-3 px-6 rounded-full flex items-center justify-center space-x-2">
                   <span
                     class="inline-block mr-2 transition-transform group-hover:translate-x-1 motion-safe:animate-bounce">🚀</span>
-                  Ask
-                  <span>Ask Question</span>
+
+                  <span>Ask
+                    <span class="hidden md:inline">Question</span>
+                  </span>
                 </loading-button>
               </div>
 
@@ -381,8 +383,10 @@ export default {
       }
     },
     response(newValue) {
-      if (newValue && !this.isScrolled) {
-        this.handleScroll();
+      if (newValue && this.isMobile()) {
+        this.$nextTick(() => {
+          this.handleScroll();
+        });
       }
     },
     'form.photo': function (newVal) {
@@ -475,16 +479,14 @@ export default {
     },
 
     handleScroll() {
-      if (this.isMobile()) {
-        const resultSection = document.getElementById('result-section');
-        resultSection.scrollIntoView({ behavior: 'smooth' });
-        this.isScrolled = true;
+      const resultSection = document.getElementById('result-section');
+      if (resultSection) {
+        resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     },
 
     isMobile() {
-      const isMobile = window.innerWidth <= 1000;
-      return isMobile;
+      return window.innerWidth <= 1000;
     },
 
     copyButtonClass(type) {
@@ -498,6 +500,11 @@ export default {
           this.clicked.answer = false;
           this.clicked.explanation = false;
           this.clicked.steps = false;
+          if (this.isMobile()) {
+            this.$nextTick(() => {
+              this.handleScroll();
+            });
+          }
         }
       })
     },
