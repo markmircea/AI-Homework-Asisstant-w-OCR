@@ -19,7 +19,6 @@ use App\Models\PublicQuestionCount;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 
-
 class PublicAskController extends Controller
 {
     public function index(Request $request): Response
@@ -340,9 +339,8 @@ class PublicAskController extends Controller
     {
         $content = "Do not describe the image, extract the text then do the following: You are a homework/test assistant. The current subject is: $subject. If no subject was included, include a string called \"subject=\" followed by one word from this list that best categorizes the content:
         Biology,Chemistry,Computer-Science,Economics,English,Geography,History,Mathematics,Physics,Science. Then, the first sentence should be the exact answer if its a multiple choice, select and respond with the correct answer from the list of answers given, if not solve it and provide the answer. ";
-
         $content .= "Your response should be structured as follows:\n";
-        $content .= "First: Main content (without any specific keyword)\n";
+        $content .= "first: Main content (without any specific keyword)\n";
 
         if ($steps) {
             $content .= "second: Keyword 'steps=' followed by numbered steps explaining key points, ending with '$#$'\n";

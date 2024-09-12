@@ -185,6 +185,7 @@
                           <option value="gpt-4o-mini" selected>GPT-4o Mini</option>
                           <option value="gpt-4-turbo">GPT-4 Turbo</option>
                           <option value="gpt-4o">GPT-4o</option>
+                          <option value="gpt-4o-mini">Multiple Model Selection Availible to Registered Users</option>
                         </select>
                       </div>
                     </div>

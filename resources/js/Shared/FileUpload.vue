@@ -11,13 +11,13 @@
         </svg>
         <div class="flex text-sm text-gray-600">
           <label :for="inputId" class="relative cursor-pointer rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-            <span>Upload a file</span>
+            <span>Upload an Image</span>
             <input :id="inputId" :name="name" type="file" class="sr-only" :accept="acceptedFileTypes" @change="handleFileChange">
           </label>
           <p class="pl-1">or drag and drop</p>
         </div>
         <p class="text-xs text-gray-500">
-          PNG, JPG, GIF, PDF, DOC, DOCX up to 10MB
+          PNG, JPG, JPEG, GIF up to 10MB
         </p>
       </div>
     </div>
@@ -69,7 +69,7 @@ export default {
   setup(props, { emit }) {
     const selectedFile = ref(null);
     const inputId = computed(() => `file-input-${props.name}`);
-    const acceptedFileTypes = '.png,.jpg,.jpeg,.gif,.pdf,.doc,.docx';
+    const acceptedFileTypes = '.png,.jpg,.jpeg,.gif';
 
     const formattedFileSize = computed(() => {
       if (!selectedFile.value) return '';

@@ -197,10 +197,10 @@
                         Creative, Lower = Logical)</label>
                       <select v-model="form.temperature" id="temperature"
                         class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        <option value="0.6" selected>0.6</option>
                         <option value="0.0">0.0</option>
                         <option value="0.2">0.2</option>
                         <option value="0.4">0.4</option>
+                        <option value="0.6" selected>0.6</option>
                         <option value="0.8">0.8</option>
                         <option value="1.0">1.0</option>
                       </select>
@@ -210,8 +210,12 @@
                       <select v-model="form.model" id="model"
                         class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         <option value="gpt-4o-mini" selected>GPT-4o Mini</option>
-                        <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                        <option value="gpt-4o">GPT-4o</option>
+                        <option value="gpt-4o-mini">GPT-4 Turbo</option>
+                        <option value="gpt-4o-mini">GPT-4o</option>
+                        <option value="claude-3-5-sonnet-20240620">Claude 3.5 Sonnet</option>
+                        <option value="claude-3-5-sonnet-20240620">Claude 3 Haiku</option>
+                        <option value="claude-3-5-sonnet-20240620">Claude 3 Opus</option>
+
                       </select>
                     </div>
                   </div>
@@ -354,8 +358,8 @@ export default {
         question: '',
         explain: '',
         steps: '',
-        tokensCost: 200,
-        temperature: 0.6,
+        tokensCost: '',
+        temperature: '',
         model: "gpt-4o-mini",
         photo: null,
       }),
@@ -460,7 +464,8 @@ export default {
     },
 
     update() {
-      this.form.post(`/ask`, {
+      if (this.form.model.startsWith('claude-')) {
+        this.form.post(`/claude/ask`, {
         onSuccess: () => {
           this.form.reset('');
           this.clicked.answer = false;
@@ -468,7 +473,20 @@ export default {
           this.clicked.steps = false;
         }
       });
+      } else {
+        this.form.post(`/ask`, {
+        onSuccess: () => {
+          this.form.reset('');
+          this.clicked.answer = false;
+          this.clicked.explanation = false;
+          this.clicked.steps = false;
+        }
+      });
+      }
+
+
     },
+
 
     toggleUploadSection() {
       this.showUploadSection = !this.showUploadSection;

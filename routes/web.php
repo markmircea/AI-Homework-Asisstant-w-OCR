@@ -21,6 +21,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicAskController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PayPalWebhookController;
+use App\Http\Controllers\ClaudeAskController;
+use App\Http\Controllers\TestHackedController;
+
 
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -103,14 +106,22 @@ Route::post('/reset-password', [PasswordResetController::class, 'reset'])
     ->middleware(['auth'])
     ->name('verification.send');
 
-// Google OCR
 
+// Claude API
+Route::get('/claude/ask', [ClaudeAskController::class, 'index'])->name('claude.ask');
+Route::post('/claude/ask', [ClaudeAskController::class, 'store']);
+
+
+// OCRM
 Route::post('/ocr', [OCRMController::class, 'store'])
     ->name('ocr.store')
     ->middleware('auth');
 
 
-
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/test-hacked', [TestHackedController::class, 'index'])->name('test-hacked');
+        Route::post('/test-hacked/upload', [TestHackedController::class, 'uploadImage'])->name('test-hacked.upload');
+    });
 
 // Google OAuth routes
 Route::get('/login/google', [AuthenticatedSessionController::class, 'redirectToGoogle'])->name('login.google');

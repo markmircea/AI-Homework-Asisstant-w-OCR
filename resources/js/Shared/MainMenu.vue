@@ -8,11 +8,22 @@
       </Link>
     </div>
 
-    <!-- Organizations Link -->
+    <!-- Ask Link -->
     <div class="mb-4">
       <Link class="group flex items-center py-3" href="/ask" @click="closeAllSubmenus">
         <icon name="question" class="mr-2 w-4 h-4" :class="isUrl('ask') ? 'fill-white' : 'fill-indigo-400'" />
         <div :class="isUrl('ask') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Ask</div>
+      </Link>
+    </div>
+
+    <!-- Test Hacked Link -->
+    <div class="mb-4">
+      <Link class="group flex items-center py-3" href="/test-hacked" @click="closeAllSubmenus">
+        <svg class="mr-2 w-4 h-4" :class="isUrl('test-hacked') ? 'text-white' : 'text-indigo-400'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="16 18 22 12 16 6"></polyline>
+          <polyline points="8 6 2 12 8 18"></polyline>
+        </svg>
+        <div :class="isUrl('test-hacked') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Test Hacked</div>
       </Link>
     </div>
 
