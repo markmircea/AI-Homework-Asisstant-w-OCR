@@ -1,4 +1,4 @@
-AI Homework Assistant, Google OAUTH for login/registration. Multi AI model image and text analysis. Advanced history search for previous queries. Full profile including active sessions and tier management based on free or paid subscription. 
+AI Homework Assistant, Google OAUTH for login/registration. Multi AI model image and text analysis. Advanced history search for previous queries. Full profile including active sessions and tier management based on free or paid subscription. https://easyace.ai
 ![image](https://github.com/user-attachments/assets/634a0677-7a46-4ad8-8412-7d306f5e6b66)
 ![image](https://github.com/user-attachments/assets/36e05ebb-3b18-419c-9cf0-89b5b0dd245e)
 
