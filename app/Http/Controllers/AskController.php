@@ -315,7 +315,7 @@ class AskController extends Controller
         $data = [
             'model' => $model,
             'messages' => $messages,
-            'max_tokens' => (int) $maxTokens,
+            'max_tokens' => max(1000, (int) $maxTokens),
             'temperature' => (float) $temperature,
             'top_p' => 1.0,
             'n' => 1,

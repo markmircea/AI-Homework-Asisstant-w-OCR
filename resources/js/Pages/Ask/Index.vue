@@ -21,7 +21,7 @@
             <div class="flex flex-wrap -mb-8 -mr-6 p-8">
               <!-- Title with Tooltip -->
               <div class="w-full pb-8 pr-6 relative">
-                <label for="title" class="block text-sm font-medium text-gray-700 flex items-center">
+                <label for="title" class="block text-lg font-semibold text-gray-700 flex items-center">
                   Title
                   <div class="relative inline-block ml-2">
                     <button type="button" @mouseover="showTooltip = true" @mouseleave="showTooltip = false"
@@ -51,7 +51,7 @@
 
               <!-- Subject and Level Selection -->
               <div class="w-full pb-8 pr-6">
-                <label for="subject" class="block text-sm font-medium text-gray-700">Subject</label>
+                <label for="subject" class="block text-lg font-semibold text-gray-700 flex items-center">Subject</label>
                 <select v-model="form.subject" id="subject"
                   class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                   <option value="" disabled selected>Auto-Detect</option>
@@ -68,7 +68,7 @@
                 </select>
               </div>
               <div class="w-full pb-8 pr-6">
-                <label for="level" class="block text-sm font-medium text-gray-700">Level</label>
+                <label for="level" class="block text-lg font-semibold text-gray-700 flex items-center">Level</label>
                 <select v-model="form.level" id="level"
                   class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                   <option value="" selected>Any Level</option>
@@ -84,7 +84,7 @@
               <!-- Text Area for Homework Question -->
               <div class="w-full pb-8 pr-6">
                 <div class="flex items-center justify-between mb-2">
-                  <label for="homework_question" class="block text-sm font-medium text-gray-700">Your homework
+                  <label for="homework_question" class="block text-lg font-semibold text-gray-700 flex items-center">Your homework
                     question</label>
                   <button type="button" @click="toggleUploadSection"
                     class="flex items-center px-3 py-2 text-sm font-medium text-white bg-indigo-400 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
@@ -368,6 +368,10 @@ export default {
       showAdvancedOptions: false,
       screenshotCaptured: false,
       imagePreview: null,
+      placeholderAnswer: 'Ask away!',
+      placeholderExplain: 'You can enable explanations in "Advanced Options" under the question box',
+      placeholderSteps: 'You can enable steps in "Advanced Options" under the question box',
+
       clicked: {
         answer: false,
         explanation: false,

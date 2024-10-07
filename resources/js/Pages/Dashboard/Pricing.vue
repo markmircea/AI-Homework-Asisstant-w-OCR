@@ -94,6 +94,13 @@
                     viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                   </svg>
+                  <span class="ml-3 text-gray-500">Full Grandular History Search</span>
+                </li>
+                <li class="flex">
+                  <svg class="flex-shrink-0 w-6 h-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
                   <span class="ml-3 text-gray-500">Advanced AI models ( GPT-4 / Claude 3.5 / Llama 3.1 )</span>
                 </li>
               </ul>
@@ -140,6 +147,13 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                   </svg>
                   <span class="ml-3 text-gray-500">Advanced AI models ( GPT-4 / Claude 3.5 / Llama 3.1 )</span>
+                </li>
+                <li class="flex">
+                  <svg class="flex-shrink-0 w-6 h-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="ml-3 text-gray-500">Full Grandular History Search</span>
                 </li>
                 <li class="flex">
                   <svg class="flex-shrink-0 w-6 h-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"

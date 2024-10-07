@@ -104,6 +104,13 @@
                   <span class="ml-2 text-gray-300"><strong>Unlimited</strong> subjects</span>
                 </li>
                 <li class="flex items-center">
+                  <svg class="flex-shrink-0 w-6 h-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="ml-3 text-gray-500">Full Grandular History Search</span>
+                </li>
+                <li class="flex items-center">
                   <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd"
                       d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -157,6 +164,13 @@
                       clip-rule="evenodd" />
                   </svg>
                   <span class="ml-2 text-gray-300">Advanced AI models ( GPT-4 / Claude 3.5 / Llama 3.1 )</span>
+                </li>
+                <li class="flex items-center">
+                  <svg class="flex-shrink-0 w-6 h-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="ml-3 text-gray-500">Full Grandular History Search</span>
                 </li>
                 <li class="flex items-center">
                   <svg class="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 20 20">

@@ -19,11 +19,11 @@
           Unlock Your Academic Potential with
           <span class="relative inline-block px-2 py-1 mt-2">
             <div class="absolute inset-0 transform -skew-x-12 bg-gradient-to-r from-teal-400 to-blue-500 opacity-80"></div>
-            <span class="relative text-indigo-900 font-extrabold">AI-Powered Analysis</span>
+            <span class="relative text-indigo-900 font-extrabold">AI Multi - Model Powered Analysis</span>
           </span>
         </h2>
         <p class="mb-6 text-base text-indigo-100 md:text-lg">
-          Upload a photo, document, or screenshot and our advanced multi-model AI will analyze your assignments and tests, provide detailed explanations, and guide you
+          Upload a photo, document, or screenshot and select one of our advanced <strong>MULTI - MODEL</strong> AI will analyze your assignments and tests, provide detailed explanations, and guide you
           through step-by-step solutions.
         </p>
 
@@ -68,7 +68,7 @@
           ref="fileInput"
           @change="handleFileUpload"
           class="hidden"
-          accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
+          accept=".jpg,.jpeg,.png,.gif"
         />
         <button
           @click.prevent="form.photo ? removeFile() : $refs.fileInput.click()"

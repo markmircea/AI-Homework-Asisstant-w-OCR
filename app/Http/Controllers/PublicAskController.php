@@ -53,13 +53,14 @@ class PublicAskController extends Controller
                 $extension = $file->getClientOriginalExtension();
 
                 $filePath = $this->handleFileUpload($file);
+                $instructions = $request->input('instructions');
 
                 if (strpos($mimeType, 'image/') === 0) {
                     // No need to process the image, we'll use the file path directly
                 } elseif ($mimeType === 'application/pdf') {
-                    $filePath = $this->extractTextFromPDF($filePath);
+                    $instructions .= $this->extractTextFromPDF($filePath);
                 } elseif (in_array($extension, ['doc', 'docx']) || in_array($mimeType, ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])) {
-                    $filePath = $this->extractTextFromWord($filePath);
+                    $instructions = $this->extractTextFromWord($filePath);
                 } else {
                     throw new \Exception('Unsupported file type.');
                 }
