@@ -8,7 +8,7 @@
             <span class="ml-2 text-xl font-bold text-gray-300">Easy Ace</span>
           </div>
           <p class="mt-2 text-sm text-gray-300 max-w-md">
-            AI-powered homework and test helper leveraging the latest in machine learning technology.
+            AI-powered homework and test helper leveraging the latest in machine learning technology. <br> Check out <a href="https://ccattest.com">CCAT Test Questions, Answers and Explanations</a>
           </p>
         </div>
         <div class="flex flex-col items-center md:items-end">
